@@ -3,4 +3,28 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="title_medicine">Add Medicine</string>
+    <string name="title_more">More</string>
+
+
+
+    <string-array name="slot_array">
+
+        <item>1 time in a day</item>
+        <item>2 times in a day</item>
+        <item>3 times in a day</item>
+
+    </string-array>
+
+
+
+
+    <string name="enter_medicine_name"><u>Enter Medicine Name</u></string>
+    <string name="how_many_times_a_day"><u>How many times a day</u></string>
+    <string name="schedule"><u>Schedule</u></string>
+    <string name="days"><u>Days</u></string>
+    <string name="set">Set</string>
+    <string name="take_a_snap"><u>Take a Snap (optional)</u></string>
+
+
 </resources>

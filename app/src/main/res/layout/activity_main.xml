@@ -7,7 +7,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.juborajsarker.medicinealert.MainActivity">
+    tools:context="com.juborajsarker.medicinealert.activity.MainActivity">
+
+
+
 
 
 
@@ -15,8 +18,9 @@
         android:id="@+id/navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:attr/windowBackground"
+        android:background="#fff"
         app:menu="@menu/navigation"
-        android:layout_alignParentBottom="true"/>
+        android:layout_alignParentBottom="true"
+        android:fitsSystemWindows="true" />
 
 </RelativeLayout>
