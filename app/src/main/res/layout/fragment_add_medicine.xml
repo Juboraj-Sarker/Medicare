@@ -84,6 +84,7 @@
                         android:layout_marginLeft="5dp"/>
 
                     <ImageView
+                        android:id="@+id/iv_take_snap"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         app:srcCompat="@drawable/ic_camera"
@@ -97,6 +98,65 @@
 
 
             </android.support.v7.widget.CardView>
+
+
+           <android.support.v7.widget.CardView
+               android:id="@+id/medicine_image_cv"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_margin="5dp"
+               android:padding="5dp"
+               android:visibility="gone">
+
+
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_margin="5dp"
+                   android:padding="5dp"
+                   android:orientation="vertical">
+
+                   <ImageView
+                       android:id="@+id/medicine_IV"
+                       android:layout_width="330dp"
+                       android:layout_height="189dp"
+                       android:padding="8dp"
+                       android:layout_gravity="center"/>
+
+
+                   <LinearLayout
+                       android:layout_width="match_parent"
+                       android:layout_height="match_parent"
+                       android:paddingTop="5dp"
+                       android:paddingBottom="5dp"
+                       android:layout_marginTop="5dp"
+                       android:layout_marginBottom="5dp">
+
+                       <Button
+                           android:id="@+id/retakeBTN"
+                           android:layout_width="0dp"
+                           android:layout_height="wrap_content"
+                           android:layout_weight="1"
+                           android:background="@color/colorPrimary"
+                           android:text="Retake"
+                           android:textColor="#fff"
+                           android:layout_marginRight="5dp" />
+
+                       <Button
+                           android:id="@+id/cancelBTN"
+                           android:layout_width="0dp"
+                           android:layout_height="wrap_content"
+                           android:layout_weight="1"
+                           android:background="@color/colorPrimary"
+                           android:text="Cancel"
+                           android:textColor="#fff"
+                           android:layout_marginLeft="5dp"/>
+
+                   </LinearLayout>
+
+               </LinearLayout>
+
+           </android.support.v7.widget.CardView>
 
 
             <android.support.v7.widget.CardView
@@ -315,7 +375,7 @@
                             android:id="@+id/no_of_days_ET"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
+                            android:layout_weight="2"
                             android:inputType="number"
                             android:padding="5dp"
                             android:background="@drawable/edit_text_design"
@@ -340,14 +400,57 @@
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:text="Start Date"
-                            android:padding="5dp"/>
+                            android:padding="5dp"
+                            android:gravity="center_vertical"/>
 
+                        <!--<LinearLayout-->
+                            <!--android:layout_width="0dp"-->
+                            <!--android:layout_height="match_parent"-->
+                            <!--android:orientation="horizontal"-->
+                            <!--android:layout_weight="2"-->
+                            <!--android:paddingTop="5dp"-->
+                            <!--android:paddingBottom="5dp">-->
+
+                            <!--<Spinner-->
+                                <!--android:id="@+id/select_dates"-->
+                                <!--android:layout_width="0dp"-->
+                                <!--android:layout_height="35dp"-->
+                                <!--android:layout_weight="1"-->
+                                <!--android:entries="@array/select_dates"-->
+                                <!--android:background="@color/colorPrimary"-->
+                                <!--android:textAlignment="center"-->
+                                <!--android:layout_marginRight="2dp" />-->
+
+
+                            <!--<Spinner-->
+                                <!--android:id="@+id/select_months"-->
+                                <!--android:layout_width="0dp"-->
+                                <!--android:layout_height="35dp"-->
+                                <!--android:layout_weight="1"-->
+                                <!--android:entries="@array/select_months"-->
+                                <!--android:background="@color/colorPrimaryDark"-->
+                                <!--android:textAlignment="center"-->
+                                <!--android:layout_marginRight="2dp"/>-->
+
+
+                            <!--<Spinner-->
+                                <!--android:id="@+id/select_year"-->
+                                <!--android:layout_width="0dp"-->
+                                <!--android:layout_height="35dp"-->
+                                <!--android:layout_weight="1"-->
+                                <!--android:entries="@array/select_year"-->
+                                <!--android:background="@color/colorPrimary"-->
+                                <!--android:textAlignment="center"-->
+                                <!--/>-->
+
+
+                        <!--</LinearLayout>-->
 
                         <TextView
                             android:id="@+id/start_date_TV"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="1"
+                            android:layout_weight="2"
                             android:text="22/05/14"
                             android:padding="5dp"
                             android:textSize="18sp"
