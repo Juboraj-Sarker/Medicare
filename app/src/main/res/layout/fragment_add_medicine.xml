@@ -233,10 +233,9 @@
                                 android:layout_weight="1"
                                 android:background="@color/colorPrimary"
                                 android:gravity="center"
-                                android:text="07.00 AM"
+                                android:text="Set Time"
                                 android:textColor="#fff"
-                                android:textStyle="bold"
-                                android:textSize="18sp"
+                                android:textSize="16sp"
                                 android:padding="5dp"/>
 
 
@@ -272,10 +271,9 @@
                                 android:layout_weight="1"
                                 android:background="@color/colorPrimaryDark"
                                 android:gravity="center"
-                                android:text="01.00 PM"
+                                android:text="Set Time"
                                 android:textColor="#fff"
-                                android:textStyle="bold"
-                                android:textSize="18sp"
+                                android:textSize="16sp"
                                 android:padding="5dp"/>
 
 
@@ -312,10 +310,9 @@
                                 android:layout_weight="1"
                                 android:background="@color/colorPrimary"
                                 android:gravity="center"
-                                android:text="10.30 PM"
+                                android:text="Set Time"
                                 android:textColor="#fff"
-                                android:textStyle="bold"
-                                android:textSize="18sp"
+                                android:textSize="16sp"
                                 android:padding="5dp"/>
 
 
@@ -451,7 +448,7 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="2"
-                            android:text="22/05/14"
+                            android:text="Touch here to set date"
                             android:padding="5dp"
                             android:textSize="18sp"
                             android:textColor="@color/colorPrimary"/>

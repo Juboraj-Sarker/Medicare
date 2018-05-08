@@ -3,6 +3,10 @@ package com.juborajsarker.medicinealert.fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -20,6 +24,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -30,12 +35,15 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.juborajsarker.medicinealert.R;
+import com.juborajsarker.medicinealert.dataparser.DateCalculations;
 import com.juborajsarker.medicinealert.model.StaticVariables;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 
 public class AddMedicineFragment extends Fragment {
@@ -125,6 +133,9 @@ public class AddMedicineFragment extends Fragment {
         retakeBTN = (Button) view.findViewById(R.id.retakeBTN);
         cancelBTN = (Button) view.findViewById(R.id.cancelBTN);
         setBTN = (Button) view.findViewById(R.id.set_BTN);
+
+
+        everyDayRB.setChecked(true);
 
     }
 
@@ -315,12 +326,168 @@ public class AddMedicineFragment extends Fragment {
             public void onClick(View v) {
 
 
-                int numberOfDays = Integer.parseInt(noOfDaysET.getText().toString());
+                if (checkValidity() && checkSpecificDayValidity()){
+
+                    if (everyDayRB.isChecked()){
+
+
+                        String numberOfDays = noOfDaysET.getText().toString();
+                        String startDate = startDateTV.getText().toString();
+
+                        DateCalculations dc = new DateCalculations();
+                        Toast.makeText(getContext(), dc.addDays(startDate, numberOfDays), Toast.LENGTH_SHORT).show();
+
+
+                    }else if (specificDayRB.isChecked()){
+
+
+
+
+                    }else if (daysIntervalRB.isChecked()){
+
+
+                    }
+
+                }else {
+
+                    Toast.makeText(getContext(), "Please check all fields has been filled up", Toast.LENGTH_SHORT).show();
+                }
+
+
 
 
             }
         });
 
+    }
+
+    private boolean checkValidity() {
+
+
+        if (medNameET.getText().toString().equals("")){
+
+            medNameET.setError("Enter a medicine name");
+            return false;
+
+
+        }else if ( (firstSlotLAYOUT.getVisibility() == View.VISIBLE &&
+                secondSlotLAYOUT.getVisibility() == View.VISIBLE &&
+                thirdSlotLAYOUT.getVisibility() == View.VISIBLE )
+                        &&
+                ((firstSlotTV.getText().toString().contains("Set"))
+                || secondSlotTV.getText().toString().contains("Set")
+                || thirdSlotTV.getText().toString().contains("Set"))){
+
+
+            if (firstSlotTV.getText().toString().contains("Set")){
+
+                Toast.makeText(getContext(), "Please enter a valid time in slot 1", Toast.LENGTH_SHORT).show();
+
+            }else if (secondSlotTV.getText().toString().contains("Set")){
+
+                Toast.makeText(getContext(), "Please enter a valid time in slot 2", Toast.LENGTH_SHORT).show();
+
+            }else if (thirdSlotTV.getText().toString().contains("Set")){
+
+                Toast.makeText(getContext(), "Please enter a valid time in slot 3", Toast.LENGTH_SHORT).show();
+            }
+
+
+            return false;
+
+
+        }else if (( (firstSlotLAYOUT.getVisibility() == View.VISIBLE &&
+                secondSlotLAYOUT.getVisibility() == View.VISIBLE &&
+                thirdSlotLAYOUT.getVisibility() == View.GONE ))
+                &&
+                ((firstSlotTV.getText().toString().contains("Set"))
+                || secondSlotTV.getText().toString().contains("Set"))){
+
+
+            if (firstSlotTV.getText().toString().contains("Set")){
+
+                Toast.makeText(getContext(), "Please enter a valid time in slot 1", Toast.LENGTH_SHORT).show();
+
+            }else if (secondSlotTV.getText().toString().contains("Set")){
+
+                Toast.makeText(getContext(), "Please enter a valid time in slot 2", Toast.LENGTH_SHORT).show();
+            }
+
+
+            return false;
+
+
+        }else if ( ((firstSlotLAYOUT.getVisibility() == View.VISIBLE &&
+                secondSlotLAYOUT.getVisibility() == View.GONE &&
+                thirdSlotLAYOUT.getVisibility() == View.GONE ))
+                &&
+                ((firstSlotTV.getText().toString().contains("Set")))){
+
+
+            Toast.makeText(getContext(), "Please enter a valid time in slot 1", Toast.LENGTH_SHORT).show();
+            return false;
+
+
+        }else if (noOfDaysET.getText().toString().equals("")){
+
+
+            noOfDaysET.setError("this field is required");
+            return false;
+
+
+        }else if (startDateTV.getText().toString().contains("Touch here to set date")){
+
+            Toast.makeText(getContext(), "Please enter a valid date", Toast.LENGTH_SHORT).show();
+
+            return false;
+
+        }else {
+
+            return true;
+        }
+
+
+    }
+
+    public boolean checkSpecificDayValidity(){
+
+        if (cvSpecificDayOfWeek.getVisibility() == View.VISIBLE && cbSaturday.isChecked()){
+
+            return true;
+
+        }else if (cvSpecificDayOfWeek.getVisibility() == View.VISIBLE && cbSunday.isChecked()){
+
+            return true;
+
+        }else if (cvSpecificDayOfWeek.getVisibility() == View.VISIBLE && cbMonday.isChecked()){
+
+            return true;
+
+        }else if (cvSpecificDayOfWeek.getVisibility() == View.VISIBLE && cbTuesday.isChecked()){
+
+            return true;
+
+        }else if (cvSpecificDayOfWeek.getVisibility() == View.VISIBLE && cbWednesday.isChecked()){
+
+            return true;
+
+        }else if (cvSpecificDayOfWeek.getVisibility() == View.VISIBLE && cbThursday.isChecked()){
+
+            return true;
+
+        }else if (cvSpecificDayOfWeek.getVisibility() == View.VISIBLE && cbFriday.isChecked()){
+
+            return true;
+
+        }else if (cvSpecificDayOfWeek.getVisibility() == View.GONE){
+
+            return true;
+
+        }else {
+
+            Toast.makeText(getContext(), "Please select at least one specific day in week\nOr choose Everyday", Toast.LENGTH_LONG).show();
+            return false;
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -336,7 +503,6 @@ public class AddMedicineFragment extends Fragment {
 
         }
     }
-
 
     public void showHourPicker(String message, final int number) {
 
@@ -390,32 +556,29 @@ public class AddMedicineFragment extends Fragment {
                 minute,
                 false);
 
-        timePickerDialog.setTitle(message);
-        timePickerDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        timePickerDialog.show();
+       try {
 
+           timePickerDialog.setTitle(message);
+           timePickerDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+           timePickerDialog.show();
+
+       }catch (Exception e){
+
+           Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+       }
 
 
 
     }
-
-
-
-
-
-
-
 
     public void showDatePicker() {
 
 
 
+        DialogFragment dFragment = new DatePickerFragment();
+        dFragment.show(getActivity().getFragmentManager(), "Date Picker");
+
     }
-
-
-
-
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -433,8 +596,8 @@ public class AddMedicineFragment extends Fragment {
         }
     }
 
-        @Override
-        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
             if (requestCode == StaticVariables.CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
                 Bitmap photo = (Bitmap) data.getExtras().get("data");
               //  Bitmap bMapScaled = Bitmap.createScaledBitmap(photo, 330, 189, true);
@@ -443,7 +606,38 @@ public class AddMedicineFragment extends Fragment {
             }
         }
 
+    public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener{
 
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState){
+
+            final Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog dpd = new DatePickerDialog(getActivity(),
+                    AlertDialog.THEME_HOLO_LIGHT,this,year,month,day);
+            return  dpd;
+        }
+
+        public void onDateSet(DatePicker view, int year, int month, int day){
+
+            TextView tv = (TextView) getActivity().findViewById(R.id.start_date_TV);
+
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(0);
+            cal.set(year, month, day, 0, 0, 0);
+            Date chosenDate = cal.getTime();
+
+            DateFormat df_medium_uk = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.UK);
+            String df_medium_uk_str = df_medium_uk.format(chosenDate);
+            tv.setText(df_medium_uk_str );
+
+
+        }
+    }
 
     }
 
