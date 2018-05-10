@@ -5,6 +5,7 @@ public class MedicineModel {
     int id;
     String date;
     String medicineName;
+    String medicineType;
     String imagePath;
     int numberOfSlot;
     String firstSlotTime;
@@ -18,15 +19,18 @@ public class MedicineModel {
     int daysInterval;
     String startDate;
     String status;
+    String medicineMeal;
 
-    public MedicineModel(int id, String date, String medicineName, String imagePath, int numberOfSlot, String firstSlotTime,
-                         String secondSlotTime, String thirdSlotTime, int numberOfDays, boolean isEveryday,
-                         boolean isSpecificDaysOfWeek, boolean isDaysInterval, String daysNameOfWeek, int daysInterval,
-                         String startDate, String status) {
+
+    public MedicineModel(int id, String date, String medicineName, String medicineType, String imagePath,
+                         int numberOfSlot, String firstSlotTime, String secondSlotTime, String thirdSlotTime,
+                         int numberOfDays, boolean isEveryday, boolean isSpecificDaysOfWeek, boolean isDaysInterval,
+                         String daysNameOfWeek, int daysInterval, String startDate, String status, String medicineMeal) {
 
         this.id = id;
         this.date = date;
         this.medicineName = medicineName;
+        this.medicineType = medicineType;
         this.imagePath = imagePath;
         this.numberOfSlot = numberOfSlot;
         this.firstSlotTime = firstSlotTime;
@@ -40,12 +44,16 @@ public class MedicineModel {
         this.daysInterval = daysInterval;
         this.startDate = startDate;
         this.status = status;
+        this.medicineMeal = medicineMeal;
+
     }
 
 
     public MedicineModel() {
 
+
     }
+
 
     public int getId() {
         return id;
@@ -69,6 +77,14 @@ public class MedicineModel {
 
     public void setMedicineName(String medicineName) {
         this.medicineName = medicineName;
+    }
+
+    public String getMedicineType() {
+        return medicineType;
+    }
+
+    public void setMedicineType(String medicineType) {
+        this.medicineType = medicineType;
     }
 
     public String getImagePath() {
@@ -173,5 +189,13 @@ public class MedicineModel {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getMedicineMeal() {
+        return medicineMeal;
+    }
+
+    public void setMedicineMeal(String medicineMeal) {
+        this.medicineMeal = medicineMeal;
     }
 }

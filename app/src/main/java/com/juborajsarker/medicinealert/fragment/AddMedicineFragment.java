@@ -36,6 +36,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.juborajsarker.medicinealert.R;
+import com.juborajsarker.medicinealert.activity.MainActivity;
 import com.juborajsarker.medicinealert.database.DatabaseHelper;
 import com.juborajsarker.medicinealert.dataparser.DateCalculations;
 import com.juborajsarker.medicinealert.dataparser.ImageSaver;
@@ -58,8 +59,8 @@ public class AddMedicineFragment extends Fragment {
 
     EditText medNameET, noOfDaysET;
     TextView firstSlotTV, secondSlotTV, thirdSlotTV, startDateTV;
-    Spinner noOfTimesSP;
-    RadioButton everyDayRB, specificDayRB, daysIntervalRB;
+    Spinner noOfTimesSP, medicineTypeSP;
+    RadioButton everyDayRB, specificDayRB, daysIntervalRB, beforeMealRB, afterMealRB;
     CheckBox cbSaturday, cbSunday, cbMonday, cbTuesday, cbWednesday, cbThursday, cbFriday;
     LinearLayout firstSlotLAYOUT, secondSlotLAYOUT, thirdSlotLAYOUT;
     EditText etDaysInterval;
@@ -71,10 +72,14 @@ public class AddMedicineFragment extends Fragment {
     Calendar myCalender;
 
     int id, numberOfSlot, noOfDays, daysInterval;
-    String medName, imagePath, firstSlotTime, secondSlotTime, thirdSlotTime, startDate, daysNameOfWeek, status, calculatedDate, newStartDate;
+    String medName, imagePath, firstSlotTime, secondSlotTime, thirdSlotTime, startDate, daysNameOfWeek, status, calculatedDate,
+            newStartDate, medicineMeal, medicineType;
     boolean isEveryday, isSpecificDaysOfWeek, isDaysInterval;
     boolean sat, sun, mon, tue, wed, thu, fri;
     boolean allPermission;
+
+
+    String tableName = "";
 
     DatabaseHelper dbHelper;
 
@@ -107,12 +112,8 @@ public class AddMedicineFragment extends Fragment {
 //        imageSaver.loadImage("HHHHHH (Thu May 10 02:15:12 GMT+06:00 2018)", medicineIV);
 
 
-
-
-
         return view;
     }
-
 
 
     private void init() {
@@ -127,10 +128,13 @@ public class AddMedicineFragment extends Fragment {
 
         noOfTimesSP = (Spinner) view.findViewById(R.id.no_of_times_SP);
         noOfTimesSP.setSelection(2);
+        medicineTypeSP = (Spinner) view.findViewById(R.id.medicine_type_SP);
 
         everyDayRB = (RadioButton) view.findViewById(R.id.everyday_RB);
         specificDayRB = (RadioButton) view.findViewById(R.id.specific_day_RB);
         daysIntervalRB = (RadioButton) view.findViewById(R.id.days_interval_RB);
+        beforeMealRB = (RadioButton) view.findViewById(R.id.before_meal_RB);
+        afterMealRB = (RadioButton) view.findViewById(R.id.after_meal_RB);
 
         firstSlotLAYOUT = (LinearLayout) view.findViewById(R.id.first_slot_LAYOUT);
         secondSlotLAYOUT = (LinearLayout) view.findViewById(R.id.second_slot_LAYOUT);
@@ -161,9 +165,9 @@ public class AddMedicineFragment extends Fragment {
 
 
         everyDayRB.setChecked(true);
+        beforeMealRB.setChecked(true);
 
     }
-
 
 
     private void setOnClick() {
@@ -173,17 +177,17 @@ public class AddMedicineFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                if (position == 0){
+                if (position == 0) {
 
                     secondSlotLAYOUT.setVisibility(View.GONE);
                     thirdSlotLAYOUT.setVisibility(View.GONE);
 
-                }else if (position == 1){
+                } else if (position == 1) {
 
                     secondSlotLAYOUT.setVisibility(View.VISIBLE);
                     thirdSlotLAYOUT.setVisibility(View.GONE);
 
-                }else if (position == 2){
+                } else if (position == 2) {
 
                     secondSlotLAYOUT.setVisibility(View.VISIBLE);
                     thirdSlotLAYOUT.setVisibility(View.VISIBLE);
@@ -201,7 +205,7 @@ public class AddMedicineFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                 showHourPicker("Select first slot", 1);
+                showHourPicker("Select first slot", 1);
 
             }
         });
@@ -216,7 +220,6 @@ public class AddMedicineFragment extends Fragment {
         });
 
 
-
         thirdSlotLAYOUT.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -224,7 +227,6 @@ public class AddMedicineFragment extends Fragment {
                 showHourPicker("Select third slot", 3);
             }
         });
-
 
 
         startDateTV.setOnClickListener(new View.OnClickListener() {
@@ -240,7 +242,7 @@ public class AddMedicineFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                if (isChecked){
+                if (isChecked) {
 
                     cvSpecificDayOfWeek.setVisibility(View.GONE);
                     cvDaysInterval.setVisibility(View.GONE);
@@ -253,10 +255,10 @@ public class AddMedicineFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                if (isChecked){
+                if (isChecked) {
 
-                   cvSpecificDayOfWeek.setVisibility(View.VISIBLE);
-                   cvDaysInterval.setVisibility(View.GONE);
+                    cvSpecificDayOfWeek.setVisibility(View.VISIBLE);
+                    cvDaysInterval.setVisibility(View.GONE);
                 }
 
             }
@@ -267,7 +269,7 @@ public class AddMedicineFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                if (isChecked){
+                if (isChecked) {
 
                     cvSpecificDayOfWeek.setVisibility(View.GONE);
                     cvDaysInterval.setVisibility(View.VISIBLE);
@@ -295,17 +297,16 @@ public class AddMedicineFragment extends Fragment {
                 int daysInterval = Integer.parseInt(etDaysInterval.getText().toString());
                 daysInterval = daysInterval - 1;
 
-                if (daysInterval <= 1){
+                if (daysInterval <= 1) {
 
                     etDaysInterval.setText("1");
 
-                }else {
+                } else {
 
                     etDaysInterval.setText(String.valueOf(daysInterval));
                 }
             }
         });
-
 
 
         takeSnapIV.setOnClickListener(new View.OnClickListener() {
@@ -318,9 +319,6 @@ public class AddMedicineFragment extends Fragment {
 
             }
         });
-
-
-
 
 
         retakeBTN.setOnClickListener(new View.OnClickListener() {
@@ -343,239 +341,22 @@ public class AddMedicineFragment extends Fragment {
         });
 
 
-
         setBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
 
+                if (!allPermission) {
 
-                if (allPermission){
-
-
-
-                    if (checkValidity() && checkSpecificDayValidity()){
-
-                        if (everyDayRB.isChecked()){
-
-
-                            String numberOfDays = noOfDaysET.getText().toString();
-                            DateCalculations dc = new DateCalculations();
-
-                            id = 0;
-                            medName = medNameET.getText().toString();
-                            numberOfSlot = noOfTimesSP.getSelectedItemPosition() + 1;
-                            noOfDays = Integer.parseInt(numberOfDays);
-                            isEveryday = true;
-                            isSpecificDaysOfWeek = false;
-                            isDaysInterval = false;
-                            daysNameOfWeek = "null";
-                            daysInterval = 0;
-                            startDate = startDateTV.getText().toString();
-                            newStartDate = startDate;
-                            status = "not_taken";
-
-
-                            dbHelper = new DatabaseHelper(getContext());
-
-                            saveImageToDirectory();
-                            getSlotTime();
-
-
-
-
-
-
-
-                            for (int i = 0; i < noOfDays; i++){
-
-                                calculatedDate = dc.addDays(newStartDate, "1");
-                                MedicineModel medicineModel = new MedicineModel();
-                                medicineModel.setId(id);
-                                medicineModel.setDate(calculatedDate);
-                                medicineModel.setMedicineName(medName);
-                                medicineModel.setImagePath(imagePath);
-                                medicineModel.setNumberOfSlot(numberOfSlot);
-                                medicineModel.setFirstSlotTime(firstSlotTime);
-                                medicineModel.setSecondSlotTime(secondSlotTime);
-                                medicineModel.setThirdSlotTime(thirdSlotTime);
-                                medicineModel.setNumberOfDays(noOfDays);
-                                medicineModel.setEveryday(isEveryday);
-                                medicineModel.setSpecificDaysOfWeek(isSpecificDaysOfWeek);
-                                medicineModel.setDaysInterval(isDaysInterval);
-                                medicineModel.setDaysNameOfWeek(daysNameOfWeek);
-                                medicineModel.setDaysInterval(daysInterval);
-                                medicineModel.setStartDate(startDate);
-                                medicineModel.setStatus(status);
-
-                                dbHelper.insertData(medicineModel);
-
-                                newStartDate = calculatedDate;
-
-
-
-                            }
-
-
-
-
-                        }else if (specificDayRB.isChecked()){
-
-                            String numberOfDays = noOfDaysET.getText().toString();
-                            DateCalculations dc = new DateCalculations();
-
-                            id = 0;
-                            medName = medNameET.getText().toString();
-                            imagePath = "";
-                            numberOfSlot = noOfTimesSP.getSelectedItemPosition() + 1;
-                            noOfDays = Integer.parseInt(numberOfDays);
-                            isEveryday = false;
-                            isSpecificDaysOfWeek = true;
-                            isDaysInterval = false;
-                            daysNameOfWeek = getDaysNameOfWeek();
-                            daysInterval = 0;
-                            startDate = startDateTV.getText().toString();
-                            newStartDate = startDate;
-                            status = "not_taken";
-
-
-                            dbHelper = new DatabaseHelper(getContext());
-
-
-
-                            saveImageToDirectory();
-                            getSlotTime();
-
-
-                            for (int i = 0; i < noOfDays; i++){
-
-
-
-                                calculatedDate = dc.addDays(newStartDate, "1");
-                                String singleDayName = dc.daysNameOfWeek(calculatedDate);
-
-                                if (daysNameOfWeek.contains(singleDayName)){
-
-                                    String finalDate = calculatedDate;
-                                    MedicineModel medicineModel = new MedicineModel();
-                                    medicineModel.setId(id);
-                                    medicineModel.setDate(finalDate);
-                                    medicineModel.setMedicineName(medName);
-                                    medicineModel.setImagePath(imagePath);
-                                    medicineModel.setNumberOfSlot(numberOfSlot);
-                                    medicineModel.setFirstSlotTime(firstSlotTime);
-                                    medicineModel.setSecondSlotTime(secondSlotTime);
-                                    medicineModel.setThirdSlotTime(thirdSlotTime);
-                                    medicineModel.setNumberOfDays(noOfDays);
-                                    medicineModel.setEveryday(isEveryday);
-                                    medicineModel.setSpecificDaysOfWeek(isSpecificDaysOfWeek);
-                                    medicineModel.setDaysInterval(isDaysInterval);
-                                    medicineModel.setDaysNameOfWeek(daysNameOfWeek);
-                                    medicineModel.setDaysInterval(daysInterval);
-                                    medicineModel.setStartDate(startDate);
-                                    medicineModel.setStatus(status);
-
-                                    dbHelper.insertData(medicineModel);
-
-                                    newStartDate = calculatedDate;
-
-
-                                }else {
-
-                                    newStartDate = calculatedDate;
-                                    i--;
-
-
-                                }
-
-
-                            }
-
-
-
-
-
-
-                        }else if (daysIntervalRB.isChecked()){
-
-
-
-                            String numberOfDays = noOfDaysET.getText().toString();
-                            DateCalculations dc = new DateCalculations();
-
-                            id = 0;
-                            medName = medNameET.getText().toString();
-                            imagePath = "";
-                            numberOfSlot = noOfTimesSP.getSelectedItemPosition() + 1;
-                            noOfDays = Integer.parseInt(numberOfDays);
-                            isEveryday = false;
-                            isSpecificDaysOfWeek = false;
-                            isDaysInterval = true;
-                            daysNameOfWeek = "null";
-                            daysInterval = Integer.parseInt(etDaysInterval.getText().toString()) + 1;
-                            startDate = startDateTV.getText().toString();
-                            newStartDate = startDate;
-                            status = "not_taken";
-
-
-                            dbHelper = new DatabaseHelper(getContext());
-
-
-
-                            saveImageToDirectory();
-                            getSlotTime();
-
-
-
-                            for (int i = 0; i < noOfDays; i++){
-
-                                calculatedDate = dc.addDays(newStartDate, String.valueOf(daysInterval));
-                                MedicineModel medicineModel = new MedicineModel();
-                                medicineModel.setId(id);
-                                medicineModel.setDate(calculatedDate);
-                                medicineModel.setMedicineName(medName);
-                                medicineModel.setImagePath(imagePath);
-                                medicineModel.setNumberOfSlot(numberOfSlot);
-                                medicineModel.setFirstSlotTime(firstSlotTime);
-                                medicineModel.setSecondSlotTime(secondSlotTime);
-                                medicineModel.setThirdSlotTime(thirdSlotTime);
-                                medicineModel.setNumberOfDays(noOfDays);
-                                medicineModel.setEveryday(isEveryday);
-                                medicineModel.setSpecificDaysOfWeek(isSpecificDaysOfWeek);
-                                medicineModel.setDaysInterval(isDaysInterval);
-                                medicineModel.setDaysNameOfWeek(daysNameOfWeek);
-                                medicineModel.setDaysInterval(daysInterval);
-                                medicineModel.setStartDate(startDate);
-                                medicineModel.setStatus(status);
-
-                                dbHelper.insertData(medicineModel);
-
-                                newStartDate = calculatedDate;
-
-
-
-                            }
-
-
-
-
-                        }
-
-                    }else {
-
-                        // Toast.makeText(getContext(), "Please check all fields has been filled up", Toast.LENGTH_SHORT).show();
-                    }
-
-
-                }else {
 
                     checkMultiplePermissions();
+
+                } else {
+
+
+                    mustExecute();
+
                 }
-
-
-
-
-
 
 
             }
@@ -583,21 +364,284 @@ public class AddMedicineFragment extends Fragment {
 
     }
 
+    private void mustExecute() {
+
+        if (checkValidity() && checkSpecificDayValidity()) {
+
+
+            if (beforeMealRB.isChecked()) {
+
+                tableName = "before_table";
+
+            } else if (afterMealRB.isChecked()) {
+
+                tableName = "after_table";
+            }
+
+            if (everyDayRB.isChecked()) {
+
+
+                String numberOfDays = noOfDaysET.getText().toString();
+                DateCalculations dc = new DateCalculations();
+
+                id = 0;
+                medName = medNameET.getText().toString();
+                medicineType = getMedicineType();
+                numberOfSlot = noOfTimesSP.getSelectedItemPosition() + 1;
+                noOfDays = Integer.parseInt(numberOfDays);
+                isEveryday = true;
+                isSpecificDaysOfWeek = false;
+                isDaysInterval = false;
+                daysNameOfWeek = "null";
+                daysInterval = 0;
+                startDate = startDateTV.getText().toString();
+                newStartDate = startDate;
+                status = "not_taken";
+                medicineMeal = getMedicineMeal();
+
+
+                dbHelper = new DatabaseHelper(getContext());
+
+                saveImageToDirectory();
+                getSlotTime();
+
+
+                for (int i = 0; i < noOfDays; i++) {
+
+                    calculatedDate = dc.addDays(newStartDate, "1");
+                    MedicineModel medicineModel = new MedicineModel();
+                    medicineModel.setId(id);
+                    medicineModel.setDate(calculatedDate);
+                    medicineModel.setMedicineName(medName);
+                    medicineModel.setMedicineType(medicineType);
+                    medicineModel.setImagePath(imagePath);
+                    medicineModel.setNumberOfSlot(numberOfSlot);
+                    medicineModel.setFirstSlotTime(firstSlotTime);
+                    medicineModel.setSecondSlotTime(secondSlotTime);
+                    medicineModel.setThirdSlotTime(thirdSlotTime);
+                    medicineModel.setNumberOfDays(noOfDays);
+                    medicineModel.setEveryday(isEveryday);
+                    medicineModel.setSpecificDaysOfWeek(isSpecificDaysOfWeek);
+                    medicineModel.setDaysInterval(isDaysInterval);
+                    medicineModel.setDaysNameOfWeek(daysNameOfWeek);
+                    medicineModel.setDaysInterval(daysInterval);
+                    medicineModel.setStartDate(startDate);
+                    medicineModel.setStatus(status);
+                    medicineModel.setMedicineMeal(medicineMeal);
+
+                    dbHelper.insertData(medicineModel, tableName);
+
+                    newStartDate = calculatedDate;
+
+
+                }
+
+
+            } else if (specificDayRB.isChecked()) {
+
+                String numberOfDays = noOfDaysET.getText().toString();
+                DateCalculations dc = new DateCalculations();
+
+                id = 0;
+                medName = medNameET.getText().toString();
+                medicineType = getMedicineType();
+                numberOfSlot = noOfTimesSP.getSelectedItemPosition() + 1;
+                noOfDays = Integer.parseInt(numberOfDays);
+                isEveryday = false;
+                isSpecificDaysOfWeek = true;
+                isDaysInterval = false;
+                daysNameOfWeek = getDaysNameOfWeek();
+                daysInterval = 0;
+                startDate = startDateTV.getText().toString();
+                newStartDate = startDate;
+                status = "not_taken";
+                medicineMeal = getMedicineMeal();
+
+
+                dbHelper = new DatabaseHelper(getContext());
+
+
+                saveImageToDirectory();
+                getSlotTime();
+
+
+                for (int i = 0; i < noOfDays; i++) {
+
+
+                    calculatedDate = dc.addDays(newStartDate, "1");
+                    String singleDayName = dc.daysNameOfWeek(calculatedDate);
+
+                    if (daysNameOfWeek.contains(singleDayName)) {
+
+                        String finalDate = calculatedDate;
+                        MedicineModel medicineModel = new MedicineModel();
+                        medicineModel.setId(id);
+                        medicineModel.setDate(finalDate);
+                        medicineModel.setMedicineName(medName);
+                        medicineModel.setMedicineType(medicineType);
+                        medicineModel.setImagePath(imagePath);
+                        medicineModel.setNumberOfSlot(numberOfSlot);
+                        medicineModel.setFirstSlotTime(firstSlotTime);
+                        medicineModel.setSecondSlotTime(secondSlotTime);
+                        medicineModel.setThirdSlotTime(thirdSlotTime);
+                        medicineModel.setNumberOfDays(noOfDays);
+                        medicineModel.setEveryday(isEveryday);
+                        medicineModel.setSpecificDaysOfWeek(isSpecificDaysOfWeek);
+                        medicineModel.setDaysInterval(isDaysInterval);
+                        medicineModel.setDaysNameOfWeek(daysNameOfWeek);
+                        medicineModel.setDaysInterval(daysInterval);
+                        medicineModel.setStartDate(startDate);
+                        medicineModel.setStatus(status);
+                        medicineModel.setMedicineMeal(medicineMeal);
+
+                        dbHelper.insertData(medicineModel, tableName);
+
+                        newStartDate = calculatedDate;
+
+
+                    } else {
+
+                        newStartDate = calculatedDate;
+                        i--;
+
+
+                    }
+
+
+                }
+
+            } else if (daysIntervalRB.isChecked()) {
+
+                String numberOfDays = noOfDaysET.getText().toString();
+                DateCalculations dc = new DateCalculations();
+
+                id = 0;
+                medName = medNameET.getText().toString();
+                medicineType = getMedicineType();
+                numberOfSlot = noOfTimesSP.getSelectedItemPosition() + 1;
+                noOfDays = Integer.parseInt(numberOfDays);
+                isEveryday = false;
+                isSpecificDaysOfWeek = false;
+                isDaysInterval = true;
+                daysNameOfWeek = "null";
+                daysInterval = Integer.parseInt(etDaysInterval.getText().toString()) + 1;
+                startDate = startDateTV.getText().toString();
+                newStartDate = startDate;
+                status = "not_taken";
+                medicineMeal = getMedicineMeal();
+
+                dbHelper = new DatabaseHelper(getContext());
+
+                saveImageToDirectory();
+                getSlotTime();
+
+
+                for (int i = 0; i < noOfDays; i++) {
+
+                    calculatedDate = dc.addDays(newStartDate, String.valueOf(daysInterval));
+                    MedicineModel medicineModel = new MedicineModel();
+                    medicineModel.setId(id);
+                    medicineModel.setDate(calculatedDate);
+                    medicineModel.setMedicineName(medName);
+                    medicineModel.setMedicineType(medicineType);
+                    medicineModel.setImagePath(imagePath);
+                    medicineModel.setNumberOfSlot(numberOfSlot);
+                    medicineModel.setFirstSlotTime(firstSlotTime);
+                    medicineModel.setSecondSlotTime(secondSlotTime);
+                    medicineModel.setThirdSlotTime(thirdSlotTime);
+                    medicineModel.setNumberOfDays(noOfDays);
+                    medicineModel.setEveryday(isEveryday);
+                    medicineModel.setSpecificDaysOfWeek(isSpecificDaysOfWeek);
+                    medicineModel.setDaysInterval(isDaysInterval);
+                    medicineModel.setDaysNameOfWeek(daysNameOfWeek);
+                    medicineModel.setDaysInterval(daysInterval);
+                    medicineModel.setStartDate(startDate);
+                    medicineModel.setStatus(status);
+                    medicineModel.setMedicineMeal(medicineMeal);
+
+                    dbHelper.insertData(medicineModel, tableName);
+
+                    newStartDate = calculatedDate;
+
+
+                }
+
+
+
+
+            }
+
+
+            Toast.makeText(getContext(), "Successfully added a medicine", Toast.LENGTH_SHORT).show();
+            getActivity().startActivity(new Intent(getContext(), MainActivity.class));
+
+        } else {
+
+            // Toast.makeText(getContext(), "Please check all fields has been filled up", Toast.LENGTH_SHORT).show();
+        }
+
+
+
+
+    }
+
+    private String getMedicineMeal() {
+
+        String meal = "";
+
+        if (beforeMealRB.isChecked()) {
+
+            meal = "Before Meal";
+
+        } else if (afterMealRB.isChecked()) {
+
+            meal = "After Meal";
+        }
+
+        return meal;
+    }
+
+    private String getMedicineType() {
+
+        String type = "";
+
+        if (medicineTypeSP.getSelectedItemPosition() == 1) {
+
+            type = "Tablet";
+
+        }
+        if (medicineTypeSP.getSelectedItemPosition() == 2) {
+
+            type = "Capsule";
+        }
+        if (medicineTypeSP.getSelectedItemPosition() == 3) {
+
+            type = "syrup";
+        }
+        if (medicineTypeSP.getSelectedItemPosition() == 4) {
+
+            type = "Injection";
+        }
+
+        return type;
+
+    }
+
     private void getSlotTime() {
 
-        if (noOfTimesSP.getSelectedItemPosition() == 0){
+        if (noOfTimesSP.getSelectedItemPosition() == 0) {
 
             firstSlotTime = firstSlotTV.getText().toString();
             secondSlotTime = "null";
             thirdSlotTime = "null";
 
-        }else if (noOfTimesSP.getSelectedItemPosition() == 1){
+        } else if (noOfTimesSP.getSelectedItemPosition() == 1) {
 
             firstSlotTime = firstSlotTV.getText().toString();
             secondSlotTime = secondSlotTV.getText().toString();
             thirdSlotTime = "null";
 
-        }else if (noOfTimesSP.getSelectedItemPosition() == 2){
+        } else if (noOfTimesSP.getSelectedItemPosition() == 2) {
 
             firstSlotTime = firstSlotTV.getText().toString();
             secondSlotTime = secondSlotTV.getText().toString();
@@ -608,16 +652,16 @@ public class AddMedicineFragment extends Fragment {
 
     private void saveImageToDirectory() {
 
-        if (cvMedicineImage.getVisibility() == View.VISIBLE){
+        if (cvMedicineImage.getVisibility() == View.VISIBLE) {
 
-            imagePath = medName.toUpperCase() + "(" +  Calendar.getInstance().getTime() + ")";
+            imagePath = medName.toUpperCase() + "(" + Calendar.getInstance().getTime() + ")";
             BitmapDrawable drawable = (BitmapDrawable) medicineIV.getDrawable();
             Bitmap bitmap = drawable.getBitmap();
 
             ImageSaver imageSaver = new ImageSaver(getContext(), getActivity());
             imageSaver.saveImage(bitmap, imagePath);
 
-        }else {
+        } else {
 
             imagePath = "null";
         }
@@ -626,30 +670,31 @@ public class AddMedicineFragment extends Fragment {
     private boolean checkValidity() {
 
 
-        if (medNameET.getText().toString().equals("")){
+        if (medNameET.getText().toString().equals("")) {
 
             medNameET.setError("Enter a medicine name");
+            Toast.makeText(getContext(), "Please enter a valid medicine name", Toast.LENGTH_SHORT).show();
             return false;
 
 
-        }else if ( (firstSlotLAYOUT.getVisibility() == View.VISIBLE &&
+        } else if ((firstSlotLAYOUT.getVisibility() == View.VISIBLE &&
                 secondSlotLAYOUT.getVisibility() == View.VISIBLE &&
-                thirdSlotLAYOUT.getVisibility() == View.VISIBLE )
-                        &&
+                thirdSlotLAYOUT.getVisibility() == View.VISIBLE)
+                &&
                 ((firstSlotTV.getText().toString().contains("Set"))
-                || secondSlotTV.getText().toString().contains("Set")
-                || thirdSlotTV.getText().toString().contains("Set"))){
+                        || secondSlotTV.getText().toString().contains("Set")
+                        || thirdSlotTV.getText().toString().contains("Set"))) {
 
 
-            if (firstSlotTV.getText().toString().contains("Set")){
+            if (firstSlotTV.getText().toString().contains("Set")) {
 
                 Toast.makeText(getContext(), "Please enter a valid time in slot 1", Toast.LENGTH_SHORT).show();
 
-            }else if (secondSlotTV.getText().toString().contains("Set")){
+            } else if (secondSlotTV.getText().toString().contains("Set")) {
 
                 Toast.makeText(getContext(), "Please enter a valid time in slot 2", Toast.LENGTH_SHORT).show();
 
-            }else if (thirdSlotTV.getText().toString().contains("Set")){
+            } else if (thirdSlotTV.getText().toString().contains("Set")) {
 
                 Toast.makeText(getContext(), "Please enter a valid time in slot 3", Toast.LENGTH_SHORT).show();
             }
@@ -658,19 +703,19 @@ public class AddMedicineFragment extends Fragment {
             return false;
 
 
-        }else if (( (firstSlotLAYOUT.getVisibility() == View.VISIBLE &&
+        } else if (((firstSlotLAYOUT.getVisibility() == View.VISIBLE &&
                 secondSlotLAYOUT.getVisibility() == View.VISIBLE &&
-                thirdSlotLAYOUT.getVisibility() == View.GONE ))
+                thirdSlotLAYOUT.getVisibility() == View.GONE))
                 &&
                 ((firstSlotTV.getText().toString().contains("Set"))
-                || secondSlotTV.getText().toString().contains("Set"))){
+                        || secondSlotTV.getText().toString().contains("Set"))) {
 
 
-            if (firstSlotTV.getText().toString().contains("Set")){
+            if (firstSlotTV.getText().toString().contains("Set")) {
 
                 Toast.makeText(getContext(), "Please enter a valid time in slot 1", Toast.LENGTH_SHORT).show();
 
-            }else if (secondSlotTV.getText().toString().contains("Set")){
+            } else if (secondSlotTV.getText().toString().contains("Set")) {
 
                 Toast.makeText(getContext(), "Please enter a valid time in slot 2", Toast.LENGTH_SHORT).show();
             }
@@ -679,31 +724,41 @@ public class AddMedicineFragment extends Fragment {
             return false;
 
 
-        }else if ( ((firstSlotLAYOUT.getVisibility() == View.VISIBLE &&
+        } else if (((firstSlotLAYOUT.getVisibility() == View.VISIBLE &&
                 secondSlotLAYOUT.getVisibility() == View.GONE &&
-                thirdSlotLAYOUT.getVisibility() == View.GONE ))
+                thirdSlotLAYOUT.getVisibility() == View.GONE))
                 &&
-                ((firstSlotTV.getText().toString().contains("Set")))){
+                ((firstSlotTV.getText().toString().contains("Set")))) {
 
 
             Toast.makeText(getContext(), "Please enter a valid time in slot 1", Toast.LENGTH_SHORT).show();
             return false;
 
 
-        }else if (noOfDaysET.getText().toString().equals("")){
+        } else if (noOfDaysET.getText().toString().equals("")) {
 
 
             noOfDaysET.setError("this field is required");
+            Toast.makeText(getContext(), "Number of days cannot be empty", Toast.LENGTH_SHORT).show();
             return false;
 
 
-        }else if (startDateTV.getText().toString().contains("Touch here to set date")){
+        } else if (startDateTV.getText().toString().contains("Touch here to set date")) {
 
             Toast.makeText(getContext(), "Please enter a valid date", Toast.LENGTH_SHORT).show();
 
             return false;
 
-        }else {
+        } else if (medicineTypeSP.getSelectedItemPosition() == 0) {
+
+            Toast.makeText(getContext(), "Please select a valid medicine type", Toast.LENGTH_SHORT).show();
+
+            return false;
+
+        }
+
+
+        else {
 
             return true;
         }
@@ -711,47 +766,46 @@ public class AddMedicineFragment extends Fragment {
 
     }
 
-    public boolean checkSpecificDayValidity(){
+    public boolean checkSpecificDayValidity() {
 
-        if (cvSpecificDayOfWeek.getVisibility() == View.VISIBLE && cbSaturday.isChecked()){
-
-            return true;
-
-        }else if (cvSpecificDayOfWeek.getVisibility() == View.VISIBLE && cbSunday.isChecked()){
+        if (cvSpecificDayOfWeek.getVisibility() == View.VISIBLE && cbSaturday.isChecked()) {
 
             return true;
 
-        }else if (cvSpecificDayOfWeek.getVisibility() == View.VISIBLE && cbMonday.isChecked()){
+        } else if (cvSpecificDayOfWeek.getVisibility() == View.VISIBLE && cbSunday.isChecked()) {
 
             return true;
 
-        }else if (cvSpecificDayOfWeek.getVisibility() == View.VISIBLE && cbTuesday.isChecked()){
+        } else if (cvSpecificDayOfWeek.getVisibility() == View.VISIBLE && cbMonday.isChecked()) {
 
             return true;
 
-        }else if (cvSpecificDayOfWeek.getVisibility() == View.VISIBLE && cbWednesday.isChecked()){
+        } else if (cvSpecificDayOfWeek.getVisibility() == View.VISIBLE && cbTuesday.isChecked()) {
 
             return true;
 
-        }else if (cvSpecificDayOfWeek.getVisibility() == View.VISIBLE && cbThursday.isChecked()){
+        } else if (cvSpecificDayOfWeek.getVisibility() == View.VISIBLE && cbWednesday.isChecked()) {
 
             return true;
 
-        }else if (cvSpecificDayOfWeek.getVisibility() == View.VISIBLE && cbFriday.isChecked()){
+        } else if (cvSpecificDayOfWeek.getVisibility() == View.VISIBLE && cbThursday.isChecked()) {
 
             return true;
 
-        }else if (cvSpecificDayOfWeek.getVisibility() == View.GONE){
+        } else if (cvSpecificDayOfWeek.getVisibility() == View.VISIBLE && cbFriday.isChecked()) {
 
             return true;
 
-        }else {
+        } else if (cvSpecificDayOfWeek.getVisibility() == View.GONE) {
+
+            return true;
+
+        } else {
 
             Toast.makeText(getContext(), "Please select at least one specific day in week\nOr choose Everyday", Toast.LENGTH_LONG).show();
             return false;
         }
     }
-
 
     private void takePhoto() {
 
@@ -766,7 +820,7 @@ public class AddMedicineFragment extends Fragment {
                 startActivityForResult(cameraIntent, StaticVariables.CAMERA_REQUEST);
             }
 
-        }else {
+        } else {
 
             Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             startActivityForResult(cameraIntent, StaticVariables.CAMERA_REQUEST);
@@ -776,7 +830,7 @@ public class AddMedicineFragment extends Fragment {
     public void showHourPicker(String message, final int number) {
 
 
-         myCalender = Calendar.getInstance();
+        myCalender = Calendar.getInstance();
         int hour = myCalender.get(Calendar.HOUR_OF_DAY);
         int minute = myCalender.get(Calendar.MINUTE);
 
@@ -797,15 +851,15 @@ public class AddMedicineFragment extends Fragment {
                         Date time = sdf24.parse(strTime);
                         formattedTime = sdf12.format(time);
 
-                        if (number == 1){
+                        if (number == 1) {
 
                             firstSlotTV.setText(formattedTime);
 
-                        }else if (number == 2){
+                        } else if (number == 2) {
 
                             secondSlotTV.setText(formattedTime);
 
-                        }else if (number == 3){
+                        } else if (number == 3) {
 
                             thirdSlotTV.setText(formattedTime);
                         }
@@ -825,17 +879,16 @@ public class AddMedicineFragment extends Fragment {
                 minute,
                 false);
 
-       try {
+        try {
 
-           timePickerDialog.setTitle(message);
-           timePickerDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-           timePickerDialog.show();
+            timePickerDialog.setTitle(message);
+            timePickerDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            timePickerDialog.show();
 
-       }catch (Exception e){
+        } catch (Exception e) {
 
-           Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-       }
-
+            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
 
 
     }
@@ -843,42 +896,26 @@ public class AddMedicineFragment extends Fragment {
     public void showDatePicker() {
 
 
-
         DialogFragment dFragment = new DatePickerFragment();
         dFragment.show(getActivity().getFragmentManager(), "Date Picker");
 
     }
 
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        if (requestCode == StaticVariables.MY_CAMERA_PERMISSION_CODE) {
-//            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                Toast.makeText(getContext(), "camera permission granted", Toast.LENGTH_LONG).show();
-//                Intent cameraIntent = new
-//                        Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-//                startActivityForResult(cameraIntent, StaticVariables.CAMERA_REQUEST);
-//            } else {
-//                Toast.makeText(getContext(), "camera permission denied", Toast.LENGTH_LONG).show();
-//            }
-//
-//        }
-//    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-            if (requestCode == StaticVariables.CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
-                Bitmap photo = (Bitmap) data.getExtras().get("data");
-              //  Bitmap bMapScaled = Bitmap.createScaledBitmap(photo, 330, 189, true);
-                cvMedicineImage.setVisibility(View.VISIBLE);
-                medicineIV.setImageBitmap(photo);
-            }
+        if (requestCode == StaticVariables.CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+            //  Bitmap bMapScaled = Bitmap.createScaledBitmap(photo, 330, 189, true);
+            cvMedicineImage.setVisibility(View.VISIBLE);
+            medicineIV.setImageBitmap(photo);
         }
+    }
 
-    public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener{
+    public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState){
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
 
             final Calendar calendar = Calendar.getInstance();
             int year = calendar.get(Calendar.YEAR);
@@ -886,11 +923,11 @@ public class AddMedicineFragment extends Fragment {
             int day = calendar.get(Calendar.DAY_OF_MONTH);
 
             DatePickerDialog dpd = new DatePickerDialog(getActivity(),
-                    AlertDialog.THEME_HOLO_LIGHT,this,year,month,day);
-            return  dpd;
+                    AlertDialog.THEME_HOLO_LIGHT, this, year, month, day);
+            return dpd;
         }
 
-        public void onDateSet(DatePicker view, int year, int month, int day){
+        public void onDateSet(DatePicker view, int year, int month, int day) {
 
             TextView tv = (TextView) getActivity().findViewById(R.id.start_date_TV);
 
@@ -902,47 +939,53 @@ public class AddMedicineFragment extends Fragment {
 
             DateFormat df_medium_uk = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.UK);
             String df_medium_uk_str = df_medium_uk.format(chosenDate);
-            tv.setText(df_medium_uk_str );
+            tv.setText(df_medium_uk_str);
 
 
         }
     }
 
-    public String getDaysNameOfWeek(){
+    public String getDaysNameOfWeek() {
 
         String daysName = "";
 
-        if (cbSaturday.isChecked()){
+        if (cbSaturday.isChecked()) {
 
             daysName = daysName + "Saturday, ";
             sat = true;
 
-        }if (cbSunday.isChecked()){
+        }
+        if (cbSunday.isChecked()) {
 
             daysName = daysName + "Sunday, ";
             sun = true;
 
-        }if (cbMonday.isChecked()){
+        }
+        if (cbMonday.isChecked()) {
 
             daysName = daysName + "Monday, ";
             mon = true;
 
-        }if (cbTuesday.isChecked()){
+        }
+        if (cbTuesday.isChecked()) {
 
             daysName = daysName + "Tuesday, ";
             tue = true;
 
-        }if (cbWednesday.isChecked()){
+        }
+        if (cbWednesday.isChecked()) {
 
             daysName = daysName + "Wednesday, ";
             wed = true;
 
-        }if (cbThursday.isChecked()){
+        }
+        if (cbThursday.isChecked()) {
 
             daysName = daysName + "Thursday, ";
             thu = true;
 
-        }if (cbFriday.isChecked()){
+        }
+        if (cbFriday.isChecked()) {
 
             daysName = daysName + "Friday, ";
             fri = true;
@@ -950,12 +993,8 @@ public class AddMedicineFragment extends Fragment {
         }
 
 
-        return daysName.substring(0, daysName.length()-2);
+        return daysName.substring(0, daysName.length() - 2);
     }
-
-
-
-
 
 
     private void checkMultiplePermissions() {
@@ -971,6 +1010,21 @@ public class AddMedicineFragment extends Fragment {
             if (!addPermission(permissionsList, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 permissionsNeeded.add("Storage");
             }
+
+
+            Map<String, Integer> perms = new HashMap<String, Integer>();
+            // Initial
+            perms.put(Manifest.permission.CAMERA, PackageManager.PERMISSION_GRANTED);
+            perms.put(Manifest.permission.WRITE_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
+
+            if (perms.get(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+                    && perms.get(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                // All Permissions Granted
+
+                allPermission = true;
+
+            }
+
 
             if (permissionsList.size() > 0) {
                 requestPermissions(permissionsList.toArray(new String[permissionsList.size()]),
@@ -1019,21 +1073,21 @@ public class AddMedicineFragment extends Fragment {
                     if (Build.VERSION.SDK_INT >= 23) {
                         Toast.makeText(
                                 getContext(),
-                                "My App cannot run without Camera and Storage " +
-                                        "Permissions.\nRelaunch My App or allow permissions" +
-                                        " in Applications Settings",
+                                "This application cannot run without Camera and Storage " +
+                                        "Permissions.\nYou may relaunch the App or allow permissions" +
+                                        " from Application Settings",
                                 Toast.LENGTH_LONG).show();
 
                         allPermission = false;
 
 
-                        if (perms.get(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
+                        if (perms.get(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
 
 
                         }
 
 
-                        if (perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                        if (perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
 
                         }
@@ -1048,7 +1102,7 @@ public class AddMedicineFragment extends Fragment {
     }
 
 
-    }
+}
 
 
 

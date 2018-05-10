@@ -96,6 +96,19 @@
 
 
 
+    <string-array name="medicine_type">
+
+        <item>Select Medicine Type</item>
+        <item>Tablet</item>
+        <item>Capsule</item>
+        <item>Syrup</item>
+        <item>Injection</item>
+
+    </string-array>
+
+
+
+
 
     <string name="enter_medicine_name"><u>Enter Medicine Name</u></string>
     <string name="how_many_times_a_day"><u>How many times a day</u></string>

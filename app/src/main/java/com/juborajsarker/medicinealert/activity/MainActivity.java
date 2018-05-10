@@ -114,6 +114,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+
+
+
+
         fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.container, new HomeFragment()).commit();
         setTitle("Home");

@@ -10,8 +10,7 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="60dp">
+        android:layout_height="match_parent">
 
 
 
@@ -52,6 +51,23 @@
                         android:inputType="text"
                         android:background="@drawable/edit_text_design"
                         android:maxLines="1"/>
+
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+
+                        <Spinner
+                            android:id="@+id/medicine_type_SP"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:entries="@array/medicine_type"
+                            android:padding="5dp" />
+
+                    </LinearLayout>
 
 
 
@@ -695,6 +711,58 @@
 
             </android.support.v7.widget.CardView>
 
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:padding="5dp">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:orientation="vertical"
+                    android:layout_margin="5dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Select when medicine should take?"
+                        android:paddingLeft="8dp"
+                        android:paddingBottom="8dp"
+                        android:textSize="16sp"/>
+
+                    <RadioGroup
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+
+                        <RadioButton
+                            android:id="@+id/before_meal_RB"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Before Meal"/>
+
+                        <RadioButton
+                            android:id="@+id/after_meal_RB"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="After Meal"/>
+
+
+                    </RadioGroup>
+
+
+                </LinearLayout>
+
+
+
+            </android.support.v7.widget.CardView>
 
             <Button
                 android:id="@+id/set_BTN"
