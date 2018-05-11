@@ -103,6 +103,8 @@
         <item>Capsule</item>
         <item>Syrup</item>
         <item>Injection</item>
+        <item>Ointment</item>
+        <item>Eye Drop</item>
 
     </string-array>
 

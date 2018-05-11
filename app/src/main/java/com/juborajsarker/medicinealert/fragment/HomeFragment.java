@@ -14,20 +14,26 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.badoualy.datepicker.DatePickerTimeline;
 import com.juborajsarker.medicinealert.R;
 import com.juborajsarker.medicinealert.adapter.MedicineAdapter;
 import com.juborajsarker.medicinealert.database.DatabaseHelper;
+import com.juborajsarker.medicinealert.dataparser.DateCalculations;
 import com.juborajsarker.medicinealert.dataparser.GridSpacingItemDecoration;
 import com.juborajsarker.medicinealert.model.MedicineModel;
 import com.juborajsarker.medicinealert.model.StaticVariables;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
@@ -40,8 +46,8 @@ public class HomeFragment extends Fragment {
     View view;
 
     boolean allPermission;
-    RecyclerView recyclerView;
-    List<MedicineModel> medicineModelList;
+    RecyclerView recyclerViewBeforeMeal, recyclerViewAfterMeal;
+    List<MedicineModel> medicineModelListBeforeMeal, medicineModelListAfterMeal;
     MedicineAdapter adapter;
     DatabaseHelper dbHelper;
 
@@ -50,8 +56,11 @@ public class HomeFragment extends Fragment {
 
 
     HorizontalCalendar horizontalCalendar;
+    ImageView leftIV, rightIV;
+    TextView dateTV, beforeTV, afterTV;
+    boolean firstStart = true;
+    int position = 5;
 
-    DatePickerTimeline timeline;
 
 
 
@@ -74,23 +83,10 @@ public class HomeFragment extends Fragment {
         }
 
 
-
         setupCalender();
+        init();
 
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-        medicineModelList = new ArrayList<>();
-        dbHelper = new DatabaseHelper(getContext());
-        medicineModelList = dbHelper.getAllData("after_table");
-        adapter = new MedicineAdapter(getContext(), medicineModelList, getActivity());
-
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 2);
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        adapter.notifyDataSetChanged();
-        recyclerView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
 
 
 
@@ -106,13 +102,105 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
+    private void init() {
+
+        Date currentDate = Calendar.getInstance().getTime();
+        DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.UK);
+        String searchQuery = df.format(currentDate);
+
+        leftIV = (ImageView) view.findViewById(R.id.leftIV);
+        rightIV = (ImageView) view.findViewById(R.id.rightIV);
+        dateTV = (TextView) view.findViewById(R.id.dateTV);
+        beforeTV = (TextView) view.findViewById(R.id.beforeTV);
+        afterTV = (TextView) view.findViewById(R.id.afterTV);
+
+
+        recyclerViewBeforeMeal = (RecyclerView) view.findViewById(R.id.recyclerView_before_meal);
+        recyclerViewAfterMeal = (RecyclerView) view.findViewById(R.id.recyclerView_after_meal);
+
+        RecyclerView.LayoutManager layoutManagerBeforeMeal = new GridLayoutManager(getContext(), 1);
+        recyclerViewBeforeMeal.setLayoutManager(layoutManagerBeforeMeal);
+        recyclerViewBeforeMeal.addItemDecoration(new GridSpacingItemDecoration(1, dpToPx(2), true));
+        recyclerViewBeforeMeal.setItemAnimator(new DefaultItemAnimator());
+
+
+        RecyclerView.LayoutManager layoutManagerAfterMeal = new GridLayoutManager(getContext(), 1);
+        recyclerViewAfterMeal.setLayoutManager(layoutManagerAfterMeal);
+        recyclerViewAfterMeal.addItemDecoration(new GridSpacingItemDecoration(1, dpToPx(2), true));
+        recyclerViewAfterMeal.setItemAnimator(new DefaultItemAnimator());
+
+        medicineModelListBeforeMeal = new ArrayList<>();
+        medicineModelListBeforeMeal.clear();
+        dbHelper = new DatabaseHelper(getContext());
+        medicineModelListBeforeMeal = dbHelper.getSelectedList(searchQuery, "before_table");
+        adapter = new MedicineAdapter(getContext(), medicineModelListBeforeMeal, getActivity());
+        adapter.notifyDataSetChanged();
+        recyclerViewBeforeMeal.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+        beforeTV.setText("Before Meal (" + medicineModelListBeforeMeal.size() + ")");
+
+
+
+        medicineModelListAfterMeal = new ArrayList<>();
+        medicineModelListAfterMeal.clear();
+        dbHelper = new DatabaseHelper(getContext());
+        medicineModelListAfterMeal = dbHelper.getSelectedList(searchQuery, "after_table");
+        adapter = new MedicineAdapter(getContext(), medicineModelListAfterMeal, getActivity());
+        adapter.notifyDataSetChanged();
+        recyclerViewAfterMeal.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+        afterTV.setText("After Meal ("  + medicineModelListAfterMeal.size() + ")");
+
+
+
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM - yyyy");
+        String formattedCurrentDate = sdf.format(currentDate);
+
+        int sizeBefore = medicineModelListBeforeMeal.size();
+        int sizeAfter = medicineModelListAfterMeal.size();
+        int sum = sizeBefore + sizeAfter;
+
+        dateTV.setText("Today " +formattedCurrentDate + " (total " + sum + " medicine)");
+
+
+
+        leftIV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                setupCurrentDate();
+
+            }
+        });
+
+        rightIV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                setupCurrentDate();
+
+            }
+        });
+
+
+    }
+
+    private void setupCurrentDate() {
+
+
+        horizontalCalendar.goToday(true);
+
+
+    }
+
     private void setupCalender() {
 
         startDate = Calendar.getInstance();
-        startDate.add(Calendar.MONTH, -1);
+        startDate.add(Calendar.MONTH, -3);
 
         endDate = Calendar.getInstance();
-        endDate.add(Calendar.MONTH, 1);
+        endDate.add(Calendar.MONTH, 3);
 
 
 
@@ -131,17 +219,17 @@ public class HomeFragment extends Fragment {
 
 
 
-        horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
-            @Override
-            public void onDateSelected(Calendar date, int position) {
-                //do something
-            }
-        });
+
 
 
         horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
             @Override
             public void onDateSelected(Calendar date, int position) {
+
+                imageViewIssue(date, position);
+                prepareDataForRecyclerView(date);
+                setTextViewDate(date);
+
 
             }
 
@@ -155,6 +243,123 @@ public class HomeFragment extends Fragment {
                 return true;
             }
         });
+
+    }
+
+    private void prepareDataForRecyclerView(Calendar date) {
+
+        DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.UK);
+        Date selectedDate = date.getTime();
+        String searchQuery = df.format(selectedDate);
+
+
+
+        medicineModelListBeforeMeal = new ArrayList<>();
+        medicineModelListBeforeMeal.clear();
+        dbHelper = new DatabaseHelper(getContext());
+        medicineModelListBeforeMeal = dbHelper.getSelectedList(searchQuery, "before_table");
+        adapter = new MedicineAdapter(getContext(), medicineModelListBeforeMeal, getActivity());
+        adapter.notifyDataSetChanged();
+        recyclerViewBeforeMeal.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+        beforeTV.setText("Before Meal ("  + medicineModelListBeforeMeal.size() + ")");
+
+
+
+
+        medicineModelListAfterMeal = new ArrayList<>();
+        medicineModelListAfterMeal.clear();
+        dbHelper = new DatabaseHelper(getContext());
+        medicineModelListAfterMeal = dbHelper.getSelectedList(searchQuery, "after_table");
+        adapter = new MedicineAdapter(getContext(), medicineModelListAfterMeal, getActivity());
+        adapter.notifyDataSetChanged();
+        recyclerViewAfterMeal.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+        afterTV.setText("After Meal ("  + medicineModelListAfterMeal.size() + ")");
+
+    }
+
+    private void imageViewIssue(Calendar date, int position) {
+
+        Date selectedDate = date.getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM - yyyy");
+        String formattedDate = sdf.format(selectedDate);
+
+        String result = new DateCalculations().compareDate(formattedDate);
+
+        if (result.equals("big")){
+
+            leftIV.setVisibility(View.VISIBLE);
+            rightIV.setVisibility(View.GONE);
+
+
+        }else if (result.equals("small")){
+
+            rightIV.setVisibility(View.VISIBLE);
+            leftIV.setVisibility(View.GONE);
+
+        }
+
+    }
+
+    private void setTextViewDate(Calendar date) {
+
+        Date currentDate = Calendar.getInstance().getTime();
+        Date myDate = date.getTime();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM - yyyy");
+        SimpleDateFormat df = new SimpleDateFormat("EEE, dd MMM - yyyy");
+
+        String formattedCurrentDate = sdf.format(currentDate);
+        String formattedDate = df.format(myDate);
+
+        if (formattedCurrentDate.equals(formattedDate)){
+
+            int sizeBefore = medicineModelListBeforeMeal.size();
+            int sizeAfter = medicineModelListAfterMeal.size();
+            int sum = sizeBefore + sizeAfter;
+
+            dateTV.setText("Today " + formattedCurrentDate + " (total " + sum + " medicine)" );
+
+            leftIV.setVisibility(View.GONE);
+            rightIV.setVisibility(View.GONE);
+
+        }else {
+
+
+
+            String addDate = new DateCalculations().addForHorizontalCalender(formattedCurrentDate, "1");
+            String subDate = new DateCalculations().subForHorizontalCalender(formattedCurrentDate, "1");
+
+            if (addDate.equals(formattedDate)){
+
+                int sizeBefore = medicineModelListBeforeMeal.size();
+                int sizeAfter = medicineModelListAfterMeal.size();
+                int sum = sizeBefore + sizeAfter;
+
+                dateTV.setText("Tomorrow " + formattedDate + " (total " + sum + " medicine)");
+
+            }else if (subDate.equals(formattedDate)){
+
+                int sizeBefore = medicineModelListBeforeMeal.size();
+                int sizeAfter = medicineModelListAfterMeal.size();
+                int sum = sizeBefore + sizeAfter;
+
+                dateTV.setText("Yesterday " + formattedDate + " (total " + sum + " medicine)");
+
+            }else {
+
+                int sizeBefore = medicineModelListBeforeMeal.size();
+                int sizeAfter = medicineModelListAfterMeal.size();
+                int sum = sizeBefore + sizeAfter;
+
+                dateTV.setText(formattedDate + " (total " + sum + " medicine)");
+            }
+
+
+
+
+        }
 
     }
 

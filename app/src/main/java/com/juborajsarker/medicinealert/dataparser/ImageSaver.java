@@ -131,7 +131,9 @@ public class ImageSaver {
         if (imageFile.exists()){
 
             Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
-            imageView.setImageBitmap(bitmap);
+            Bitmap bMapScaled = Bitmap.createScaledBitmap(bitmap, 330, 330
+                    , true);
+            imageView.setImageBitmap(bMapScaled);
 
         }
 

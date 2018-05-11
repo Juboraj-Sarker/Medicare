@@ -3,11 +3,14 @@ package com.juborajsarker.medicinealert.fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -37,6 +40,7 @@ import android.widget.Toast;
 
 import com.juborajsarker.medicinealert.R;
 import com.juborajsarker.medicinealert.activity.MainActivity;
+import com.juborajsarker.medicinealert.broadcastReceiver.AlarmReceiver;
 import com.juborajsarker.medicinealert.database.DatabaseHelper;
 import com.juborajsarker.medicinealert.dataparser.DateCalculations;
 import com.juborajsarker.medicinealert.dataparser.ImageSaver;
@@ -73,13 +77,14 @@ public class AddMedicineFragment extends Fragment {
 
     int id, numberOfSlot, noOfDays, daysInterval;
     String medName, imagePath, firstSlotTime, secondSlotTime, thirdSlotTime, startDate, daysNameOfWeek, status, calculatedDate,
-            newStartDate, medicineMeal, medicineType;
+            newStartDate, medicineMeal, medicineType,  finalDate;
     boolean isEveryday, isSpecificDaysOfWeek, isDaysInterval;
     boolean sat, sun, mon, tue, wed, thu, fri;
     boolean allPermission;
 
 
     String tableName = "";
+    int requestCode = 0;
 
     DatabaseHelper dbHelper;
 
@@ -346,7 +351,7 @@ public class AddMedicineFragment extends Fragment {
             public void onClick(View v) {
 
 
-                if (!allPermission) {
+                if (Build.VERSION.SDK_INT >= 23 && !allPermission) {
 
 
                     checkMultiplePermissions();
@@ -404,11 +409,11 @@ public class AddMedicineFragment extends Fragment {
 
                 saveImageToDirectory();
                 getSlotTime();
-
+                calculatedDate = newStartDate;
 
                 for (int i = 0; i < noOfDays; i++) {
 
-                    calculatedDate = dc.addDays(newStartDate, "1");
+
                     MedicineModel medicineModel = new MedicineModel();
                     medicineModel.setId(id);
                     medicineModel.setDate(calculatedDate);
@@ -429,8 +434,11 @@ public class AddMedicineFragment extends Fragment {
                     medicineModel.setStatus(status);
                     medicineModel.setMedicineMeal(medicineMeal);
 
-                    dbHelper.insertData(medicineModel, tableName);
+                  //  dbHelper.insertData(medicineModel, tableName);
 
+                    setAlarm(calculatedDate, firstSlotTime, secondSlotTime, thirdSlotTime);
+
+                    calculatedDate = dc.addDays(newStartDate, "1");
                     newStartDate = calculatedDate;
 
 
@@ -463,6 +471,7 @@ public class AddMedicineFragment extends Fragment {
 
                 saveImageToDirectory();
                 getSlotTime();
+                finalDate = startDate;
 
 
                 for (int i = 0; i < noOfDays; i++) {
@@ -473,7 +482,6 @@ public class AddMedicineFragment extends Fragment {
 
                     if (daysNameOfWeek.contains(singleDayName)) {
 
-                        String finalDate = calculatedDate;
                         MedicineModel medicineModel = new MedicineModel();
                         medicineModel.setId(id);
                         medicineModel.setDate(finalDate);
@@ -496,6 +504,9 @@ public class AddMedicineFragment extends Fragment {
 
                         dbHelper.insertData(medicineModel, tableName);
 
+                        setAlarm(finalDate, firstSlotTime, secondSlotTime, thirdSlotTime);
+
+                        finalDate = calculatedDate;
                         newStartDate = calculatedDate;
 
 
@@ -536,9 +547,11 @@ public class AddMedicineFragment extends Fragment {
                 getSlotTime();
 
 
+                calculatedDate = startDate;
+
                 for (int i = 0; i < noOfDays; i++) {
 
-                    calculatedDate = dc.addDays(newStartDate, String.valueOf(daysInterval));
+
                     MedicineModel medicineModel = new MedicineModel();
                     medicineModel.setId(id);
                     medicineModel.setDate(calculatedDate);
@@ -561,6 +574,9 @@ public class AddMedicineFragment extends Fragment {
 
                     dbHelper.insertData(medicineModel, tableName);
 
+                    setAlarm(calculatedDate, firstSlotTime, secondSlotTime, thirdSlotTime);
+
+                    calculatedDate = dc.addDays(newStartDate, String.valueOf(daysInterval));
                     newStartDate = calculatedDate;
 
 
@@ -583,6 +599,69 @@ public class AddMedicineFragment extends Fragment {
 
 
 
+    }
+
+    private void setAlarm(String calculatedDate, String firstSlotTime, String secondSlotTime, String thirdSlotTime) {
+
+        Calendar calendar = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance();
+
+        String combine = calculatedDate + " " + firstSlotTime;
+        setFinalAlarm(cal,calendar,combine);
+
+        if (!secondSlotTime.equals("null")){
+
+            String combine2 = calculatedDate + " " + secondSlotTime;
+            setFinalAlarm(cal ,calendar, combine2);
+        }
+
+        if (!thirdSlotTime.equals("null")){
+
+            String combine3 = calculatedDate + " " + thirdSlotTime;
+            setFinalAlarm(cal, calendar, combine3);
+        }
+
+
+
+
+
+
+
+
+    }
+
+    private void setFinalAlarm(Calendar cal, Calendar calendar, String combine) {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy HH:mm aaa");
+
+        try {
+            calendar.setTime(sdf.parse(combine));
+
+            int dateForAlarm = calendar.get(Calendar.DAY_OF_MONTH);
+            int monthForAlarm = calendar.get(Calendar.MONTH);
+            int yearForAlarm = calendar.get(Calendar.YEAR);
+            int hour = calendar.get(Calendar.HOUR);
+            int minute = calendar.get(Calendar.MINUTE);
+            int second = 0;
+
+            cal.set(yearForAlarm, monthForAlarm, dateForAlarm, hour, minute, second);
+
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+        AlarmManager alarmManager = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getContext(), AlarmReceiver.class);
+        List<PendingIntent> intentArray = new ArrayList<PendingIntent>();
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), requestCode, intent, 0);
+        intentArray.add(pendingIntent);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+
+        requestCode++;
+
+        Toast.makeText(getContext(), "" + requestCode, Toast.LENGTH_SHORT).show();
     }
 
     private String getMedicineMeal() {
@@ -618,9 +697,18 @@ public class AddMedicineFragment extends Fragment {
 
             type = "syrup";
         }
+
         if (medicineTypeSP.getSelectedItemPosition() == 4) {
 
             type = "Injection";
+
+        }if (medicineTypeSP.getSelectedItemPosition() == 5) {
+
+            type = "Ointment";
+
+        }if (medicineTypeSP.getSelectedItemPosition() == 6) {
+
+            type = "Eye Drop";
         }
 
         return type;

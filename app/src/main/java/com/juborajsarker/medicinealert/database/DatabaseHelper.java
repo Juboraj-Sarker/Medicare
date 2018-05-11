@@ -274,4 +274,49 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.close();
     }
+
+
+    public List<MedicineModel> getSelectedList (String searchKeyword, String tableName){
+
+        List<MedicineModel> medicineModelList = new ArrayList<>();
+
+        String selectQuery = "SELECT  * FROM " + tableName + " WHERE DATE=?" ;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, new String[] { searchKeyword });
+
+        if (cursor.moveToFirst()){
+
+            do {
+
+                MedicineModel medicineModel = new MedicineModel();
+                medicineModel.setId(Integer.parseInt(cursor.getString(0)));
+                medicineModel.setDate(cursor.getString(1));
+                medicineModel.setMedicineName(cursor.getString(2));
+                medicineModel.setMedicineType(cursor.getString(3));
+                medicineModel.setImagePath(cursor.getString(4));
+                medicineModel.setNumberOfSlot(Integer.parseInt(cursor.getString(5)));
+                medicineModel.setFirstSlotTime(cursor.getString(6));
+                medicineModel.setSecondSlotTime(cursor.getString(7));
+                medicineModel.setThirdSlotTime(cursor.getString(8));
+                medicineModel.setNumberOfDays(Integer.parseInt(cursor.getString(9)));
+                medicineModel.setEveryday(Boolean.parseBoolean(cursor.getString(10)));
+                medicineModel.setSpecificDaysOfWeek(Boolean.parseBoolean(cursor.getString(11)));
+                medicineModel.setDaysInterval(Boolean.parseBoolean(cursor.getString(12)));
+                medicineModel.setDaysNameOfWeek(cursor.getString(13));
+                medicineModel.setDaysInterval(Integer.parseInt(cursor.getString(14)));
+                medicineModel.setStartDate(cursor.getString(15));
+                medicineModel.setStatus(cursor.getString(16));
+                medicineModel.setMedicineMeal(cursor.getString(17));
+
+                medicineModelList.add(medicineModel);
+
+            }while (cursor.moveToNext());
+        }
+
+
+
+
+        return medicineModelList;
+    }
 }
