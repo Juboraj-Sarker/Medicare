@@ -12,6 +12,7 @@ import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -21,6 +22,7 @@ import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,8 +60,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static android.content.Context.MODE_PRIVATE;
+
 
 public class AddMedicineFragment extends Fragment {
+
+    public SharedPreferences sharedPreferences;
 
     EditText medNameET, noOfDaysET;
     TextView firstSlotTV, secondSlotTV, thirdSlotTV, startDateTV;
@@ -85,6 +91,7 @@ public class AddMedicineFragment extends Fragment {
 
     String tableName = "";
     int requestCode = 0;
+    int flag = 0;
 
     DatabaseHelper dbHelper;
 
@@ -101,6 +108,10 @@ public class AddMedicineFragment extends Fragment {
 
 
         view = inflater.inflate(R.layout.fragment_add_medicine, container, false);
+
+        sharedPreferences = getActivity().getSharedPreferences("alarmRequestCode", MODE_PRIVATE);
+        requestCode = sharedPreferences.getInt("requestCodeValue", 0);
+        flag = sharedPreferences.getInt("flagValue", 0);
 
 
         init();
@@ -434,9 +445,10 @@ public class AddMedicineFragment extends Fragment {
                     medicineModel.setStatus(status);
                     medicineModel.setMedicineMeal(medicineMeal);
 
-                  //  dbHelper.insertData(medicineModel, tableName);
-
                     setAlarm(calculatedDate, firstSlotTime, secondSlotTime, thirdSlotTime);
+                    dbHelper.insertData(medicineModel, tableName);
+
+
 
                     calculatedDate = dc.addDays(newStartDate, "1");
                     newStartDate = calculatedDate;
@@ -502,9 +514,11 @@ public class AddMedicineFragment extends Fragment {
                         medicineModel.setStatus(status);
                         medicineModel.setMedicineMeal(medicineMeal);
 
-                        dbHelper.insertData(medicineModel, tableName);
 
                         setAlarm(finalDate, firstSlotTime, secondSlotTime, thirdSlotTime);
+                        dbHelper.insertData(medicineModel, tableName);
+
+
 
                         finalDate = calculatedDate;
                         newStartDate = calculatedDate;
@@ -572,9 +586,11 @@ public class AddMedicineFragment extends Fragment {
                     medicineModel.setStatus(status);
                     medicineModel.setMedicineMeal(medicineMeal);
 
-                    dbHelper.insertData(medicineModel, tableName);
 
                     setAlarm(calculatedDate, firstSlotTime, secondSlotTime, thirdSlotTime);
+                    dbHelper.insertData(medicineModel, tableName);
+
+
 
                     calculatedDate = dc.addDays(newStartDate, String.valueOf(daysInterval));
                     newStartDate = calculatedDate;
@@ -603,22 +619,23 @@ public class AddMedicineFragment extends Fragment {
 
     private void setAlarm(String calculatedDate, String firstSlotTime, String secondSlotTime, String thirdSlotTime) {
 
-        Calendar calendar = Calendar.getInstance();
-        Calendar cal = Calendar.getInstance();
 
         String combine = calculatedDate + " " + firstSlotTime;
-        setFinalAlarm(cal,calendar,combine);
+        setFinalAlarm(combine);
 
         if (!secondSlotTime.equals("null")){
 
             String combine2 = calculatedDate + " " + secondSlotTime;
-            setFinalAlarm(cal ,calendar, combine2);
+            setFinalAlarm(combine2);
+
+            Log.d("Entered","Entered 2");
         }
 
         if (!thirdSlotTime.equals("null")){
 
             String combine3 = calculatedDate + " " + thirdSlotTime;
-            setFinalAlarm(cal, calendar, combine3);
+            setFinalAlarm(combine3);
+            Log.d("Entered","Entered 3");
         }
 
 
@@ -630,9 +647,12 @@ public class AddMedicineFragment extends Fragment {
 
     }
 
-    private void setFinalAlarm(Calendar cal, Calendar calendar, String combine) {
+    private void setFinalAlarm( String combine) {
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy HH:mm aaa");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy hh:mm aaa");
+
+       Calendar calendar = Calendar.getInstance();
+       Calendar cal = Calendar.getInstance();
 
         try {
             calendar.setTime(sdf.parse(combine));
@@ -640,11 +660,23 @@ public class AddMedicineFragment extends Fragment {
             int dateForAlarm = calendar.get(Calendar.DAY_OF_MONTH);
             int monthForAlarm = calendar.get(Calendar.MONTH);
             int yearForAlarm = calendar.get(Calendar.YEAR);
-            int hour = calendar.get(Calendar.HOUR);
-            int minute = calendar.get(Calendar.MINUTE);
-            int second = 0;
+            int hourForAlarm = calendar.get(Calendar.HOUR_OF_DAY);
+            int minuteForAlarm = calendar.get(Calendar.MINUTE);
+            int secondForAlarm = 0;
 
-            cal.set(yearForAlarm, monthForAlarm, dateForAlarm, hour, minute, second);
+            cal.set(yearForAlarm, monthForAlarm, dateForAlarm, hourForAlarm, minuteForAlarm, secondForAlarm);
+
+
+            Log.d("calender",
+                    "calender" +"\n"+
+                            "Date " +dateForAlarm +"\n"+
+                            "Month " + monthForAlarm +"\n"+
+                            "Year " + yearForAlarm + "\n"+
+                            "Hour: " + hourForAlarm +"\n" +
+                            "Minute " + minuteForAlarm + "\n" +
+                            "TimeMills " + cal.getTimeInMillis() + "\n" +
+                            "Current TimeMills " + Calendar.getInstance().getTimeInMillis()+"\n"+
+                            "Combine " + combine);
 
 
         } catch (ParseException e) {
@@ -654,14 +686,24 @@ public class AddMedicineFragment extends Fragment {
 
         AlarmManager alarmManager = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(getContext(), AlarmReceiver.class);
-        List<PendingIntent> intentArray = new ArrayList<PendingIntent>();
+        intent.putExtra("medName", medName);
+        intent.putExtra("imagePath", imagePath);
+        intent.putExtra("mealStatus", medicineMeal);
+        intent.putExtra("time", combine);
+        intent.putExtra("medType", medicineType);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), requestCode, intent, 0);
-        intentArray.add(pendingIntent);
         alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
 
         requestCode++;
+        flag++;
 
-        Toast.makeText(getContext(), "" + requestCode, Toast.LENGTH_SHORT).show();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("requestCodeValue", requestCode);
+        editor.putInt("flagValue", flag);
+        editor.commit();
+
+        Log.d("timeMills", ""+cal.getTimeInMillis());
+        Log.d("timeMills", ""+Calendar.getInstance().getTimeInMillis());
     }
 
     private String getMedicineMeal() {

@@ -58,13 +58,13 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.MyView
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         MedicineModel medicineModel = medicineModelList.get(position);
         holder.title.setText(medicineModel.getMedicineName());
-        holder.subTitle.setText(medicineModel.getDate() + " songs");
+        holder.subTitle.setText(medicineModel.getDate());
 
         // loading album cover using Glide library
        // Glide.with(mContext).load(medicineModel.getImagePath()).into(holder.medicineIV);
 
         ImageSaver imageSaver = new ImageSaver(mContext, activity);
-        imageSaver.loadImage(medicineModel.getImagePath(), holder.medicineIV);
+        imageSaver.loadImage(medicineModel.getImagePath(), holder.medicineIV, medicineModel.getMedicineType());
 
         holder.optionIV.setOnClickListener(new View.OnClickListener() {
             @Override

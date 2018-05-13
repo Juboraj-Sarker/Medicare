@@ -7,7 +7,6 @@
     <string name="title_more">More</string>
 
 
-
     <string-array name="select_months">
         <item>Month</item>
         <item>01. January</item>
@@ -63,7 +62,6 @@
     </string-array>
 
 
-
     <string-array name="select_year">
         <item>Year</item>
         <item>2018</item>
@@ -81,9 +79,7 @@
         <item>2030</item>
 
 
-
     </string-array>
-
 
 
     <string-array name="slot_array">
@@ -93,7 +89,6 @@
         <item>3 times in a day</item>
 
     </string-array>
-
 
 
     <string-array name="medicine_type">
@@ -107,9 +102,6 @@
         <item>Eye Drop</item>
 
     </string-array>
-
-
-
 
 
     <string name="enter_medicine_name"><u>Enter Medicine Name</u></string>

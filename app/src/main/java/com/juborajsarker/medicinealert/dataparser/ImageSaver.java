@@ -12,6 +12,7 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.juborajsarker.medicinealert.R;
 import com.juborajsarker.medicinealert.model.StaticVariables;
 
 import java.io.File;
@@ -124,15 +125,51 @@ public class ImageSaver {
     }
 
 
-    public void loadImage(String fileName, ImageView imageView){
+    public void loadImage(String fileName, ImageView imageView, String type){
 
-        File imageFile = new File(Environment.getExternalStorageDirectory() + File.separator + "MedicineAlert"+"/" + fileName);
+        File imageFile = new File(Environment.getExternalStorageDirectory()
+                + File.separator + "MedicineAlert"+"/" + fileName);
 
         if (imageFile.exists()){
 
             Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
-            Bitmap bMapScaled = Bitmap.createScaledBitmap(bitmap, 330, 330
-                    , true);
+            Bitmap bMapScaled = Bitmap.createScaledBitmap(bitmap, 400, 400, true);
+
+            imageView.setImageBitmap(bMapScaled);
+
+        }else {
+
+
+            Bitmap bitmap = null;
+
+            if (type.equals("Tablet")){
+
+               bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.tablet);
+
+            }else if (type.equals("Capsule")){
+
+                bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.calsule);
+
+            }else if (type.equals("syrup")){
+
+                bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.syrup);
+
+            }else if (type.equals("Injection")){
+
+                bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.injection);
+
+            }else if (type.equals("Ointment")){
+
+                bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ointment);
+
+            }else if (type.equals("Eye Drop")){
+
+                bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.eye_drop);
+
+            }
+
+            Bitmap bMapScaled = Bitmap.createScaledBitmap(bitmap, 400, 400, true);
+
             imageView.setImageBitmap(bMapScaled);
 
         }
