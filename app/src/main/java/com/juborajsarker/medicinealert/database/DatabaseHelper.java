@@ -40,6 +40,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_15 = "START_DATE";
     private static final String COLUMN_16 = "STATUS";
     private static final String COLUMN_17 = "MEDICINE_MEAL";
+    private static final String COLUMN_18 = "UNIQUE_CODE";
 
 
     public DatabaseHelper(Context context){
@@ -70,7 +71,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + COLUMN_14 + " INTEGER,"
                 + COLUMN_15 + " TEXT,"
                 + COLUMN_16 + " TEXT,"
-                + COLUMN_17 + " TEXT" + ")";
+                + COLUMN_17 + " TEXT,"
+                + COLUMN_18 + " INTEGER" + ")";
 
 
 
@@ -93,7 +95,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + COLUMN_14 + " INTEGER,"
                 + COLUMN_15 + " TEXT,"
                 + COLUMN_16 + " TEXT,"
-                + COLUMN_17 + " TEXT" + ")";
+                + COLUMN_17 + " TEXT,"
+                + COLUMN_18 + " INTEGER" + ")";
 
         db.execSQL(BEFORE_MEAL_QUERY);
         db.execSQL(AFTER_MEAL_QUERY);
@@ -133,6 +136,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_15, medicineModel.getStartDate());
         values.put(COLUMN_16, medicineModel.getStatus());
         values.put(COLUMN_17, medicineModel.getMedicineMeal());
+        values.put(COLUMN_18, medicineModel.getUniqueCode());
 
 
         db.insert(tableName, null, values);
@@ -140,7 +144,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public MedicineModel getSingleMedicine (String date, String tableName){
+    public MedicineModel getSingleMedicine (String searchKeyword, String tableName){
 
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -150,7 +154,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         COLUMN_2,
                         COLUMN_3,},
                 COLUMN_1 + "=?",
-                new String[] { date  }, null, null, null, null);
+                new String[] { searchKeyword  }, null, null, null, null);
 
         if (cursor != null)
             cursor.moveToFirst();
@@ -177,6 +181,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             medicineModel.setStartDate(cursor.getString(15));
             medicineModel.setStatus(cursor.getString(16));
             medicineModel.setMedicineMeal(cursor.getString(17));
+            medicineModel.setUniqueCode(Integer.parseInt(cursor.getString(18)));
 
         }catch (Exception e){
 
@@ -221,6 +226,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 medicineModel.setStartDate(cursor.getString(15));
                 medicineModel.setStatus(cursor.getString(16));
                 medicineModel.setMedicineMeal(cursor.getString(17));
+                medicineModel.setUniqueCode(Integer.parseInt(cursor.getString(18)));
 
                 medicineModelList.add(medicineModel);
 
@@ -256,6 +262,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_15, medicineModel.getStartDate());
         values.put(COLUMN_16, medicineModel.getStatus());
         values.put(COLUMN_17, medicineModel.getMedicineMeal());
+        values.put(COLUMN_18, medicineModel.getUniqueCode());
 
 
 
@@ -308,6 +315,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 medicineModel.setStartDate(cursor.getString(15));
                 medicineModel.setStatus(cursor.getString(16));
                 medicineModel.setMedicineMeal(cursor.getString(17));
+                medicineModel.setUniqueCode(Integer.parseInt(cursor.getString(18)));
 
                 medicineModelList.add(medicineModel);
 

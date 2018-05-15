@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
@@ -59,10 +60,29 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         if ((taken == -5) && (cancel == -9) ){
 
+            Intent stopIntent = new Intent(context, AlarmRing.class);
+            context.stopService(stopIntent);
+
+            if (context.stopService(stopIntent)){
+
+                context.stopService(stopIntent);
+            }
+
+
             Uri ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
             Intent startIntent = new Intent(context, AlarmRing.class);
             startIntent.putExtra("ringtone_uri", ""+ringtoneUri);
-            context.startService(startIntent);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+
+                context.startForegroundService(startIntent);
+
+
+            }else {
+
+                context.startService(startIntent);
+            }
+
 
             sendOnChannel(medName.toUpperCase() + " (" + type + ")",
                     "it's time to take " +medName +" at " + time + " (" + mealStatus + ")" , getBitmap(imagePath));

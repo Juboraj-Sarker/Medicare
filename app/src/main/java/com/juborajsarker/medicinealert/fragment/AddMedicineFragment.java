@@ -43,9 +43,11 @@ import android.widget.Toast;
 import com.juborajsarker.medicinealert.R;
 import com.juborajsarker.medicinealert.activity.MainActivity;
 import com.juborajsarker.medicinealert.broadcastReceiver.AlarmReceiver;
+import com.juborajsarker.medicinealert.database.AlarmDatabase;
 import com.juborajsarker.medicinealert.database.DatabaseHelper;
 import com.juborajsarker.medicinealert.dataparser.DateCalculations;
 import com.juborajsarker.medicinealert.dataparser.ImageSaver;
+import com.juborajsarker.medicinealert.model.AlarmModel;
 import com.juborajsarker.medicinealert.model.MedicineModel;
 import com.juborajsarker.medicinealert.model.StaticVariables;
 
@@ -83,7 +85,7 @@ public class AddMedicineFragment extends Fragment {
 
     int id, numberOfSlot, noOfDays, daysInterval;
     String medName, imagePath, firstSlotTime, secondSlotTime, thirdSlotTime, startDate, daysNameOfWeek, status, calculatedDate,
-            newStartDate, medicineMeal, medicineType,  finalDate;
+            newStartDate, medicineMeal, medicineType, finalDate;
     boolean isEveryday, isSpecificDaysOfWeek, isDaysInterval;
     boolean sat, sun, mon, tue, wed, thu, fri;
     boolean allPermission;
@@ -92,6 +94,8 @@ public class AddMedicineFragment extends Fragment {
     String tableName = "";
     int requestCode = 0;
     int flag = 0;
+    int uniqueCode = 0;
+    int firstRequestCode, secondRequestCode, thirdRequestCode;
 
     DatabaseHelper dbHelper;
 
@@ -112,6 +116,7 @@ public class AddMedicineFragment extends Fragment {
         sharedPreferences = getActivity().getSharedPreferences("alarmRequestCode", MODE_PRIVATE);
         requestCode = sharedPreferences.getInt("requestCodeValue", 0);
         flag = sharedPreferences.getInt("flagValue", 0);
+        uniqueCode = sharedPreferences.getInt("uniqueCodeLastValue", 0);
 
 
         init();
@@ -444,10 +449,16 @@ public class AddMedicineFragment extends Fragment {
                     medicineModel.setStartDate(startDate);
                     medicineModel.setStatus(status);
                     medicineModel.setMedicineMeal(medicineMeal);
+                    medicineModel.setUniqueCode(uniqueCode);
 
                     setAlarm(calculatedDate, firstSlotTime, secondSlotTime, thirdSlotTime);
                     dbHelper.insertData(medicineModel, tableName);
 
+
+                    uniqueCode++;
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putInt("uniqueCodeLastValue", uniqueCode);
+                    editor.commit();
 
 
                     calculatedDate = dc.addDays(newStartDate, "1");
@@ -513,12 +524,17 @@ public class AddMedicineFragment extends Fragment {
                         medicineModel.setStartDate(startDate);
                         medicineModel.setStatus(status);
                         medicineModel.setMedicineMeal(medicineMeal);
+                        medicineModel.setUniqueCode(uniqueCode);
 
 
                         setAlarm(finalDate, firstSlotTime, secondSlotTime, thirdSlotTime);
                         dbHelper.insertData(medicineModel, tableName);
 
 
+                        uniqueCode++;
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putInt("uniqueCodeLastValue", uniqueCode);
+                        editor.commit();
 
                         finalDate = calculatedDate;
                         newStartDate = calculatedDate;
@@ -585,20 +601,22 @@ public class AddMedicineFragment extends Fragment {
                     medicineModel.setStartDate(startDate);
                     medicineModel.setStatus(status);
                     medicineModel.setMedicineMeal(medicineMeal);
+                    medicineModel.setUniqueCode(uniqueCode);
 
 
                     setAlarm(calculatedDate, firstSlotTime, secondSlotTime, thirdSlotTime);
                     dbHelper.insertData(medicineModel, tableName);
 
-
+                    uniqueCode++;
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putInt("uniqueCodeLastValue", uniqueCode);
+                    editor.commit();
 
                     calculatedDate = dc.addDays(newStartDate, String.valueOf(daysInterval));
                     newStartDate = calculatedDate;
 
 
                 }
-
-
 
 
             }
@@ -613,46 +631,40 @@ public class AddMedicineFragment extends Fragment {
         }
 
 
-
-
     }
 
     private void setAlarm(String calculatedDate, String firstSlotTime, String secondSlotTime, String thirdSlotTime) {
 
 
         String combine = calculatedDate + " " + firstSlotTime;
-        setFinalAlarm(combine);
+        setFinalAlarm(combine, 1);
 
-        if (!secondSlotTime.equals("null")){
+        if (!secondSlotTime.equals("null")) {
 
             String combine2 = calculatedDate + " " + secondSlotTime;
-            setFinalAlarm(combine2);
+            setFinalAlarm(combine2, 2);
 
-            Log.d("Entered","Entered 2");
+
+            Log.d("Entered", "Entered 2");
         }
 
-        if (!thirdSlotTime.equals("null")){
+        if (!thirdSlotTime.equals("null")) {
 
             String combine3 = calculatedDate + " " + thirdSlotTime;
-            setFinalAlarm(combine3);
-            Log.d("Entered","Entered 3");
+            setFinalAlarm(combine3, 3);
+            Log.d("Entered", "Entered 3");
         }
-
-
-
-
-
-
 
 
     }
 
-    private void setFinalAlarm( String combine) {
+
+    private void setFinalAlarm(String combine, int value) {
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy hh:mm aaa");
 
-       Calendar calendar = Calendar.getInstance();
-       Calendar cal = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance();
 
         try {
             calendar.setTime(sdf.parse(combine));
@@ -667,43 +679,87 @@ public class AddMedicineFragment extends Fragment {
             cal.set(yearForAlarm, monthForAlarm, dateForAlarm, hourForAlarm, minuteForAlarm, secondForAlarm);
 
 
-            Log.d("calender",
-                    "calender" +"\n"+
-                            "Date " +dateForAlarm +"\n"+
-                            "Month " + monthForAlarm +"\n"+
-                            "Year " + yearForAlarm + "\n"+
-                            "Hour: " + hourForAlarm +"\n" +
-                            "Minute " + minuteForAlarm + "\n" +
-                            "TimeMills " + cal.getTimeInMillis() + "\n" +
-                            "Current TimeMills " + Calendar.getInstance().getTimeInMillis()+"\n"+
-                            "Combine " + combine);
-
-
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
 
-        AlarmManager alarmManager = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(getContext(), AlarmReceiver.class);
         intent.putExtra("medName", medName);
         intent.putExtra("imagePath", imagePath);
         intent.putExtra("mealStatus", medicineMeal);
         intent.putExtra("time", combine);
         intent.putExtra("medType", medicineType);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), requestCode, intent, 0);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
 
-        requestCode++;
-        flag++;
+
+
+
+        if (!firstSlotTime.equals("null") && value == 1) {
+
+
+            firstRequestCode = requestCode;
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), firstRequestCode, intent, 0);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+            requestCode++;
+
+        } else {
+
+            firstRequestCode = -1;
+        }
+
+
+        if (!secondSlotTime.equals("null") && value == 2) {
+
+            secondRequestCode = requestCode;
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), secondRequestCode, intent, 0);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+            requestCode++;
+
+
+        } else {
+
+            secondRequestCode = -2;
+        }
+
+
+        if (!thirdSlotTime.equals("null") && value == 3) {
+
+            thirdRequestCode = requestCode;
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), thirdRequestCode, intent, 0);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+            requestCode++;
+
+        } else {
+
+            thirdRequestCode = -3;
+        }
+
+
+        AlarmModel alarmModel = new AlarmModel();
+        alarmModel.setId(0);
+        alarmModel.setNdt(medName + uniqueCode);
+        alarmModel.setNumberOfSlot(numberOfSlot);
+        alarmModel.setFirstSlotTime(firstSlotTime);
+        alarmModel.setSecondSlotTime(secondSlotTime);
+        alarmModel.setThirdSlotTime(thirdSlotTime);
+        alarmModel.setFirstSlotRequestCode(firstRequestCode);
+        alarmModel.setSecondSlotRequestCode(secondRequestCode);
+        alarmModel.setThirdSlotRequestCode(thirdRequestCode);
+
+        AlarmDatabase alarmDatabase = new AlarmDatabase(getContext());
+        alarmDatabase.insertAlarm(alarmModel);
+
+
+        Log.d("firstRequest: ", ""+firstRequestCode);
+        Log.d("secondRequest: ", ""+secondRequestCode);
+        Log.d("thirdRequest: ", ""+thirdRequestCode);
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt("requestCodeValue", requestCode);
-        editor.putInt("flagValue", flag);
         editor.commit();
 
-        Log.d("timeMills", ""+cal.getTimeInMillis());
-        Log.d("timeMills", ""+Calendar.getInstance().getTimeInMillis());
+
     }
 
     private String getMedicineMeal() {
@@ -744,11 +800,13 @@ public class AddMedicineFragment extends Fragment {
 
             type = "Injection";
 
-        }if (medicineTypeSP.getSelectedItemPosition() == 5) {
+        }
+        if (medicineTypeSP.getSelectedItemPosition() == 5) {
 
             type = "Ointment";
 
-        }if (medicineTypeSP.getSelectedItemPosition() == 6) {
+        }
+        if (medicineTypeSP.getSelectedItemPosition() == 6) {
 
             type = "Eye Drop";
         }
@@ -885,10 +943,7 @@ public class AddMedicineFragment extends Fragment {
 
             return false;
 
-        }
-
-
-        else {
+        } else {
 
             return true;
         }
@@ -1030,7 +1085,6 @@ public class AddMedicineFragment extends Fragment {
         dFragment.show(getActivity().getFragmentManager(), "Date Picker");
 
     }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -1,5 +1,6 @@
 package com.juborajsarker.medicinealert.service;
 
+import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.media.Ringtone;
@@ -34,5 +35,11 @@ public class AlarmRing extends Service {
     public void onDestroy()
     {
         ringtone.stop();
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        startForeground(1, new Notification());
     }
 }

@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.juborajsarker.medicinealert.database.DatabaseHelper;
 import com.juborajsarker.medicinealert.model.MedicineModel;
@@ -146,7 +145,7 @@ public class SampleBootReceiver extends BroadcastReceiver {
 
         if (Calendar.getInstance().getTimeInMillis() >= cal.getTimeInMillis()){
 
-            Toast.makeText(context, "errrrrrrrrrrrrrrrrrrr", Toast.LENGTH_SHORT).show();
+            Log.d("before", "before current time");
 
         }else {
 
@@ -159,6 +158,8 @@ public class SampleBootReceiver extends BroadcastReceiver {
             intent.putExtra("medType", medicineModel.getMedicineType());
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, 0);
             alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+
+
 
             requestCode++;
 

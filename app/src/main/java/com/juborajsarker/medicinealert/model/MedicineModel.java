@@ -20,12 +20,13 @@ public class MedicineModel {
     String startDate;
     String status;
     String medicineMeal;
+    int uniqueCode;
 
 
     public MedicineModel(int id, String date, String medicineName, String medicineType, String imagePath,
                          int numberOfSlot, String firstSlotTime, String secondSlotTime, String thirdSlotTime,
                          int numberOfDays, boolean isEveryday, boolean isSpecificDaysOfWeek, boolean isDaysInterval,
-                         String daysNameOfWeek, int daysInterval, String startDate, String status, String medicineMeal) {
+                         String daysNameOfWeek, int daysInterval, String startDate, String status, String medicineMeal, int uniqueCode) {
 
         this.id = id;
         this.date = date;
@@ -45,6 +46,7 @@ public class MedicineModel {
         this.startDate = startDate;
         this.status = status;
         this.medicineMeal = medicineMeal;
+        this.uniqueCode = uniqueCode;
 
     }
 
@@ -197,5 +199,13 @@ public class MedicineModel {
 
     public void setMedicineMeal(String medicineMeal) {
         this.medicineMeal = medicineMeal;
+    }
+
+    public int getUniqueCode() {
+        return uniqueCode;
+    }
+
+    public void setUniqueCode(int uniqueCode) {
+        this.uniqueCode = uniqueCode;
     }
 }
