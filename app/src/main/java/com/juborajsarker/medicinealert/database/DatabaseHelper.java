@@ -146,15 +146,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public MedicineModel getSingleMedicine (String searchKeyword, String tableName){
 
-        SQLiteDatabase db = this.getReadableDatabase();
+        //        Cursor cursor = db.query(tableName,
+//                new String[] {
+//                        COLUMN_1,
+//                        COLUMN_2,
+//                        COLUMN_3,},
+//                COLUMN_1 + "=?",
+//                new String[] { searchKeyword  }, null, null, null, null);
 
-        Cursor cursor = db.query(tableName,
-                new String[] {
-                        COLUMN_1,
-                        COLUMN_2,
-                        COLUMN_3,},
-                COLUMN_1 + "=?",
-                new String[] { searchKeyword  }, null, null, null, null);
+
+        String selectQuery = "SELECT  * FROM " + tableName + " WHERE ID=?" ;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, new String[] { searchKeyword });
 
         if (cursor != null)
             cursor.moveToFirst();
@@ -192,6 +196,109 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
         return medicineModel;
+    }
+
+
+
+
+    public List<MedicineModel> getSelectedList (String searchKeyword, String tableName){
+
+        List<MedicineModel> medicineModelList = new ArrayList<>();
+
+        String selectQuery = "SELECT  * FROM " + tableName + " WHERE DATE=?" ;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, new String[] { searchKeyword });
+
+        if (cursor.moveToFirst()){
+
+            do {
+
+                MedicineModel medicineModel = new MedicineModel();
+                medicineModel.setId(Integer.parseInt(cursor.getString(0)));
+                medicineModel.setDate(cursor.getString(1));
+                medicineModel.setMedicineName(cursor.getString(2));
+                medicineModel.setMedicineType(cursor.getString(3));
+                medicineModel.setImagePath(cursor.getString(4));
+                medicineModel.setNumberOfSlot(Integer.parseInt(cursor.getString(5)));
+                medicineModel.setFirstSlotTime(cursor.getString(6));
+                medicineModel.setSecondSlotTime(cursor.getString(7));
+                medicineModel.setThirdSlotTime(cursor.getString(8));
+                medicineModel.setNumberOfDays(Integer.parseInt(cursor.getString(9)));
+                medicineModel.setEveryday(Boolean.parseBoolean(cursor.getString(10)));
+                medicineModel.setSpecificDaysOfWeek(Boolean.parseBoolean(cursor.getString(11)));
+                medicineModel.setDaysInterval(Boolean.parseBoolean(cursor.getString(12)));
+                medicineModel.setDaysNameOfWeek(cursor.getString(13));
+                medicineModel.setDaysInterval(Integer.parseInt(cursor.getString(14)));
+                medicineModel.setStartDate(cursor.getString(15));
+                medicineModel.setStatus(cursor.getString(16));
+                medicineModel.setMedicineMeal(cursor.getString(17));
+                medicineModel.setUniqueCode(Integer.parseInt(cursor.getString(18)));
+
+                medicineModelList.add(medicineModel);
+
+            }while (cursor.moveToNext());
+        }
+
+
+
+
+        return medicineModelList;
+    }
+
+
+
+
+    public List<MedicineModel> selectWithMultipleQueries (String startDate, String medName, String firstSlot,
+                                                          String numberOfSlot, String numberOfDays, String type, String tableName){
+
+        List<MedicineModel> medicineModelList = new ArrayList<>();
+
+        String selectQuery = "SELECT  * FROM " + tableName + " WHERE " +
+                "START_DATE LIKE '%" + startDate + "%' AND " +
+                "MEDICINE_NAME LIKE '%" + medName + "%' AND "+
+                "FIRST_SLOT LIKE '%" + firstSlot + "%' AND " +
+                "NO_OF_SLOT LIKE '%" + numberOfSlot + "%' AND " +
+                "NUMBER_OF_DAYS LIKE '%" + numberOfDays + "%' AND " +
+                "MEDICINE_TYPE LIKE '%" + type + "%'";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        
+        if (cursor.moveToFirst()){
+
+            do {
+
+                MedicineModel medicineModel = new MedicineModel();
+                medicineModel.setId(Integer.parseInt(cursor.getString(0)));
+                medicineModel.setDate(cursor.getString(1));
+                medicineModel.setMedicineName(cursor.getString(2));
+                medicineModel.setMedicineType(cursor.getString(3));
+                medicineModel.setImagePath(cursor.getString(4));
+                medicineModel.setNumberOfSlot(Integer.parseInt(cursor.getString(5)));
+                medicineModel.setFirstSlotTime(cursor.getString(6));
+                medicineModel.setSecondSlotTime(cursor.getString(7));
+                medicineModel.setThirdSlotTime(cursor.getString(8));
+                medicineModel.setNumberOfDays(Integer.parseInt(cursor.getString(9)));
+                medicineModel.setEveryday(Boolean.parseBoolean(cursor.getString(10)));
+                medicineModel.setSpecificDaysOfWeek(Boolean.parseBoolean(cursor.getString(11)));
+                medicineModel.setDaysInterval(Boolean.parseBoolean(cursor.getString(12)));
+                medicineModel.setDaysNameOfWeek(cursor.getString(13));
+                medicineModel.setDaysInterval(Integer.parseInt(cursor.getString(14)));
+                medicineModel.setStartDate(cursor.getString(15));
+                medicineModel.setStatus(cursor.getString(16));
+                medicineModel.setMedicineMeal(cursor.getString(17));
+                medicineModel.setUniqueCode(Integer.parseInt(cursor.getString(18)));
+
+                medicineModelList.add(medicineModel);
+
+            }while (cursor.moveToNext());
+        }
+
+
+
+
+        return medicineModelList;
     }
 
 
@@ -283,48 +390,5 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public List<MedicineModel> getSelectedList (String searchKeyword, String tableName){
 
-        List<MedicineModel> medicineModelList = new ArrayList<>();
-
-        String selectQuery = "SELECT  * FROM " + tableName + " WHERE DATE=?" ;
-
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, new String[] { searchKeyword });
-
-        if (cursor.moveToFirst()){
-
-            do {
-
-                MedicineModel medicineModel = new MedicineModel();
-                medicineModel.setId(Integer.parseInt(cursor.getString(0)));
-                medicineModel.setDate(cursor.getString(1));
-                medicineModel.setMedicineName(cursor.getString(2));
-                medicineModel.setMedicineType(cursor.getString(3));
-                medicineModel.setImagePath(cursor.getString(4));
-                medicineModel.setNumberOfSlot(Integer.parseInt(cursor.getString(5)));
-                medicineModel.setFirstSlotTime(cursor.getString(6));
-                medicineModel.setSecondSlotTime(cursor.getString(7));
-                medicineModel.setThirdSlotTime(cursor.getString(8));
-                medicineModel.setNumberOfDays(Integer.parseInt(cursor.getString(9)));
-                medicineModel.setEveryday(Boolean.parseBoolean(cursor.getString(10)));
-                medicineModel.setSpecificDaysOfWeek(Boolean.parseBoolean(cursor.getString(11)));
-                medicineModel.setDaysInterval(Boolean.parseBoolean(cursor.getString(12)));
-                medicineModel.setDaysNameOfWeek(cursor.getString(13));
-                medicineModel.setDaysInterval(Integer.parseInt(cursor.getString(14)));
-                medicineModel.setStartDate(cursor.getString(15));
-                medicineModel.setStatus(cursor.getString(16));
-                medicineModel.setMedicineMeal(cursor.getString(17));
-                medicineModel.setUniqueCode(Integer.parseInt(cursor.getString(18)));
-
-                medicineModelList.add(medicineModel);
-
-            }while (cursor.moveToNext());
-        }
-
-
-
-
-        return medicineModelList;
-    }
 }

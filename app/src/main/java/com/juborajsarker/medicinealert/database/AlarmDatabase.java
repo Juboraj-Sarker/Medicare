@@ -16,7 +16,7 @@ public class AlarmDatabase extends SQLiteOpenHelper {
     Context context;
 
 
-    private static final String DATABASE_NAME = "medicine_manager";
+    private static final String DATABASE_NAME = "alarm_manager";
     private static final int DATABASE_VERSION = 1;
 
     private static final String TABLE_NAME = "alarm_table";
@@ -166,15 +166,15 @@ public class AlarmDatabase extends SQLiteOpenHelper {
             do {
 
                 AlarmModel alarmModel = new AlarmModel();
-                alarmModel.setId(Integer.parseInt(cursor.getString(1)));
-                alarmModel.setNdt(cursor.getColumnName(2));
-                alarmModel.setNumberOfSlot(Integer.parseInt(cursor.getString(3)));
-                alarmModel.setFirstSlotTime(cursor.getString(4));
+                alarmModel.setId(Integer.parseInt(cursor.getString(0)));
+                alarmModel.setNdt(cursor.getString(1));
+                alarmModel.setNumberOfSlot(Integer.parseInt(cursor.getString(2)));
+                alarmModel.setFirstSlotTime(cursor.getString(3));
                 alarmModel.setSecondSlotTime(cursor.getString(5));
                 alarmModel.setThirdSlotTime(cursor.getString(6));
-                alarmModel.setFirstSlotRequestCode(Integer.parseInt(cursor.getString(7)));
-                alarmModel.setSecondSlotRequestCode(Integer.parseInt(cursor.getString(8)));
-                alarmModel.setThirdSlotRequestCode(Integer.parseInt(cursor.getString(9)));
+                alarmModel.setFirstSlotRequestCode(Integer.parseInt(cursor.getString(6)));
+                alarmModel.setSecondSlotRequestCode(Integer.parseInt(cursor.getString(7)));
+                alarmModel.setThirdSlotRequestCode(Integer.parseInt(cursor.getString(8)));
 
 
                 alarmModelList.add(alarmModel);

@@ -18,8 +18,8 @@ import com.juborajsarker.medicinealert.service.AlarmRing;
 import java.io.File;
 
 public class AlarmReceiver extends BroadcastReceiver {
-    NotificationHelper helper;
 
+    NotificationHelper helper;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -77,15 +77,21 @@ public class AlarmReceiver extends BroadcastReceiver {
 
                 context.startForegroundService(startIntent);
 
+                showNotification(medName.toUpperCase() + " (" + type + ")",
+                        "it's time to take " +medName +" at " + time + " (" + mealStatus + ")" , getBitmap(imagePath));
+
 
             }else {
 
+                showNotification(medName.toUpperCase() + " (" + type + ")",
+                        "it's time to take " +medName +" at " + time + " (" + mealStatus + ")" , getBitmap(imagePath));
                 context.startService(startIntent);
+
+
             }
 
 
-            sendOnChannel(medName.toUpperCase() + " (" + type + ")",
-                    "it's time to take " +medName +" at " + time + " (" + mealStatus + ")" , getBitmap(imagePath));
+
         }
 
 
@@ -107,10 +113,10 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     }
 
-    private void sendOnChannel(String title, String message, Bitmap bitmap) {
+    private void showNotification(String title, String message, Bitmap bitmap) {
 
-        NotificationCompat.Builder nb = helper.getChannelNotification(title,message, bitmap).setAutoCancel(true);
-        helper.getManager().notify(1, nb.build());
+        NotificationCompat.Builder notification = helper.getChannelNotification(title,message, bitmap);
+        helper.getManager().notify(1, notification.build());
 
 
 

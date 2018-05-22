@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
@@ -40,6 +41,10 @@ public class AlarmRing extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        startForeground(1, new Notification());
+
+        if (Build.VERSION.SDK_INT >=  Build.VERSION_CODES.O){
+
+            startForeground(1, new Notification());
+        }
     }
 }

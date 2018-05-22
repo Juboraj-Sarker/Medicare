@@ -24,12 +24,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.AboutActivity"></activity>
+        <activity android:name=".activity.AboutActivity" />
 
         <receiver
             android:name=".broadcastReceiver.AlarmReceiver"
             android:enabled="true"
-            android:exported="true"></receiver>
+            android:exported="true" />
         <receiver
             android:name=".broadcastReceiver.SampleBootReceiver"
             android:enabled="true">
@@ -40,7 +40,11 @@
 
         <service android:name=".service.AlarmRing" />
 
-        <activity android:name=".activity.DetailsActivity"></activity>
+        <activity android:name=".activity.DetailsActivity" />
+        <activity android:name=".activity.EditActivity"
+            android:label="Edit">
+
+        </activity>
     </application>
 
 </manifest>

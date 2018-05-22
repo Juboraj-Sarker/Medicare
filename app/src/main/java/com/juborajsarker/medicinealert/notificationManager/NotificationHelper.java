@@ -13,13 +13,14 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
 import com.juborajsarker.medicinealert.R;
+import com.juborajsarker.medicinealert.activity.DetailsActivity;
 import com.juborajsarker.medicinealert.activity.MainActivity;
 import com.juborajsarker.medicinealert.broadcastReceiver.AlarmReceiver;
 
 public class NotificationHelper extends ContextWrapper {
 
-    public static final String channelId = "channel1ID";
-    public static final String channelName = "channel 1";
+    public static final String channelId = "channel ID";
+    public static final String channelName = "channel Name";
 
 
 
@@ -75,9 +76,14 @@ public class NotificationHelper extends ContextWrapper {
         takenIntent.setAction("taken");
         takenIntent.putExtra("taken", 11);
 
-        Intent cancelIntent = new Intent(this,AlarmReceiver.class);
+        Intent cancelIntent = new Intent(this, AlarmReceiver.class);
         cancelIntent.setAction("cancel");
         cancelIntent.putExtra("cancel", 22);
+
+
+        Intent detailsIntent = new Intent(this, DetailsActivity.class);
+        detailsIntent.setAction("details");
+        detailsIntent.putExtra("details", 33);
 
 
         PendingIntent takenPendingIntent =
@@ -85,6 +91,9 @@ public class NotificationHelper extends ContextWrapper {
 
         PendingIntent cancelPendingIntent =
                 PendingIntent.getBroadcast(this, 0, cancelIntent, 0);
+
+        PendingIntent detailsPendingIntent =
+                PendingIntent.getBroadcast(this, 0, detailsIntent, 0);
 
 
 
@@ -99,10 +108,14 @@ public class NotificationHelper extends ContextWrapper {
                 .addAction(R.drawable.ic_check,
                         "Taken",
                         takenPendingIntent)
+                .addAction(R.drawable.ic_details,
+                        "Details",
+                        detailsPendingIntent)
                 .addAction(R.drawable.ic_cancel,
-                        "Cancel",
+                        "Skip",
                         cancelPendingIntent)
-                .setAutoCancel(true);
+                .setAutoCancel(true)
+                .setOngoing(false);
     }
 
 

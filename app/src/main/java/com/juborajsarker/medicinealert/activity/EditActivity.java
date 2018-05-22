@@ -1,5 +1,4 @@
-package com.juborajsarker.medicinealert.fragment;
-
+package com.juborajsarker.medicinealert.activity;
 
 import android.Manifest;
 import android.app.Activity;
@@ -11,8 +10,8 @@ import android.app.DialogFragment;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -20,12 +19,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
-import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -41,12 +39,12 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.juborajsarker.medicinealert.R;
-import com.juborajsarker.medicinealert.activity.MainActivity;
 import com.juborajsarker.medicinealert.broadcastReceiver.AlarmReceiver;
 import com.juborajsarker.medicinealert.database.AlarmDatabase;
 import com.juborajsarker.medicinealert.database.DatabaseHelper;
 import com.juborajsarker.medicinealert.dataparser.DateCalculations;
 import com.juborajsarker.medicinealert.dataparser.ImageSaver;
+import com.juborajsarker.medicinealert.fragment.AddMedicineFragment;
 import com.juborajsarker.medicinealert.model.AlarmModel;
 import com.juborajsarker.medicinealert.model.MedicineModel;
 import com.juborajsarker.medicinealert.model.StaticVariables;
@@ -62,12 +60,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import static android.content.Context.MODE_PRIVATE;
+public class EditActivity extends AppCompatActivity {
+
+    String tableName;
+    int id;
+    MedicineModel medicineModel;
+    List<MedicineModel> medicineModelList;
+    DatabaseHelper dbHelper;
 
 
-public class AddMedicineFragment extends Fragment {
-
-    public SharedPreferences sharedPreferences;
 
     EditText medNameET, noOfDaysET;
     TextView firstSlotTV, secondSlotTV, thirdSlotTV, startDateTV;
@@ -80,119 +81,272 @@ public class AddMedicineFragment extends Fragment {
     CardView cvSpecificDayOfWeek, cvDaysInterval, cvMedicineImage;
     Button setBTN, retakeBTN, cancelBTN;
 
-    String formattedTime;
-    Calendar myCalender;
 
-    int id, numberOfSlot, noOfDays, daysInterval;
-    String medName, imagePath, firstSlotTime, secondSlotTime, thirdSlotTime, startDate, daysNameOfWeek, status, calculatedDate,
-            newStartDate, medicineMeal, medicineType, finalDate;
-    boolean isEveryday, isSpecificDaysOfWeek, isDaysInterval;
-    boolean sat, sun, mon, tue, wed, thu, fri;
+    String beforeType, beforeStartDate, beforeDaysNameOfWeek;
+    int beforeNumberOfSlot, beforeNumberOfDays, beforeDaysInterval;
+
     boolean allPermission;
+    boolean sat, sun, mon, tue, wed, thu, fri;
+    String formattedTime, imagePath;
+    Calendar myCalender;
+    String medName,  firstSlotTime, secondSlotTime, thirdSlotTime, startDate, daysNameOfWeek, status, calculatedDate,
+            newStartDate, medicineMeal, medicineType, finalDate;
 
 
-    String tableName = "";
+    int  numberOfSlot, noOfDays, daysInterval, uniqueCode;
+    boolean isEveryday, isSpecificDaysOfWeek, isDaysInterval;
     int requestCode = 1;
-    int flag = 0;
-    int uniqueCode = 0;
     int firstRequestCode, secondRequestCode, thirdRequestCode;
-
-    DatabaseHelper dbHelper;
-
-    View view;
-
-
-    public AddMedicineFragment() {
-
-    }
-
+    String newTableName;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_edit);
 
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null){
 
-        view = inflater.inflate(R.layout.fragment_add_medicine, container, false);
-
-        sharedPreferences = getActivity().getSharedPreferences("alarmRequestCode", MODE_PRIVATE);
-        requestCode = sharedPreferences.getInt("requestCodeValue", 1);
-        flag = sharedPreferences.getInt("flagValue", 0);
-        uniqueCode = sharedPreferences.getInt("uniqueCodeLastValue", 0);
-
-
-        init();
-        setOnClick();
-
-
-        if (Build.VERSION.SDK_INT >= 23) {
-            checkMultiplePermissions();
+            actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
 
-//        ImageSaver imageSaver = new ImageSaver(getContext(), getActivity());
-//        cvMedicineImage.setVisibility(View.VISIBLE);
-//        imageSaver.loadImage("HHHHHH (Thu May 10 02:15:12 GMT+06:00 2018)", medicineIV);
+        Intent intent = getIntent();
+        tableName = intent.getStringExtra("tableName");
+        id = intent.getIntExtra("id",-1);
+
+        medicineModel = new MedicineModel();
+        medicineModelList = new ArrayList<>();
+        dbHelper = new DatabaseHelper(this);
 
 
-        return view;
+        if (id != -1){
+
+            medicineModel = dbHelper.getSingleMedicine(String.valueOf(id), tableName);
+
+        }else {
+
+            Log.d("data", "data not found");
+        }
+
+        init();
+        setData();
+        setListener();
+        collectData();
     }
 
 
     private void init() {
 
-        medNameET = (EditText) view.findViewById(R.id.medicine_name_ET);
-        noOfDaysET = (EditText) view.findViewById(R.id.no_of_days_ET);
+            medNameET = (EditText) findViewById(R.id.medicine_name_ET);
+            noOfDaysET = (EditText) findViewById(R.id.no_of_days_ET);
 
-        firstSlotTV = (TextView) view.findViewById(R.id.first_slot_TV);
-        secondSlotTV = (TextView) view.findViewById(R.id.second_slot_TV);
-        thirdSlotTV = (TextView) view.findViewById(R.id.third_slot_TV);
-        startDateTV = (TextView) view.findViewById(R.id.start_date_TV);
+            firstSlotTV = (TextView) findViewById(R.id.first_slot_TV);
+            secondSlotTV = (TextView) findViewById(R.id.second_slot_TV);
+            thirdSlotTV = (TextView) findViewById(R.id.third_slot_TV);
+            startDateTV = (TextView) findViewById(R.id.start_date_TV);
 
-        noOfTimesSP = (Spinner) view.findViewById(R.id.no_of_times_SP);
-        noOfTimesSP.setSelection(2);
-        medicineTypeSP = (Spinner) view.findViewById(R.id.medicine_type_SP);
+            noOfTimesSP = (Spinner) findViewById(R.id.no_of_times_SP);
+            medicineTypeSP = (Spinner) findViewById(R.id.medicine_type_SP);
 
-        everyDayRB = (RadioButton) view.findViewById(R.id.everyday_RB);
-        specificDayRB = (RadioButton) view.findViewById(R.id.specific_day_RB);
-        daysIntervalRB = (RadioButton) view.findViewById(R.id.days_interval_RB);
-        beforeMealRB = (RadioButton) view.findViewById(R.id.before_meal_RB);
-        afterMealRB = (RadioButton) view.findViewById(R.id.after_meal_RB);
+            everyDayRB = (RadioButton) findViewById(R.id.everyday_RB);
+            specificDayRB = (RadioButton) findViewById(R.id.specific_day_RB);
+            daysIntervalRB = (RadioButton) findViewById(R.id.days_interval_RB);
+            beforeMealRB = (RadioButton) findViewById(R.id.before_meal_RB);
+            afterMealRB = (RadioButton)findViewById(R.id.after_meal_RB);
 
-        firstSlotLAYOUT = (LinearLayout) view.findViewById(R.id.first_slot_LAYOUT);
-        secondSlotLAYOUT = (LinearLayout) view.findViewById(R.id.second_slot_LAYOUT);
-        thirdSlotLAYOUT = (LinearLayout) view.findViewById(R.id.third_slot_layout);
+            firstSlotLAYOUT = (LinearLayout) findViewById(R.id.first_slot_LAYOUT);
+            secondSlotLAYOUT = (LinearLayout) findViewById(R.id.second_slot_LAYOUT);
+            thirdSlotLAYOUT = (LinearLayout) findViewById(R.id.third_slot_layout);
 
-        cbSaturday = (CheckBox) view.findViewById(R.id.cb_saturday);
-        cbSunday = (CheckBox) view.findViewById(R.id.cb_sunday);
-        cbMonday = (CheckBox) view.findViewById(R.id.cb_monday);
-        cbTuesday = (CheckBox) view.findViewById(R.id.cb_tuesday);
-        cbWednesday = (CheckBox) view.findViewById(R.id.cb_wednesday);
-        cbThursday = (CheckBox) view.findViewById(R.id.cb_thursday);
-        cbFriday = (CheckBox) view.findViewById(R.id.cb_friday);
+            cbSaturday = (CheckBox) findViewById(R.id.cb_saturday);
+            cbSunday = (CheckBox) findViewById(R.id.cb_sunday);
+            cbMonday = (CheckBox) findViewById(R.id.cb_monday);
+            cbTuesday = (CheckBox) findViewById(R.id.cb_tuesday);
+            cbWednesday = (CheckBox) findViewById(R.id.cb_wednesday);
+            cbThursday = (CheckBox) findViewById(R.id.cb_thursday);
+            cbFriday = (CheckBox) findViewById(R.id.cb_friday);
 
-        etDaysInterval = (EditText) view.findViewById(R.id.et_days_interval);
+            etDaysInterval = (EditText) findViewById(R.id.et_days_interval);
 
-        plusIV = (ImageView) view.findViewById(R.id.iv_plus);
-        mynasIV = (ImageView) view.findViewById(R.id.iv_mynas);
-        takeSnapIV = (ImageView) view.findViewById(R.id.iv_take_snap);
-        medicineIV = (ImageView) view.findViewById(R.id.medicine_IV);
+            plusIV = (ImageView) findViewById(R.id.iv_plus);
+            mynasIV = (ImageView) findViewById(R.id.iv_mynas);
+            takeSnapIV = (ImageView)findViewById(R.id.iv_take_snap);
+            medicineIV = (ImageView) findViewById(R.id.medicine_IV);
 
-        cvSpecificDayOfWeek = (CardView) view.findViewById(R.id.cv_specific_day_of_week);
-        cvDaysInterval = (CardView) view.findViewById(R.id.cv_days_interval);
-        cvMedicineImage = (CardView) view.findViewById(R.id.medicine_image_cv);
+            cvSpecificDayOfWeek = (CardView) findViewById(R.id.cv_specific_day_of_week);
+            cvDaysInterval = (CardView) findViewById(R.id.cv_days_interval);
+            cvMedicineImage = (CardView) findViewById(R.id.medicine_image_cv);
 
-        retakeBTN = (Button) view.findViewById(R.id.retakeBTN);
-        cancelBTN = (Button) view.findViewById(R.id.cancelBTN);
-        setBTN = (Button) view.findViewById(R.id.set_BTN);
+            retakeBTN = (Button) findViewById(R.id.retakeBTN);
+            cancelBTN = (Button) findViewById(R.id.cancelBTN);
+            setBTN = (Button) findViewById(R.id.set_BTN);
 
 
-        everyDayRB.setChecked(true);
-        beforeMealRB.setChecked(true);
+
+        }
+
+    private void setData() {
+
+        medNameET.setText(medicineModel.getMedicineName());
+        beforeType = medicineModel.getMedicineType();
+
+        if (beforeType.equals("Tablet")){
+
+            medicineTypeSP.setSelection(1);
+
+        }else if (beforeType.equals("Capsule")){
+
+            medicineTypeSP.setSelection(2);
+
+        }else if (beforeType.equals("syrup")){
+
+            medicineTypeSP.setSelection(3);
+
+        }else if (beforeType.equals("Injection")){
+
+            medicineTypeSP.setSelection(4);
+
+        }else if (beforeType.equals("Ointment")){
+
+            medicineTypeSP.setSelection(5);
+
+        }else if (beforeType.equals("Eye Drop")){
+
+            medicineTypeSP.setSelection(6);
+
+        }
+
+
+
+        if (medicineModel.getImagePath().equals("null")){
+
+            cvMedicineImage.setVisibility(View.GONE);
+
+        }else {
+
+            cvMedicineImage.setVisibility(View.VISIBLE);
+            ImageSaver imageSaver = new ImageSaver(this, this);
+            imageSaver.loadImage(medicineModel.getImagePath(), medicineIV, medicineModel.getMedicineType());
+        }
+
+
+        beforeNumberOfSlot = medicineModel.getNumberOfSlot();
+        noOfTimesSP.setSelection(beforeNumberOfSlot - 1);
+
+        if (beforeNumberOfSlot == 1){
+
+            firstSlotLAYOUT.setVisibility(View.VISIBLE);
+            firstSlotTV.setText(medicineModel.getFirstSlotTime());
+            secondSlotLAYOUT.setVisibility(View.GONE);
+            thirdSlotLAYOUT.setVisibility(View.GONE);
+
+        }else if (beforeNumberOfSlot == 2){
+
+            firstSlotLAYOUT.setVisibility(View.VISIBLE);
+            secondSlotLAYOUT.setVisibility(View.VISIBLE);
+            thirdSlotLAYOUT.setVisibility(View.GONE);
+
+            firstSlotTV.setText(medicineModel.getFirstSlotTime());
+            secondSlotTV.setText(medicineModel.getSecondSlotTime());
+
+        }else if (beforeNumberOfSlot == 3){
+
+            firstSlotLAYOUT.setVisibility(View.VISIBLE);
+            secondSlotLAYOUT.setVisibility(View.VISIBLE);
+            thirdSlotLAYOUT.setVisibility(View.VISIBLE);
+
+            firstSlotTV.setText(medicineModel.getFirstSlotTime());
+            secondSlotTV.setText(medicineModel.getSecondSlotTime());
+            thirdSlotTV.setText(medicineModel.getThirdSlotTime());
+
+        }
+
+        beforeNumberOfDays = medicineModel.getNumberOfDays();
+        noOfDaysET.setText(String.valueOf(beforeNumberOfDays));
+
+        beforeStartDate = medicineModel.getStartDate();
+        startDateTV.setText(beforeStartDate);
+
+
+
+
+        if ( (medicineModel.getDaysNameOfWeek().equals("null") ||
+                medicineModel.getDaysNameOfWeek().equals(""))
+                &&
+                ( medicineModel.getDaysInterval() == 0)){
+
+            everyDayRB.setChecked(true);
+
+        }else if (medicineModel.getDaysInterval() > 0){
+
+            cvDaysInterval.setVisibility(View.VISIBLE);
+            cvSpecificDayOfWeek.setVisibility(View.GONE);
+            daysIntervalRB.setChecked(true);
+            beforeDaysInterval = medicineModel.getDaysInterval();
+            etDaysInterval.setText(String.valueOf(beforeDaysInterval));
+
+
+        }else if ( ! medicineModel.getDaysNameOfWeek().equals("")
+                || ! medicineModel.getDaysNameOfWeek().equals("null")){
+
+            cvSpecificDayOfWeek.setVisibility(View.VISIBLE);
+            beforeDaysNameOfWeek = medicineModel.getDaysNameOfWeek();
+            specificDayRB.setChecked(true);
+
+            if (beforeDaysNameOfWeek.contains("Saturday")){
+
+                cbSaturday.setChecked(true);
+            }
+
+            if (beforeDaysNameOfWeek.contains("Sunday")){
+
+                cbSunday.setChecked(true);
+            }
+
+            if (beforeDaysNameOfWeek.contains("Monday")){
+
+                cbMonday.setChecked(true);
+            }
+
+            if (beforeDaysNameOfWeek.contains("Tuesday")){
+
+                cbTuesday.setChecked(true);
+            }
+
+            if (beforeDaysNameOfWeek.contains("Wednesday")){
+
+                cbWednesday.setChecked(true);
+            }
+
+            if (beforeDaysNameOfWeek.contains("Thursday")){
+
+                cbThursday.setChecked(true);
+            }
+
+            if (beforeDaysNameOfWeek.contains("Friday")){
+
+                cbFriday.setChecked(true);
+            }
+
+        }
+
+
+
+        if (tableName.contains("before")){
+
+            beforeMealRB.setChecked(true);
+
+        }else if (tableName.contains("after")){
+
+            afterMealRB.setChecked(true);
+        }
+
+
 
     }
 
-
-    private void setOnClick() {
-
+    private void setListener() {
 
         noOfTimesSP.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -366,24 +520,83 @@ public class AddMedicineFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-
-                if (Build.VERSION.SDK_INT >= 23 && !allPermission) {
-
-
-                    checkMultiplePermissions();
-
-                } else {
-
-
-                    mustExecute();
-
-                }
-
-
+                showEditDialog();
             }
         });
+    }
+
+    private void collectData(){
+
+        medicineModelList = new ArrayList<>();
+
+        String medName = medicineModel.getMedicineName();
+        String startDate = medicineModel.getStartDate();
+        String firstSlotTime = medicineModel.getFirstSlotTime();
+        int numberOfSlot = medicineModel.getNumberOfSlot();
+        int numberOfDays = medicineModel.getNumberOfDays();
+        String type = medicineModel.getMedicineType();
+
+        medicineModelList = dbHelper.selectWithMultipleQueries(startDate, medName, firstSlotTime, String.valueOf(numberOfSlot),
+                String.valueOf(numberOfDays), type, tableName);
+
+        Toast.makeText(this, ""+ medicineModelList.size(), Toast.LENGTH_SHORT).show();
+
+
+
 
     }
+
+
+    private void showEditDialog() {
+
+        AlertDialog.Builder builder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog);
+        } else {
+            builder = new AlertDialog.Builder(this);
+        }
+        builder.setTitle("Select EDIT operation")
+                .setMessage("EDIT ONCE--> will edit only single medicine\nEDIT ALL---> will edit all similar medicine with similar name and date")
+
+                .setPositiveButton("EDIT ALL", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        editAll();
+
+                    }
+                }).setNegativeButton("EDIT ONCE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+               editOnce();
+
+            }
+        }).setNeutralButton("CANCEL", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        dialog.cancel();
+                    }
+                })
+                .show();
+    }
+
+    private void editAll() {
+
+
+    }
+
+    private void editOnce() {
+
+        if (checkValidity() && checkSpecificDayValidity()){
+
+
+            mustExecute();
+
+        }
+
+
+    }
+
 
     private void mustExecute() {
 
@@ -392,11 +605,11 @@ public class AddMedicineFragment extends Fragment {
 
             if (beforeMealRB.isChecked()) {
 
-                tableName = "before_table";
+                newTableName = "before_table";
 
             } else if (afterMealRB.isChecked()) {
 
-                tableName = "after_table";
+                newTableName = "after_table";
             }
 
             if (everyDayRB.isChecked()) {
@@ -405,7 +618,7 @@ public class AddMedicineFragment extends Fragment {
                 String numberOfDays = noOfDaysET.getText().toString();
                 DateCalculations dc = new DateCalculations();
 
-                id = 0;
+                id = medicineModel.getId();
                 medName = medNameET.getText().toString();
                 medicineType = getMedicineType();
                 numberOfSlot = noOfTimesSP.getSelectedItemPosition() + 1;
@@ -421,7 +634,7 @@ public class AddMedicineFragment extends Fragment {
                 medicineMeal = getMedicineMeal();
 
 
-                dbHelper = new DatabaseHelper(getContext());
+                dbHelper = new DatabaseHelper(this);
 
                 saveImageToDirectory();
                 getSlotTime();
@@ -452,13 +665,13 @@ public class AddMedicineFragment extends Fragment {
                     medicineModel.setUniqueCode(uniqueCode);
 
                     setAlarm(calculatedDate, firstSlotTime, secondSlotTime, thirdSlotTime);
-                    dbHelper.insertData(medicineModel, tableName);
+                    dbHelper.insertData(medicineModel, newTableName);
 
 
-                    uniqueCode++;
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putInt("uniqueCodeLastValue", uniqueCode);
-                    editor.commit();
+//                    uniqueCode++;
+//                    SharedPreferences.Editor editor = sharedPreferences.edit();
+//                    editor.putInt("uniqueCodeLastValue", uniqueCode);
+//                    editor.commit();
 
 
                     calculatedDate = dc.addDays(newStartDate, "1");
@@ -489,7 +702,7 @@ public class AddMedicineFragment extends Fragment {
                 medicineMeal = getMedicineMeal();
 
 
-                dbHelper = new DatabaseHelper(getContext());
+                dbHelper = new DatabaseHelper(this);
 
 
                 saveImageToDirectory();
@@ -528,13 +741,13 @@ public class AddMedicineFragment extends Fragment {
 
 
                         setAlarm(finalDate, firstSlotTime, secondSlotTime, thirdSlotTime);
-                        dbHelper.insertData(medicineModel, tableName);
+                        dbHelper.insertData(medicineModel, newTableName);
 
 
-                        uniqueCode++;
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putInt("uniqueCodeLastValue", uniqueCode);
-                        editor.commit();
+//                        uniqueCode++;
+//                        SharedPreferences.Editor editor = sharedPreferences.edit();
+//                        editor.putInt("uniqueCodeLastValue", uniqueCode);
+//                        editor.commit();
 
                         finalDate = calculatedDate;
                         newStartDate = calculatedDate;
@@ -571,7 +784,7 @@ public class AddMedicineFragment extends Fragment {
                 status = "not_taken";
                 medicineMeal = getMedicineMeal();
 
-                dbHelper = new DatabaseHelper(getContext());
+                dbHelper = new DatabaseHelper(this);
 
                 saveImageToDirectory();
                 getSlotTime();
@@ -605,12 +818,12 @@ public class AddMedicineFragment extends Fragment {
 
 
                     setAlarm(calculatedDate, firstSlotTime, secondSlotTime, thirdSlotTime);
-                    dbHelper.insertData(medicineModel, tableName);
+                    dbHelper.insertData(medicineModel, newTableName);
 
-                    uniqueCode++;
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putInt("uniqueCodeLastValue", uniqueCode);
-                    editor.commit();
+//                    uniqueCode++;
+//                    SharedPreferences.Editor editor = sharedPreferences.edit();
+//                    editor.putInt("uniqueCodeLastValue", uniqueCode);
+//                    editor.commit();
 
                     calculatedDate = dc.addDays(newStartDate, String.valueOf(daysInterval));
                     newStartDate = calculatedDate;
@@ -622,8 +835,9 @@ public class AddMedicineFragment extends Fragment {
             }
 
 
-            Toast.makeText(getContext(), "Successfully added a medicine", Toast.LENGTH_SHORT).show();
-            getActivity().startActivity(new Intent(getContext(), MainActivity.class));
+            Toast.makeText(this, "Successfully added a medicine", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
 
         } else {
 
@@ -661,6 +875,36 @@ public class AddMedicineFragment extends Fragment {
 
     }
 
+    private void createAlarmModelObject() {
+
+
+        AlarmModel alarmModel = new AlarmModel();
+        alarmModel.setId(0);
+        alarmModel.setNdt(medName + uniqueCode);
+        alarmModel.setNumberOfSlot(numberOfSlot);
+        alarmModel.setFirstSlotTime(firstSlotTime);
+        alarmModel.setSecondSlotTime(secondSlotTime);
+        alarmModel.setThirdSlotTime(thirdSlotTime);
+        alarmModel.setFirstSlotRequestCode(firstRequestCode);
+        alarmModel.setSecondSlotRequestCode(secondRequestCode);
+        alarmModel.setThirdSlotRequestCode(thirdRequestCode);
+
+        AlarmDatabase alarmDatabase = new AlarmDatabase(this);
+        alarmDatabase.insertAlarm(alarmModel);
+
+
+        Log.d("firstRequest: ", ""+firstRequestCode);
+        Log.d("secondRequest: ", ""+secondRequestCode);
+        Log.d("thirdRequest: ", ""+thirdRequestCode);
+
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putInt("requestCodeValue", requestCode);
+//        editor.commit();
+
+
+
+    }
+
     private void setFinalAlarm(String combine, int value) {
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy hh:mm aaa");
@@ -686,8 +930,8 @@ public class AddMedicineFragment extends Fragment {
         }
 
 
-        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(getContext(), AlarmReceiver.class);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlarmReceiver.class);
         intent.putExtra("medName", medName);
         intent.putExtra("imagePath", imagePath);
         intent.putExtra("mealStatus", medicineMeal);
@@ -701,7 +945,7 @@ public class AddMedicineFragment extends Fragment {
 
 
             firstRequestCode = requestCode;
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), firstRequestCode, intent, 0);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, firstRequestCode, intent, 0);
             alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
             requestCode++;
 
@@ -715,7 +959,7 @@ public class AddMedicineFragment extends Fragment {
         if (!secondSlotTime.equals("null") && value == 2) {
 
             secondRequestCode = requestCode;
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), secondRequestCode, intent, 0);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, secondRequestCode, intent, 0);
             alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
             requestCode++;
 
@@ -730,7 +974,7 @@ public class AddMedicineFragment extends Fragment {
         if (!thirdSlotTime.equals("null") && value == 3) {
 
             thirdRequestCode = requestCode;
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), thirdRequestCode, intent, 0);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, thirdRequestCode, intent, 0);
             alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
             requestCode++;
 
@@ -745,36 +989,6 @@ public class AddMedicineFragment extends Fragment {
 
     }
 
-
-    private void createAlarmModelObject() {
-
-
-        AlarmModel alarmModel = new AlarmModel();
-        alarmModel.setId(0);
-        alarmModel.setNdt(medName + uniqueCode);
-        alarmModel.setNumberOfSlot(numberOfSlot);
-        alarmModel.setFirstSlotTime(firstSlotTime);
-        alarmModel.setSecondSlotTime(secondSlotTime);
-        alarmModel.setThirdSlotTime(thirdSlotTime);
-        alarmModel.setFirstSlotRequestCode(firstRequestCode);
-        alarmModel.setSecondSlotRequestCode(secondRequestCode);
-        alarmModel.setThirdSlotRequestCode(thirdRequestCode);
-
-        AlarmDatabase alarmDatabase = new AlarmDatabase(getContext());
-        alarmDatabase.insertAlarm(alarmModel);
-
-
-        Log.d("firstRequest: ", ""+firstRequestCode);
-        Log.d("secondRequest: ", ""+secondRequestCode);
-        Log.d("thirdRequest: ", ""+thirdRequestCode);
-
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("requestCodeValue", requestCode);
-        editor.commit();
-
-
-
-    }
 
     private String getMedicineMeal() {
 
@@ -860,7 +1074,7 @@ public class AddMedicineFragment extends Fragment {
             BitmapDrawable drawable = (BitmapDrawable) medicineIV.getDrawable();
             Bitmap bitmap = drawable.getBitmap();
 
-            ImageSaver imageSaver = new ImageSaver(getContext(), getActivity());
+            ImageSaver imageSaver = new ImageSaver(this, this);
             imageSaver.saveImage(bitmap, imagePath);
 
         } else {
@@ -875,7 +1089,7 @@ public class AddMedicineFragment extends Fragment {
         if (medNameET.getText().toString().equals("")) {
 
             medNameET.setError("Enter a medicine name");
-            Toast.makeText(getContext(), "Please enter a valid medicine name", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please enter a valid medicine name", Toast.LENGTH_SHORT).show();
             return false;
 
 
@@ -890,15 +1104,15 @@ public class AddMedicineFragment extends Fragment {
 
             if (firstSlotTV.getText().toString().contains("Set")) {
 
-                Toast.makeText(getContext(), "Please enter a valid time in slot 1", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Please enter a valid time in slot 1", Toast.LENGTH_SHORT).show();
 
             } else if (secondSlotTV.getText().toString().contains("Set")) {
 
-                Toast.makeText(getContext(), "Please enter a valid time in slot 2", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Please enter a valid time in slot 2", Toast.LENGTH_SHORT).show();
 
             } else if (thirdSlotTV.getText().toString().contains("Set")) {
 
-                Toast.makeText(getContext(), "Please enter a valid time in slot 3", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Please enter a valid time in slot 3", Toast.LENGTH_SHORT).show();
             }
 
 
@@ -915,11 +1129,11 @@ public class AddMedicineFragment extends Fragment {
 
             if (firstSlotTV.getText().toString().contains("Set")) {
 
-                Toast.makeText(getContext(), "Please enter a valid time in slot 1", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Please enter a valid time in slot 1", Toast.LENGTH_SHORT).show();
 
             } else if (secondSlotTV.getText().toString().contains("Set")) {
 
-                Toast.makeText(getContext(), "Please enter a valid time in slot 2", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Please enter a valid time in slot 2", Toast.LENGTH_SHORT).show();
             }
 
 
@@ -933,7 +1147,7 @@ public class AddMedicineFragment extends Fragment {
                 ((firstSlotTV.getText().toString().contains("Set")))) {
 
 
-            Toast.makeText(getContext(), "Please enter a valid time in slot 1", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please enter a valid time in slot 1", Toast.LENGTH_SHORT).show();
             return false;
 
 
@@ -941,19 +1155,19 @@ public class AddMedicineFragment extends Fragment {
 
 
             noOfDaysET.setError("this field is required");
-            Toast.makeText(getContext(), "Number of days cannot be empty", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Number of days cannot be empty", Toast.LENGTH_SHORT).show();
             return false;
 
 
         } else if (startDateTV.getText().toString().contains("Touch here to set date")) {
 
-            Toast.makeText(getContext(), "Please enter a valid date", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please enter a valid date", Toast.LENGTH_SHORT).show();
 
             return false;
 
         } else if (medicineTypeSP.getSelectedItemPosition() == 0) {
 
-            Toast.makeText(getContext(), "Please select a valid medicine type", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please select a valid medicine type", Toast.LENGTH_SHORT).show();
 
             return false;
 
@@ -1001,7 +1215,7 @@ public class AddMedicineFragment extends Fragment {
 
         } else {
 
-            Toast.makeText(getContext(), "Please select at least one specific day in week\nOr choose Everyday", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please select at least one specific day in week\nOr choose Everyday", Toast.LENGTH_LONG).show();
             return false;
         }
     }
@@ -1010,7 +1224,7 @@ public class AddMedicineFragment extends Fragment {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
-            if (getActivity().checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.CAMERA}, StaticVariables.MY_CAMERA_PERMISSION_CODE);
 
             } else {
@@ -1071,7 +1285,7 @@ public class AddMedicineFragment extends Fragment {
             }
         };
 
-        TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(),
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this,
                 android.R.style.Theme_Holo_Light_Dialog_NoActionBar,
                 myTimeListener,
                 hour,
@@ -1086,7 +1300,7 @@ public class AddMedicineFragment extends Fragment {
 
         } catch (Exception e) {
 
-            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
 
 
@@ -1095,8 +1309,8 @@ public class AddMedicineFragment extends Fragment {
     public void showDatePicker() {
 
 
-        DialogFragment dFragment = new DatePickerFragment();
-        dFragment.show(getActivity().getFragmentManager(), "Date Picker");
+        DialogFragment dFragment = new AddMedicineFragment.DatePickerFragment();
+        dFragment.show(getFragmentManager(), "Date Picker");
 
     }
 
@@ -1236,7 +1450,7 @@ public class AddMedicineFragment extends Fragment {
     private boolean addPermission(List<String> permissionsList, String permission) {
         if (Build.VERSION.SDK_INT >= 23)
 
-            if (getActivity().checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+            if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
                 permissionsList.add(permission);
 
                 // Check for Rationale Option
@@ -1270,7 +1484,7 @@ public class AddMedicineFragment extends Fragment {
                     // Permission Denied
                     if (Build.VERSION.SDK_INT >= 23) {
                         Toast.makeText(
-                                getContext(),
+                                this,
                                 "This application cannot run without Camera and Storage " +
                                         "Permissions.\nYou may relaunch the App or allow permissions" +
                                         " from Application Settings",
@@ -1300,10 +1514,6 @@ public class AddMedicineFragment extends Fragment {
     }
 
 
+
 }
-
-
-
-
-
 

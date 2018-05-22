@@ -133,7 +133,8 @@ public class HomeFragment extends Fragment {
         medicineModelListBeforeMeal.clear();
         dbHelper = new DatabaseHelper(getContext());
         medicineModelListBeforeMeal = dbHelper.getSelectedList(searchQuery, "before_table");
-        adapter = new MedicineAdapter(getContext(), medicineModelListBeforeMeal, getActivity());
+        adapter = new MedicineAdapter(getContext(), medicineModelListBeforeMeal, getActivity(),
+                "before_table", recyclerViewBeforeMeal , adapter, searchQuery);
         adapter.notifyDataSetChanged();
         recyclerViewBeforeMeal.setAdapter(adapter);
         adapter.notifyDataSetChanged();
@@ -145,7 +146,8 @@ public class HomeFragment extends Fragment {
         medicineModelListAfterMeal.clear();
         dbHelper = new DatabaseHelper(getContext());
         medicineModelListAfterMeal = dbHelper.getSelectedList(searchQuery, "after_table");
-        adapter = new MedicineAdapter(getContext(), medicineModelListAfterMeal, getActivity());
+        adapter = new MedicineAdapter(getContext(), medicineModelListAfterMeal, getActivity(),
+                "after_table", recyclerViewAfterMeal, adapter, searchQuery);
         adapter.notifyDataSetChanged();
         recyclerViewAfterMeal.setAdapter(adapter);
         adapter.notifyDataSetChanged();
@@ -258,7 +260,8 @@ public class HomeFragment extends Fragment {
         medicineModelListBeforeMeal.clear();
         dbHelper = new DatabaseHelper(getContext());
         medicineModelListBeforeMeal = dbHelper.getSelectedList(searchQuery, "before_table");
-        adapter = new MedicineAdapter(getContext(), medicineModelListBeforeMeal, getActivity());
+        adapter = new MedicineAdapter(getContext(), medicineModelListBeforeMeal, getActivity(),
+                "before_table", recyclerViewBeforeMeal, adapter, searchQuery);
         adapter.notifyDataSetChanged();
         recyclerViewBeforeMeal.setAdapter(adapter);
         adapter.notifyDataSetChanged();
@@ -271,7 +274,8 @@ public class HomeFragment extends Fragment {
         medicineModelListAfterMeal.clear();
         dbHelper = new DatabaseHelper(getContext());
         medicineModelListAfterMeal = dbHelper.getSelectedList(searchQuery, "after_table");
-        adapter = new MedicineAdapter(getContext(), medicineModelListAfterMeal, getActivity());
+        adapter = new MedicineAdapter(getContext(), medicineModelListAfterMeal, getActivity(),
+                "after_table", recyclerViewAfterMeal, adapter, searchQuery);
         adapter.notifyDataSetChanged();
         recyclerViewAfterMeal.setAdapter(adapter);
         adapter.notifyDataSetChanged();
