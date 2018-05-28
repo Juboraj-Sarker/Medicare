@@ -24,7 +24,7 @@ import com.juborajsarker.medicinealert.database.DatabaseHelper;
 import com.juborajsarker.medicinealert.dataparser.DateCalculations;
 import com.juborajsarker.medicinealert.dataparser.GridSpacingItemDecoration;
 import com.juborajsarker.medicinealert.model.MedicineModel;
-import com.juborajsarker.medicinealert.model.StaticVariables;
+import com.juborajsarker.medicinealert.myInterface.StaticVariables;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -85,16 +85,6 @@ public class HomeFragment extends Fragment {
 
         setupCalender();
         init();
-
-
-
-
-
-
-
-
-
-
 
 
 

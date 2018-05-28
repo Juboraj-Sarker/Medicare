@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.juborajsarker.medicinealert.R;
-import com.juborajsarker.medicinealert.model.StaticVariables;
+import com.juborajsarker.medicinealert.myInterface.StaticVariables;
 
 import java.io.File;
 import java.io.FileOutputStream;

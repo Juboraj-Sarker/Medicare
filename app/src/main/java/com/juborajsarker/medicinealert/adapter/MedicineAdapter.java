@@ -105,6 +105,16 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.MyView
                 sendDataToDetailsActivity(medicineModel, mContext);
             }
         });
+
+        holder.fullChildCV.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                showPopupMenu(holder.fullChildCV, medicineModel, mContext, tableName, activity, recyclerView, adapter, searchKeyword);
+
+                return false;
+            }
+        });
     }
 
 

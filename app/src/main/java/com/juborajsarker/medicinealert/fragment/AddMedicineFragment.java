@@ -49,7 +49,7 @@ import com.juborajsarker.medicinealert.dataparser.DateCalculations;
 import com.juborajsarker.medicinealert.dataparser.ImageSaver;
 import com.juborajsarker.medicinealert.model.AlarmModel;
 import com.juborajsarker.medicinealert.model.MedicineModel;
-import com.juborajsarker.medicinealert.model.StaticVariables;
+import com.juborajsarker.medicinealert.myInterface.StaticVariables;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -624,6 +624,7 @@ public class AddMedicineFragment extends Fragment {
 
             Toast.makeText(getContext(), "Successfully added a medicine", Toast.LENGTH_SHORT).show();
             getActivity().startActivity(new Intent(getContext(), MainActivity.class));
+            getActivity().finish();
 
         } else {
 

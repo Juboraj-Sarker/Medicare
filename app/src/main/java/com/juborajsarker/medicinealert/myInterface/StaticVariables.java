@@ -1,4 +1,4 @@
-package com.juborajsarker.medicinealert.model;
+package com.juborajsarker.medicinealert.myInterface;
 
 public interface StaticVariables {
 

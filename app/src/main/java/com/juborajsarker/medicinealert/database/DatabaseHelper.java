@@ -356,7 +356,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_2, medicineModel.getMedicineName());
         values.put(COLUMN_3, medicineModel.getMedicineType());
         values.put(COLUMN_4, medicineModel.getImagePath());
-        values.put(COLUMN_6, medicineModel.getNumberOfSlot());
+        values.put(COLUMN_5, medicineModel.getNumberOfSlot());
         values.put(COLUMN_6, medicineModel.getFirstSlotTime());
         values.put(COLUMN_7, medicineModel.getSecondSlotTime());
         values.put(COLUMN_8, medicineModel.getThirdSlotTime());
