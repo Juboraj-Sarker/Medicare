@@ -9,12 +9,14 @@ public class AppointmentModel {
     String date;
     String time;
     String rememberBefore;
+    long rememberBeforeTimeInMills;
     String location;
     String notes;
+    int requestCode;
 
 
-    public AppointmentModel(int id, String appointmentTitle, String doctorName, String doctorSpeciality,
-                            String date, String time, String rememberBefore, String location, String notes) {
+    public AppointmentModel(int id, String appointmentTitle, String doctorName, String doctorSpeciality, String date, String time,
+                            String rememberBefore, long rememberBeforeTimeInMills, String location, String notes, int requestCode) {
 
         this.id = id;
         this.appointmentTitle = appointmentTitle;
@@ -23,8 +25,11 @@ public class AppointmentModel {
         this.date = date;
         this.time = time;
         this.rememberBefore = rememberBefore;
+        this.rememberBeforeTimeInMills = rememberBeforeTimeInMills;
         this.location = location;
         this.notes = notes;
+        this.requestCode = requestCode;
+
 
     }
 
@@ -88,6 +93,14 @@ public class AppointmentModel {
         this.rememberBefore = rememberBefore;
     }
 
+    public long getRememberBeforeTimeInMills() {
+        return rememberBeforeTimeInMills;
+    }
+
+    public void setRememberBeforeTimeInMills(long rememberBeforeTimeInMills) {
+        this.rememberBeforeTimeInMills = rememberBeforeTimeInMills;
+    }
+
     public String getLocation() {
         return location;
     }
@@ -102,5 +115,13 @@ public class AppointmentModel {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public int getRequestCode() {
+        return requestCode;
+    }
+
+    public void setRequestCode(int requestCode) {
+        this.requestCode = requestCode;
     }
 }

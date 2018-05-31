@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.DetailsAppointmentActivity">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp">
+
+
+                <LinearLayout
+                    android:id="@+id/status_LAYOUT_DA"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#ffb700"
+                    android:orientation="horizontal"
+                    android:padding="8dp">
+
+
+                    <TextView
+                        android:id="@+id/title_TV"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="5dp"
+                        android:text="Title"
+                        android:textColor="#fff"
+                        android:textSize="16sp" />
+
+
+                </LinearLayout>
+
+
+            </android.support.v7.widget.CardView>
+
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:padding="5dp">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#f5f5f5"
+                    android:orientation="vertical"
+                    android:paddingBottom="2dp"
+                    android:paddingTop="2dp">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="#d64b4b4b" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#fff"
+                        android:orientation="horizontal"
+                        android:padding="2dp">
+
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:padding="5dp"
+                            android:text="Date:"
+                            android:textColor="#d9383838"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/date_TV"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1.7"
+                            android:gravity="center_vertical"
+                            android:padding="5dp"
+                            android:text=""
+                            android:textColor="#000000"
+                            android:textSize="13sp" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="#d64b4b4b" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="2dp">
+
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:padding="5dp"
+                            android:text="Doctor Name:"
+                            android:textColor="#d9383838"
+                            android:textSize="13sp" />
+
+
+                        <TextView
+                            android:id="@+id/doctor_name_TV"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1.7"
+                            android:gravity="center_vertical"
+                            android:padding="5dp"
+                            android:text=""
+                            android:textColor="#000000"
+                            android:textSize="13sp" />
+
+                    </LinearLayout>
+
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="#d64b4b4b" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#fff"
+                        android:orientation="horizontal"
+                        android:padding="2dp">
+
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:padding="5dp"
+                            android:text="Doctor Speciality:"
+                            android:textColor="#d9383838"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/doctor_speciality_TV"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1.7"
+                            android:gravity="center_vertical"
+                            android:padding="5dp"
+                            android:text=""
+                            android:textColor="#000000"
+                            android:textSize="13sp" />
+
+
+                    </LinearLayout>
+
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="#d64b4b4b" />
+
+                    <LinearLayout
+                        android:id="@+id/second_slot_LAYOUT_DA"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="2dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:padding="5dp"
+                            android:text="Location"
+                            android:textColor="#d9383838"
+                            android:textSize="13sp" />
+
+
+                        <TextView
+                            android:id="@+id/location_TV"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1.7"
+                            android:gravity="center_vertical"
+                            android:padding="5dp"
+                            android:text=""
+                            android:textColor="#000000"
+                            android:textSize="13sp" />
+
+
+                    </LinearLayout>
+
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="#d64b4b4b" />
+
+
+                    <LinearLayout
+                        android:id="@+id/third_slot_layout_DA"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#fff"
+                        android:orientation="horizontal"
+                        android:padding="2dp">
+
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:padding="5dp"
+                            android:text="Remember Before:"
+                            android:textColor="#d9383838"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/remember_before_TV"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1.7"
+                            android:gravity="center_vertical"
+                            android:padding="5dp"
+                            android:text=""
+                            android:textColor="#000000"
+                            android:textSize="13sp" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="#d64b4b4b" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="2dp">
+
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:padding="5dp"
+                            android:text="Notes"
+                            android:textColor="#d9383838"
+                            android:textSize="13sp" />
+
+
+                        <TextView
+                            android:id="@+id/notes_TV"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1.7"
+                            android:gravity="center_vertical"
+                            android:padding="5dp"
+                            android:text=""
+                            android:textColor="#000000"
+                            android:textSize="13sp" />
+
+                    </LinearLayout>
+
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="#d64b4b4b" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="2dp"
+                        android:background="#fff">
+
+
+
+
+
+                        <Button
+                            android:id="@+id/btn_edit"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@color/colorPrimary"
+                            android:text="Edit"
+                            android:textColor="#fff"
+                            android:layout_margin="8dp" />
+
+
+                        <Button
+                            android:id="@+id/btn_delete"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@color/colorPrimary"
+                            android:text="Delete"
+                            android:textColor="#fff"
+                            android:layout_margin="8dp" />
+
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

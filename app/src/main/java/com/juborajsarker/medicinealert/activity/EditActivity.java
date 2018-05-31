@@ -35,7 +35,7 @@ import android.widget.Toast;
 import com.juborajsarker.medicinealert.R;
 import com.juborajsarker.medicinealert.broadcastReceiver.AlarmReceiver;
 import com.juborajsarker.medicinealert.database.AlarmDatabase;
-import com.juborajsarker.medicinealert.database.DatabaseHelper;
+import com.juborajsarker.medicinealert.database.MedicineDatabase;
 import com.juborajsarker.medicinealert.dataparser.ImageSaver;
 import com.juborajsarker.medicinealert.model.AlarmModel;
 import com.juborajsarker.medicinealert.model.MedicineModel;
@@ -58,7 +58,7 @@ public class EditActivity extends AppCompatActivity {
     int id;
     MedicineModel medicineModel, nMedicineModel;
     List<MedicineModel> medicineModelList;
-    DatabaseHelper dbHelper;
+    MedicineDatabase dbHelper;
     AlarmModel bAlarmModel;
     AlarmDatabase alarmDatabase;
     List<AlarmModel> alarmModelList;
@@ -106,7 +106,7 @@ public class EditActivity extends AppCompatActivity {
         medicineModel = new MedicineModel();
         nMedicineModel = new MedicineModel();
         medicineModelList = new ArrayList<>();
-        dbHelper = new DatabaseHelper(this);
+        dbHelper = new MedicineDatabase(this);
         bAlarmModel = new AlarmModel();
         alarmModelList = new ArrayList<>();
         alarmDatabase = new AlarmDatabase(this);

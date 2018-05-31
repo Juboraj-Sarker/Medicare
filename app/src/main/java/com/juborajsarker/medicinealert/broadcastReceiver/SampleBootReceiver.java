@@ -8,7 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.juborajsarker.medicinealert.database.DatabaseHelper;
+import com.juborajsarker.medicinealert.database.MedicineDatabase;
 import com.juborajsarker.medicinealert.model.MedicineModel;
 
 import java.text.ParseException;
@@ -33,7 +33,7 @@ public class SampleBootReceiver extends BroadcastReceiver {
 
             List<MedicineModel> beforeList = new ArrayList<>();
             List<MedicineModel> afterList = new ArrayList<>();
-            DatabaseHelper dbHelper = new DatabaseHelper(context);
+            MedicineDatabase dbHelper = new MedicineDatabase(context);
 
             beforeList = dbHelper.getAllData("before_table");
             afterList = dbHelper.getAllData("after_table");
@@ -156,6 +156,7 @@ public class SampleBootReceiver extends BroadcastReceiver {
             intent.putExtra("mealStatus", medicineModel.getMedicineMeal());
             intent.putExtra("time", combine);
             intent.putExtra("medType", medicineModel.getMedicineType());
+            intent.putExtra("med", "true");
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, 0);
             alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
 

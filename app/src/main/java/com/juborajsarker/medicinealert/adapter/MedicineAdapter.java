@@ -25,7 +25,7 @@ import com.juborajsarker.medicinealert.activity.DetailsActivity;
 import com.juborajsarker.medicinealert.activity.EditActivity;
 import com.juborajsarker.medicinealert.broadcastReceiver.AlarmReceiver;
 import com.juborajsarker.medicinealert.database.AlarmDatabase;
-import com.juborajsarker.medicinealert.database.DatabaseHelper;
+import com.juborajsarker.medicinealert.database.MedicineDatabase;
 import com.juborajsarker.medicinealert.dataparser.ImageSaver;
 import com.juborajsarker.medicinealert.model.AlarmModel;
 import com.juborajsarker.medicinealert.model.MedicineModel;
@@ -218,7 +218,7 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.MyView
                             String searchKeyword) {
 
 
-        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        MedicineDatabase databaseHelper = new MedicineDatabase(context);
         databaseHelper.deleteData(medicineModel, tableName);
 
         medicineModelList.clear();

@@ -2,10 +2,14 @@ package com.juborajsarker.medicinealert.fragment;
 
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +18,18 @@ import android.widget.TextView;
 
 import com.juborajsarker.medicinealert.R;
 import com.juborajsarker.medicinealert.activity.AddAppointmentActivity;
+import com.juborajsarker.medicinealert.adapter.AppointmentAdapter;
+import com.juborajsarker.medicinealert.database.AppointmentDatabase;
 import com.juborajsarker.medicinealert.dataparser.DateCalculations;
+import com.juborajsarker.medicinealert.dataparser.GridSpacingItemDecoration;
+import com.juborajsarker.medicinealert.model.AppointmentModel;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
@@ -40,6 +50,11 @@ public class AppointmentFragment extends Fragment {
     TextView dateTV, appointmentTV;
     FloatingActionButton fabAdd;
     RecyclerView recyclerView;
+
+    AppointmentAdapter adapter;
+    List<AppointmentModel> appointmentModelList;
+    AppointmentDatabase database;
+    AppointmentModel model;
 
 
     public AppointmentFragment() {
@@ -105,6 +120,48 @@ public class AppointmentFragment extends Fragment {
         String formattedCurrentDate = sdf.format(currentDate);
 
         dateTV.setText("Today " +formattedCurrentDate );
+
+        database = new AppointmentDatabase(getContext());
+        appointmentModelList = new ArrayList<>();
+        model = new AppointmentModel();
+
+
+        prepareForView(searchQuery);
+
+
+    }
+
+
+
+
+    private void prepareForView(String searchQuery) {
+
+        appointmentModelList.clear();
+        appointmentModelList = database.getSelectedAppointment(searchQuery);
+
+        if (appointmentModelList.size() > 0){
+
+            appointmentTV.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+
+        }else if (appointmentModelList.size() == 0){
+
+            appointmentTV.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        }
+
+        RecyclerView.LayoutManager layoutManagerBeforeMeal = new GridLayoutManager(getContext(), 1);
+        recyclerView.setLayoutManager(layoutManagerBeforeMeal);
+        recyclerView.addItemDecoration(new GridSpacingItemDecoration(1, dpToPx(2), true));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+
+
+
+        adapter = new AppointmentAdapter(getContext(), appointmentModelList, getActivity(), recyclerView, adapter, searchQuery);
+        adapter.notifyDataSetChanged();
+        recyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
 
@@ -148,8 +205,13 @@ public class AppointmentFragment extends Fragment {
             @Override
             public void onDateSelected(Calendar date, int position) {
 
+                Date currentDate = date.getTime();
+                DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.UK);
+                String searchQuery = df.format(currentDate);
+
                 imageViewIssue(date, position);
                 setTextViewDate(date);
+                prepareForView(searchQuery);
 
 
             }
@@ -238,6 +300,12 @@ public class AppointmentFragment extends Fragment {
 
         }
 
+    }
+
+
+    private int dpToPx(int dp) {
+        Resources r = getResources();
+        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
     }
 
 }

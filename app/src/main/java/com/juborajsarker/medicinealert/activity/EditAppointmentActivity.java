@@ -35,14 +35,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class AddAppointmentActivity extends AppCompatActivity {
+public class EditAppointmentActivity extends AppCompatActivity {
 
     SharedPreferences sharedPreferences;
 
     EditText appTitleET, doctorNameET, doctorSpecialityET, rememberBeforeET, locationET, notesET;
     TextView dateTV, timeTV;
     RadioButton hourRB, minuteRB;
-    Button addAppointmentBTN;
+    Button editAppointmentBTN;
 
 
     Calendar myCalender;
@@ -51,10 +51,13 @@ public class AddAppointmentActivity extends AppCompatActivity {
     long rememberBeforeTimeInMills;
     int lastRequestCode;
 
+    int id, rc;
+    AppointmentModel model;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_appointment);
+        setContentView(R.layout.activity_edit_appointment);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null){
@@ -62,14 +65,39 @@ public class AddAppointmentActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        Intent intent = getIntent();
+        id = intent.getIntExtra("id", -1);
 
         sharedPreferences = getSharedPreferences("alarmRequestCode", MODE_PRIVATE);
         lastRequestCode = sharedPreferences.getInt("requestCodeValue", 1);
 
         init();
+        setData(id);
         setOnclick();
 
+
     }
+
+    private void setData(int id) {
+
+        model = new AppointmentModel();
+        AppointmentDatabase database = new AppointmentDatabase(this);
+        model = database.selectWithID(String.valueOf(id));
+
+        appTitleET.setText(model.getAppointmentTitle());
+        doctorNameET.setText(model.getDoctorName());
+        doctorSpecialityET.setText(model.getDoctorSpeciality());
+        dateTV.setText(model.getDate());
+        timeTV.setText(model.getTime());
+        locationET.setText(model.getLocation());
+        notesET.setText(model.getNotes());
+        rememberBeforeET.setText(model.getRememberBefore());
+
+        rc = model.getRequestCode();
+
+        minuteRB.setChecked(true);
+    }
+
 
     private void init() {
 
@@ -86,9 +114,9 @@ public class AddAppointmentActivity extends AppCompatActivity {
         hourRB = (RadioButton) findViewById(R.id.hour_RB);
         minuteRB = (RadioButton) findViewById(R.id.minute_RB);
 
-        addAppointmentBTN = (Button) findViewById(R.id.add_appointment_BTN);
+        editAppointmentBTN = (Button) findViewById(R.id.btn_edit);
 
-        hourRB.setChecked(true);
+
     }
 
     private void setOnclick(){
@@ -116,18 +144,19 @@ public class AddAppointmentActivity extends AppCompatActivity {
         });
 
 
-        addAppointmentBTN.setOnClickListener(new View.OnClickListener() {
+        editAppointmentBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if (checkValidity()){
 
                     collectData();
+                    deleteAlarm(rc);
                     String combine = date +" " + time;
                     setAlarm(combine);
-                    insertIntoDatabase();
+                    updateData();
 
-                    Intent intent = new Intent(AddAppointmentActivity.this, MainActivity.class);
+                    Intent intent = new Intent(EditAppointmentActivity.this, MainActivity.class);
                     intent.putExtra("open", "appointment");
                     startActivity(intent);
 
@@ -140,11 +169,19 @@ public class AddAppointmentActivity extends AppCompatActivity {
 
     }
 
-    private void insertIntoDatabase() {
+    private void deleteAlarm(int rc) {
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, rc, intent, 0);
+        alarmManager.cancel(pendingIntent);
+    }
+
+    private void updateData() {
 
         AppointmentModel appointmentModel = new AppointmentModel();
 
-        appointmentModel.setId(0);
+        appointmentModel.setId(id);
         appointmentModel.setAppointmentTitle(appTitle);
         appointmentModel.setDoctorName(docName);
         appointmentModel.setDoctorSpeciality(docSpeciality);
@@ -156,8 +193,8 @@ public class AddAppointmentActivity extends AppCompatActivity {
         appointmentModel.setNotes(notes);
         appointmentModel.setRequestCode(lastRequestCode);
 
-        AppointmentDatabase database = new AppointmentDatabase(AddAppointmentActivity.this);
-        database.insertAppointment(appointmentModel);
+        AppointmentDatabase database = new AppointmentDatabase(EditAppointmentActivity.this);
+        database.updateAppointment(appointmentModel);
     }
 
 
@@ -384,7 +421,7 @@ public class AddAppointmentActivity extends AppCompatActivity {
     public void showDatePicker() {
 
 
-        DialogFragment dFragment = new DatePickerFragment();
+        DialogFragment dFragment = new AddAppointmentActivity.DatePickerFragment();
         dFragment.show(getFragmentManager(), "Date Picker");
 
     }

@@ -44,7 +44,7 @@ import com.juborajsarker.medicinealert.R;
 import com.juborajsarker.medicinealert.activity.MainActivity;
 import com.juborajsarker.medicinealert.broadcastReceiver.AlarmReceiver;
 import com.juborajsarker.medicinealert.database.AlarmDatabase;
-import com.juborajsarker.medicinealert.database.DatabaseHelper;
+import com.juborajsarker.medicinealert.database.MedicineDatabase;
 import com.juborajsarker.medicinealert.dataparser.DateCalculations;
 import com.juborajsarker.medicinealert.dataparser.ImageSaver;
 import com.juborajsarker.medicinealert.model.AlarmModel;
@@ -97,7 +97,7 @@ public class AddMedicineFragment extends Fragment {
     int uniqueCode = 0;
     int firstRequestCode, secondRequestCode, thirdRequestCode;
 
-    DatabaseHelper dbHelper;
+    MedicineDatabase dbHelper;
 
     View view;
 
@@ -421,7 +421,7 @@ public class AddMedicineFragment extends Fragment {
                 medicineMeal = getMedicineMeal();
 
 
-                dbHelper = new DatabaseHelper(getContext());
+                dbHelper = new MedicineDatabase(getContext());
 
                 saveImageToDirectory();
                 getSlotTime();
@@ -489,7 +489,7 @@ public class AddMedicineFragment extends Fragment {
                 medicineMeal = getMedicineMeal();
 
 
-                dbHelper = new DatabaseHelper(getContext());
+                dbHelper = new MedicineDatabase(getContext());
 
 
                 saveImageToDirectory();
@@ -571,7 +571,7 @@ public class AddMedicineFragment extends Fragment {
                 status = "not_taken";
                 medicineMeal = getMedicineMeal();
 
-                dbHelper = new DatabaseHelper(getContext());
+                dbHelper = new MedicineDatabase(getContext());
 
                 saveImageToDirectory();
                 getSlotTime();
@@ -623,7 +623,7 @@ public class AddMedicineFragment extends Fragment {
 
 
             Toast.makeText(getContext(), "Successfully added a medicine", Toast.LENGTH_SHORT).show();
-            getActivity().startActivity(new Intent(getContext(), MainActivity.class));
+            getActivity().startActivity(new Intent(getContext(), MainActivity.class).putExtra("open", "medicine"));
             getActivity().finish();
 
         } else {
@@ -694,6 +694,7 @@ public class AddMedicineFragment extends Fragment {
         intent.putExtra("mealStatus", medicineMeal);
         intent.putExtra("time", combine);
         intent.putExtra("medType", medicineType);
+        intent.putExtra("med", "true");
 
 
 
@@ -1027,6 +1028,49 @@ public class AddMedicineFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == StaticVariables.CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+            //  Bitmap bMapScaled = Bitmap.createScaledBitmap(photo, 330, 189, true);
+            cvMedicineImage.setVisibility(View.VISIBLE);
+            medicineIV.setImageBitmap(photo);
+        }
+    }
+
+    public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+            final Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog dpd = new DatePickerDialog(getActivity(),
+                    AlertDialog.THEME_HOLO_LIGHT, this, year, month, day);
+            return dpd;
+        }
+
+        public void onDateSet(DatePicker view, int year, int month, int day) {
+
+            TextView tv = (TextView) getActivity().findViewById(R.id.start_date_TV);
+
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(0);
+            cal.set(year, month, day, 0, 0, 0);
+            Date chosenDate = cal.getTime();
+
+            DateFormat df_medium_uk = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.UK);
+            String df_medium_uk_str = df_medium_uk.format(chosenDate);
+            tv.setText(df_medium_uk_str);
+
+
+        }
+    }
+
     public void showHourPicker(String message, final int number) {
 
 
@@ -1099,49 +1143,6 @@ public class AddMedicineFragment extends Fragment {
         DialogFragment dFragment = new DatePickerFragment();
         dFragment.show(getActivity().getFragmentManager(), "Date Picker");
 
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == StaticVariables.CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
-            //  Bitmap bMapScaled = Bitmap.createScaledBitmap(photo, 330, 189, true);
-            cvMedicineImage.setVisibility(View.VISIBLE);
-            medicineIV.setImageBitmap(photo);
-        }
-    }
-
-    public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-
-            final Calendar calendar = Calendar.getInstance();
-            int year = calendar.get(Calendar.YEAR);
-            int month = calendar.get(Calendar.MONTH);
-            int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-            DatePickerDialog dpd = new DatePickerDialog(getActivity(),
-                    AlertDialog.THEME_HOLO_LIGHT, this, year, month, day);
-            return dpd;
-        }
-
-        public void onDateSet(DatePicker view, int year, int month, int day) {
-
-            TextView tv = (TextView) getActivity().findViewById(R.id.start_date_TV);
-
-
-            Calendar cal = Calendar.getInstance();
-            cal.setTimeInMillis(0);
-            cal.set(year, month, day, 0, 0, 0);
-            Date chosenDate = cal.getTime();
-
-            DateFormat df_medium_uk = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.UK);
-            String df_medium_uk_str = df_medium_uk.format(chosenDate);
-            tv.setText(df_medium_uk_str);
-
-
-        }
     }
 
     public String getDaysNameOfWeek() {

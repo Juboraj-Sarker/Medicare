@@ -12,8 +12,6 @@ import com.juborajsarker.medicinealert.R;
 
 public class MoreFragment extends Fragment {
 
-    View view;
-
 
     public MoreFragment() {
 
@@ -23,9 +21,9 @@ public class MoreFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.fragment_more, container, false);
 
-        return view;
+
+        return inflater.inflate(R.layout.fragment_more, container, false);
     }
 
 }

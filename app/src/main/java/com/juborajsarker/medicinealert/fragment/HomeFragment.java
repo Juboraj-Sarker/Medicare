@@ -1,40 +1,31 @@
 package com.juborajsarker.medicinealert.fragment;
 
 
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.content.res.Resources;
-import android.os.Build;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.TypedValue;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.juborajsarker.medicinealert.R;
-import com.juborajsarker.medicinealert.adapter.MedicineAdapter;
-import com.juborajsarker.medicinealert.database.DatabaseHelper;
+import com.juborajsarker.medicinealert.activity.MainActivity;
+import com.juborajsarker.medicinealert.database.AppointmentDatabase;
+import com.juborajsarker.medicinealert.database.MedicineDatabase;
 import com.juborajsarker.medicinealert.dataparser.DateCalculations;
-import com.juborajsarker.medicinealert.dataparser.GridSpacingItemDecoration;
+import com.juborajsarker.medicinealert.model.AppointmentModel;
 import com.juborajsarker.medicinealert.model.MedicineModel;
-import com.juborajsarker.medicinealert.myInterface.StaticVariables;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
 import devs.mulham.horizontalcalendar.HorizontalCalendarView;
@@ -44,28 +35,18 @@ import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener;
 public class HomeFragment extends Fragment {
 
     View view;
-
-    boolean allPermission;
-    RecyclerView recyclerViewBeforeMeal, recyclerViewAfterMeal;
-    List<MedicineModel> medicineModelListBeforeMeal, medicineModelListAfterMeal;
-    MedicineAdapter adapter;
-    DatabaseHelper dbHelper;
-
+    FragmentManager fragmentManager;
     Calendar startDate;
     Calendar endDate;
 
 
     HorizontalCalendar horizontalCalendar;
     ImageView leftIV, rightIV;
-    TextView dateTV, beforeTV, afterTV;
-    boolean firstStart = true;
-    int position = 5;
-
-
+    TextView dateTV, totalMedicineTV, beforeMealTV, afterMealTV, totalAppointmentTV;
+    CardView medicineCV, appointmentCV;
 
 
     public HomeFragment() {
-
 
     }
 
@@ -75,18 +56,8 @@ public class HomeFragment extends Fragment {
 
         view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        if (!allPermission){
-
-            if (Build.VERSION.SDK_INT >= 23) {
-                checkMultiplePermissions();
-            }
-        }
-
-
-        setupCalender();
         init();
-
-
+        setupCalender();
 
 
         return view;
@@ -94,66 +65,50 @@ public class HomeFragment extends Fragment {
 
     private void init() {
 
+
         Date currentDate = Calendar.getInstance().getTime();
         DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.UK);
         String searchQuery = df.format(currentDate);
 
         leftIV = (ImageView) view.findViewById(R.id.leftIV);
         rightIV = (ImageView) view.findViewById(R.id.rightIV);
+
         dateTV = (TextView) view.findViewById(R.id.dateTV);
-        beforeTV = (TextView) view.findViewById(R.id.beforeTV);
-        afterTV = (TextView) view.findViewById(R.id.afterTV);
+        totalMedicineTV = (TextView) view.findViewById(R.id.total_medicine_TV);
+        totalAppointmentTV = (TextView) view.findViewById(R.id.total_appointment_TV);
+        beforeMealTV = (TextView) view.findViewById(R.id.total_before_meal_TV);
+        afterMealTV = (TextView) view.findViewById(R.id.total_after_meal_TV);
+
+        medicineCV = (CardView) view.findViewById(R.id.medicine_CV);
+        appointmentCV = (CardView) view.findViewById(R.id.appointment_CV);
+
+        medicineCV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
 
-        recyclerViewBeforeMeal = (RecyclerView) view.findViewById(R.id.recyclerView_before_meal);
-        recyclerViewAfterMeal = (RecyclerView) view.findViewById(R.id.recyclerView_after_meal);
-
-        RecyclerView.LayoutManager layoutManagerBeforeMeal = new GridLayoutManager(getContext(), 1);
-        recyclerViewBeforeMeal.setLayoutManager(layoutManagerBeforeMeal);
-        recyclerViewBeforeMeal.addItemDecoration(new GridSpacingItemDecoration(1, dpToPx(2), true));
-        recyclerViewBeforeMeal.setItemAnimator(new DefaultItemAnimator());
-
-
-        RecyclerView.LayoutManager layoutManagerAfterMeal = new GridLayoutManager(getContext(), 1);
-        recyclerViewAfterMeal.setLayoutManager(layoutManagerAfterMeal);
-        recyclerViewAfterMeal.addItemDecoration(new GridSpacingItemDecoration(1, dpToPx(2), true));
-        recyclerViewAfterMeal.setItemAnimator(new DefaultItemAnimator());
-
-        medicineModelListBeforeMeal = new ArrayList<>();
-        medicineModelListBeforeMeal.clear();
-        dbHelper = new DatabaseHelper(getContext());
-        medicineModelListBeforeMeal = dbHelper.getSelectedList(searchQuery, "before_table");
-        adapter = new MedicineAdapter(getContext(), medicineModelListBeforeMeal, getActivity(),
-                "before_table", recyclerViewBeforeMeal , adapter, searchQuery);
-        adapter.notifyDataSetChanged();
-        recyclerViewBeforeMeal.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-        beforeTV.setText("Before Meal (" + medicineModelListBeforeMeal.size() + ")");
+                Intent intent = new Intent(getContext(), MainActivity.class);
+                intent.putExtra("open", "medicine");
+                startActivity(intent);
+                getActivity().finish();
 
 
 
-        medicineModelListAfterMeal = new ArrayList<>();
-        medicineModelListAfterMeal.clear();
-        dbHelper = new DatabaseHelper(getContext());
-        medicineModelListAfterMeal = dbHelper.getSelectedList(searchQuery, "after_table");
-        adapter = new MedicineAdapter(getContext(), medicineModelListAfterMeal, getActivity(),
-                "after_table", recyclerViewAfterMeal, adapter, searchQuery);
-        adapter.notifyDataSetChanged();
-        recyclerViewAfterMeal.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-        afterTV.setText("After Meal ("  + medicineModelListAfterMeal.size() + ")");
+            }
+        });
 
 
+        appointmentCV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-        SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM - yyyy");
-        String formattedCurrentDate = sdf.format(currentDate);
+                Intent intent = new Intent(getContext(), MainActivity.class);
+                intent.putExtra("open", "appointment");
+                startActivity(intent);
+                getActivity().finish();
 
-        int sizeBefore = medicineModelListBeforeMeal.size();
-        int sizeAfter = medicineModelListAfterMeal.size();
-        int sum = sizeBefore + sizeAfter;
-
-        dateTV.setText("Today " +formattedCurrentDate + " (total " + sum + " medicine)");
-
+            }
+        });
 
 
         leftIV.setOnClickListener(new View.OnClickListener() {
@@ -176,15 +131,39 @@ public class HomeFragment extends Fragment {
         });
 
 
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM - yyyy");
+        String formattedCurrentDate = sdf.format(currentDate);
+        dateTV.setText("Today " +formattedCurrentDate );
+
+
+        prepareForView(searchQuery);
+
+
+
     }
 
-    private void setupCurrentDate() {
+    private void prepareForView(String search) {
 
+        AppointmentDatabase appointmentDatabase = new AppointmentDatabase(getContext());
+        MedicineDatabase medicineDatabase = new MedicineDatabase(getContext());
 
-        horizontalCalendar.goToday(true);
+        List<MedicineModel> beforeMedicineList = medicineDatabase.getSelectedList(search, "before_table");
+        List<MedicineModel> afterModelList = medicineDatabase.getSelectedList(search, "after_table");
 
+        List<AppointmentModel> appointmentModelList = appointmentDatabase.getSelectedAppointment(search);
 
+        int beforeSize = beforeMedicineList.size();
+        int afterSize = afterModelList.size();
+        int appointSize = appointmentModelList.size();
+        int totalMedicine = beforeSize + afterSize;
+
+        beforeMealTV.setText("Before meal " + beforeSize + " medicine");
+        afterMealTV.setText("After Meal " + afterSize + " medicine");
+
+        totalAppointmentTV.setText("Total " + appointSize + " Appointment");
+        totalMedicineTV.setText("Total " + totalMedicine + " Medicine");
     }
+
 
     private void setupCalender() {
 
@@ -218,9 +197,14 @@ public class HomeFragment extends Fragment {
             @Override
             public void onDateSelected(Calendar date, int position) {
 
+                Date currentDate = date.getTime();
+                DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.UK);
+                String searchQuery = df.format(currentDate);
+
                 imageViewIssue(date, position);
-                prepareDataForRecyclerView(date);
                 setTextViewDate(date);
+                prepareForView(searchQuery);
+
 
 
             }
@@ -238,40 +222,6 @@ public class HomeFragment extends Fragment {
 
     }
 
-    private void prepareDataForRecyclerView(Calendar date) {
-
-        DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.UK);
-        Date selectedDate = date.getTime();
-        String searchQuery = df.format(selectedDate);
-
-
-
-        medicineModelListBeforeMeal = new ArrayList<>();
-        medicineModelListBeforeMeal.clear();
-        dbHelper = new DatabaseHelper(getContext());
-        medicineModelListBeforeMeal = dbHelper.getSelectedList(searchQuery, "before_table");
-        adapter = new MedicineAdapter(getContext(), medicineModelListBeforeMeal, getActivity(),
-                "before_table", recyclerViewBeforeMeal, adapter, searchQuery);
-        adapter.notifyDataSetChanged();
-        recyclerViewBeforeMeal.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-        beforeTV.setText("Before Meal ("  + medicineModelListBeforeMeal.size() + ")");
-
-
-
-
-        medicineModelListAfterMeal = new ArrayList<>();
-        medicineModelListAfterMeal.clear();
-        dbHelper = new DatabaseHelper(getContext());
-        medicineModelListAfterMeal = dbHelper.getSelectedList(searchQuery, "after_table");
-        adapter = new MedicineAdapter(getContext(), medicineModelListAfterMeal, getActivity(),
-                "after_table", recyclerViewAfterMeal, adapter, searchQuery);
-        adapter.notifyDataSetChanged();
-        recyclerViewAfterMeal.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-        afterTV.setText("After Meal ("  + medicineModelListAfterMeal.size() + ")");
-
-    }
 
     private void imageViewIssue(Calendar date, int position) {
 
@@ -296,6 +246,7 @@ public class HomeFragment extends Fragment {
 
     }
 
+
     private void setTextViewDate(Calendar date) {
 
         Date currentDate = Calendar.getInstance().getTime();
@@ -309,11 +260,7 @@ public class HomeFragment extends Fragment {
 
         if (formattedCurrentDate.equals(formattedDate)){
 
-            int sizeBefore = medicineModelListBeforeMeal.size();
-            int sizeAfter = medicineModelListAfterMeal.size();
-            int sum = sizeBefore + sizeAfter;
-
-            dateTV.setText("Today " + formattedCurrentDate + " (total " + sum + " medicine)" );
+            dateTV.setText("Today " + formattedCurrentDate );
 
             leftIV.setVisibility(View.GONE);
             rightIV.setVisibility(View.GONE);
@@ -327,27 +274,18 @@ public class HomeFragment extends Fragment {
 
             if (addDate.equals(formattedDate)){
 
-                int sizeBefore = medicineModelListBeforeMeal.size();
-                int sizeAfter = medicineModelListAfterMeal.size();
-                int sum = sizeBefore + sizeAfter;
 
-                dateTV.setText("Tomorrow " + formattedDate + " (total " + sum + " medicine)");
+                dateTV.setText("Tomorrow " + formattedDate);
 
             }else if (subDate.equals(formattedDate)){
 
-                int sizeBefore = medicineModelListBeforeMeal.size();
-                int sizeAfter = medicineModelListAfterMeal.size();
-                int sum = sizeBefore + sizeAfter;
 
-                dateTV.setText("Yesterday " + formattedDate + " (total " + sum + " medicine)");
+
+                dateTV.setText("Yesterday " + formattedDate );
 
             }else {
 
-                int sizeBefore = medicineModelListBeforeMeal.size();
-                int sizeAfter = medicineModelListAfterMeal.size();
-                int sum = sizeBefore + sizeAfter;
-
-                dateTV.setText(formattedDate + " (total " + sum + " medicine)");
+                dateTV.setText(formattedDate );
             }
 
 
@@ -358,99 +296,12 @@ public class HomeFragment extends Fragment {
     }
 
 
-    private int dpToPx(int dp) {
-        Resources r = getResources();
-        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
-    }
+    private void setupCurrentDate() {
 
 
-    private void checkMultiplePermissions() {
-
-        if (Build.VERSION.SDK_INT >= 23) {
-            List<String> permissionsNeeded = new ArrayList<String>();
-            List<String> permissionsList = new ArrayList<String>();
-
-            if (!addPermission(permissionsList, Manifest.permission.CAMERA)) {
-                permissionsNeeded.add("Camera");
-            }
-
-            if (!addPermission(permissionsList, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                permissionsNeeded.add("Storage");
-            }
-
-            if (permissionsList.size() > 0) {
-                requestPermissions(permissionsList.toArray(new String[permissionsList.size()]),
-                        StaticVariables.REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
-                return;
-            }
-        }
-    }
+        horizontalCalendar.goToday(true);
 
 
-    private boolean addPermission(List<String> permissionsList, String permission) {
-        if (Build.VERSION.SDK_INT >= 23)
-
-            if (getActivity().checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
-                permissionsList.add(permission);
-
-                // Check for Rationale Option
-                if (!shouldShowRequestPermissionRationale(permission))
-                    return false;
-            }
-        return true;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case StaticVariables.REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS: {
-
-                Map<String, Integer> perms = new HashMap<String, Integer>();
-                // Initial
-                perms.put(Manifest.permission.CAMERA, PackageManager.PERMISSION_GRANTED);
-                perms.put(Manifest.permission.WRITE_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
-
-                // Fill with results
-                for (int i = 0; i < permissions.length; i++)
-                    perms.put(permissions[i], grantResults[i]);
-                if (perms.get(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
-                        && perms.get(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                    // All Permissions Granted
-
-                    allPermission = true;
-
-                    return;
-                } else {
-                    // Permission Denied
-                    if (Build.VERSION.SDK_INT >= 23) {
-                        Toast.makeText(
-                                getContext(),
-                                "This application cannot run without Camera and Storage " +
-                                        "Permissions.\nYou may relaunch the app or allow permissions" +
-                                        " from Application Settings",
-                                Toast.LENGTH_LONG).show();
-
-                        allPermission = false;
-
-
-                        if (perms.get(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-
-
-                        }
-
-
-                        if (perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-
-
-                        }
-
-                    }
-                }
-            }
-            break;
-            default:
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
     }
 
 

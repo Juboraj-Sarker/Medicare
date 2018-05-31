@@ -21,10 +21,10 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.juborajsarker.medicinealert.R;
-import com.juborajsarker.medicinealert.fragment.AddMedicineFragment;
-import com.juborajsarker.medicinealert.fragment.HomeFragment;
-import com.juborajsarker.medicinealert.fragment.MoreFragment;
 import com.juborajsarker.medicinealert.fragment.AppointmentFragment;
+import com.juborajsarker.medicinealert.fragment.HomeFragment;
+import com.juborajsarker.medicinealert.fragment.MedicineFragment;
+import com.juborajsarker.medicinealert.fragment.MoreFragment;
 import com.juborajsarker.medicinealert.java_class.BottomNavigationViewHelper;
 
 import java.io.File;
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                     return true;
 
                 }
-                case R.id.navigation_addMedicine:{
+                case R.id.navigation_medicine:{
 
                     for(Fragment fragment:getSupportFragmentManager().getFragments()){
 
@@ -70,13 +70,13 @@ public class MainActivity extends AppCompatActivity {
                     }
 
 
-                    fragmentManager.beginTransaction().add(R.id.container, new AddMedicineFragment()).commit();
-                    setTitle("Add Medicine");
+                    fragmentManager.beginTransaction().add(R.id.container, new MedicineFragment()).commit();
+                    setTitle("Medicine");
 
                     return true;
 
                 }
-                case R.id.navigation_notifications:{
+                case R.id.navigation_appointment:{
 
                     for(Fragment fragment:getSupportFragmentManager().getFragments()){
 
@@ -129,16 +129,47 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+        Intent intent = getIntent();
+        String whichOpen = intent.getStringExtra("open");
+
+        if ("appointment".equals(whichOpen)){
+
+            fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.container, new AppointmentFragment()).commit();
+            setTitle("Appointments");
+
+            BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+            BottomNavigationViewHelper.disableShiftMode(navigation);
+            navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+            navigation.setSelectedItemId(R.id.navigation_appointment);
+
+        }else if ("medicine".equals(whichOpen)){
+
+
+            fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.container, new MedicineFragment()).commit();
+            setTitle("Medicine");
+
+            BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+            BottomNavigationViewHelper.disableShiftMode(navigation);
+            navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+            navigation.setSelectedItemId(R.id.navigation_medicine);
+
+
+        }else {
+
+            fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.container, new HomeFragment()).commit();
+            setTitle("Home");
+
+            BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+            BottomNavigationViewHelper.disableShiftMode(navigation);
+            navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        }
 
 
 
-        fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.container, new HomeFragment()).commit();
-        setTitle("Home");
 
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        BottomNavigationViewHelper.disableShiftMode(navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 
 

@@ -9,13 +9,13 @@
         app:showAsAction="withText"/>
 
     <item
-        android:id="@+id/navigation_addMedicine"
-        android:icon="@drawable/add_medicine"
+        android:id="@+id/navigation_medicine"
+        android:icon="@drawable/ic_action_medicine_black"
         android:title="@string/title_medicine"
         app:showAsAction="withText"/>
 
     <item
-        android:id="@+id/navigation_notifications"
+        android:id="@+id/navigation_appointment"
         android:icon="@drawable/appointment"
         android:title="@string/add_appointment"
         app:showAsAction="withText"/>

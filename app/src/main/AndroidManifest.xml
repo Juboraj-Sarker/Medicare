@@ -24,9 +24,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".activity.AboutActivity"
-            android:label="About"/>
+        <activity
+            android:name=".activity.AboutActivity"
+            android:label="About" />
 
         <receiver
             android:name=".broadcastReceiver.AlarmReceiver"
@@ -43,16 +43,20 @@
         <service android:name=".service.AlarmRing" />
 
         <activity android:name=".activity.DetailsActivity" />
-
         <activity
             android:name=".activity.EditActivity"
-            android:label="Edit">
-        </activity>
-
-        <activity android:name=".activity.AddAppointmentActivity"
-            android:label="Add New Appointment">
-        </activity>
-
+            android:label="Edit" />
+        <activity
+            android:name=".activity.AddAppointmentActivity"
+            android:label="Add New Appointment" />
+        <activity
+            android:name=".activity.DetailsAppointmentActivity"
+            android:label="Details" />
+        <activity
+            android:name=".activity.EditAppointmentActivity"
+            android:label="Edit Appointment" />
+        <activity android:name=".activity.AddMedicineActivity" />
+        <activity android:name=".activity.NotificationActivity"></activity>
     </application>
 
 </manifest>

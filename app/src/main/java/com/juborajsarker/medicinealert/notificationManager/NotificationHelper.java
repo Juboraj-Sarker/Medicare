@@ -8,7 +8,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
@@ -65,11 +64,12 @@ public class NotificationHelper extends ContextWrapper {
         return manager;
     }
 
-    public NotificationCompat.Builder getChannelNotification(String title, String message, Bitmap bitmap){
+    public NotificationCompat.Builder getChannelNotification(String title, String message){
 
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent activityIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        intent.putExtra("main", 100);
+       // intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent activityIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
 
 
         Intent takenIntent = new Intent(this, AlarmReceiver.class);
@@ -119,5 +119,50 @@ public class NotificationHelper extends ContextWrapper {
     }
 
 
+
+    public NotificationCompat.Builder getAppointmentNotification(String title, String message){
+
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent activityIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+
+        Intent takenIntent = new Intent(this, AlarmReceiver.class);
+        takenIntent.setAction("OK");
+        takenIntent.putExtra("appOk", 88);
+
+        Intent cancelIntent = new Intent(this, AlarmReceiver.class);
+        cancelIntent.setAction("cancel");
+        cancelIntent.putExtra("appCancel", 99);
+
+
+
+
+
+        PendingIntent takenPendingIntent =
+                PendingIntent.getBroadcast(this, 0, takenIntent, 0);
+
+        PendingIntent cancelPendingIntent =
+                PendingIntent.getBroadcast(this, 0, cancelIntent, 0);
+
+
+
+
+        return new NotificationCompat.Builder(getApplicationContext(), channelId)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(activityIntent)
+                .setSmallIcon(R.drawable.ic_medicine)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
+                .addAction(R.drawable.ic_check,
+                        "OK",
+                        takenPendingIntent)
+                .addAction(R.drawable.ic_cancel,
+                        "CANCEL",
+                        cancelPendingIntent)
+                .setAutoCancel(true)
+                .setOngoing(false);
+    }
 
 }

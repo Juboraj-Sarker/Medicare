@@ -1,0 +1,190 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context="com.juborajsarker.medicinealert.fragment.MedicineFragment">
+
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp">
+
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="vertical">
+
+
+           <devs.mulham.horizontalcalendar.HorizontalCalendarView
+               android:id="@+id/calendarView"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               app:textColorSelected="@color/colorPrimary"
+               app:sizeTopText="13sp"
+               app:sizeMiddleText="16sp"
+               app:sizeBottomText="12sp"
+               android:background="#ffffff"
+               app:colorTopText="#aa2a2828"
+               app:colorMiddleText="#aa2a2828"/>
+
+
+           <RelativeLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:orientation="vertical"
+               android:padding="5dp">
+
+
+               <TextView
+                   android:id="@+id/dateTV"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:padding="5dp"
+                   android:text=""
+                   android:textSize="12sp"
+                   android:gravity="center"
+                   android:textColor="@color/colorPrimaryDark"
+                   android:layout_centerInParent="true"/>
+
+               <ImageView
+                   android:id="@+id/leftIV"
+                   android:layout_width="30dp"
+                   android:layout_height="30dp"
+                   android:layout_alignParentLeft="true"
+                   app:srcCompat="@drawable/ic_right"
+                   android:tint="@color/colorPrimary"
+                   android:padding="5dp"
+                   android:visibility="gone"/>
+
+
+               <ImageView
+                   android:id="@+id/rightIV"
+                   android:layout_width="30dp"
+                   android:layout_height="30dp"
+                   android:layout_alignParentRight="true"
+                   app:srcCompat="@drawable/ic_left"
+                   android:tint="@color/colorPrimary"
+                   android:padding="5dp"
+                   android:visibility="gone"/>
+
+
+           </RelativeLayout>
+
+       </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+
+
+
+
+
+
+
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="2dp">
+
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/beforeTV"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Before Meal"
+                            android:padding="5dp"
+                            android:gravity="center"
+                            android:background="@color/colorPrimary"
+                            android:textColor="#fff"
+                            android:layout_marginRight="1dp"/>
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/recyclerView_before_meal"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+
+                        </android.support.v7.widget.RecyclerView>
+
+
+
+                    </LinearLayout>
+
+
+                    <View
+                        android:layout_width="2dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/colorPrimaryDark"/>
+
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/afterTV"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="After Meal"
+                            android:padding="5dp"
+                            android:gravity="center"
+                            android:background="@color/colorPrimary"
+                            android:textColor="#fff"
+                            android:layout_marginLeft="1dp"/>
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/recyclerView_after_meal"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+
+                        </android.support.v7.widget.RecyclerView>
+
+
+                    </LinearLayout>
+
+
+
+                </LinearLayout>
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/fab_add"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    app:fabSize="normal"
+                    android:padding="5dp"
+                    android:layout_margin="5dp"
+                    app:srcCompat="@drawable/ic_add"
+                    android:tint="#fff"/>
+
+            </RelativeLayout>
+
+
+
+
+
+
+    </LinearLayout>
+
+

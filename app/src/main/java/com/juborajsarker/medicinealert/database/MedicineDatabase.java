@@ -12,7 +12,7 @@ import com.juborajsarker.medicinealert.model.MedicineModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DatabaseHelper extends SQLiteOpenHelper {
+public class MedicineDatabase extends SQLiteOpenHelper {
 
     Context context;
 
@@ -43,7 +43,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_18 = "UNIQUE_CODE";
 
 
-    public DatabaseHelper(Context context){
+    public MedicineDatabase(Context context){
 
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
@@ -145,15 +145,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     public MedicineModel getSingleMedicine (String searchKeyword, String tableName){
-
-        //        Cursor cursor = db.query(tableName,
-//                new String[] {
-//                        COLUMN_1,
-//                        COLUMN_2,
-//                        COLUMN_3,},
-//                COLUMN_1 + "=?",
-//                new String[] { searchKeyword  }, null, null, null, null);
-
 
         String selectQuery = "SELECT  * FROM " + tableName + " WHERE ID=?" ;
 
