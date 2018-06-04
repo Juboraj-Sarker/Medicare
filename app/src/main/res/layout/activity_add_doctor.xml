@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.doctors.AddDoctorActivity">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:padding="5dp">
+
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical">
+
+
+          <LinearLayout
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal"
+              android:padding="5dp"
+              android:layout_margin="5dp">
+
+              <ImageView
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  app:srcCompat="@drawable/ic_person"
+                  android:padding="5dp"
+                  android:layout_gravity="center"
+                  android:tint="#484848"/>
+
+              <EditText
+                  android:id="@+id/doctor_name_ET"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:hint="Doctor's Name *"
+                  android:textSize="14sp"
+                  android:layout_marginLeft="5dp"/>
+
+          </LinearLayout>
+
+
+          <LinearLayout
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal"
+              android:padding="5dp"
+              android:layout_margin="5dp">
+
+              <ImageView
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  app:srcCompat="@drawable/ic_call"
+                  android:padding="5dp"
+                  android:layout_gravity="center"
+                  android:tint="#484848"/>
+
+              <EditText
+                  android:id="@+id/doctor_phone_ET"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:hint="Doctor's Phone *"
+                  android:textSize="14sp"
+                  android:layout_marginLeft="5dp"
+                  android:inputType="phone"/>
+
+          </LinearLayout>
+
+
+          <LinearLayout
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal"
+              android:padding="5dp"
+              android:layout_margin="5dp">
+
+              <ImageView
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  app:srcCompat="@drawable/ic_email"
+                  android:padding="5dp"
+                  android:layout_gravity="center"
+                  android:tint="#484848"/>
+
+              <EditText
+                  android:id="@+id/doctor_email_ET"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:hint="Doctor's Email (Optional)"
+                  android:textSize="14sp"
+                  android:inputType="textEmailAddress"
+                  android:layout_marginLeft="5dp"/>
+
+          </LinearLayout>
+
+
+
+          <LinearLayout
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal"
+              android:padding="5dp"
+              android:layout_margin="5dp">
+
+              <ImageView
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  app:srcCompat="@drawable/ic_speciality"
+                  android:padding="5dp"
+                  android:layout_gravity="center"
+                  android:tint="#484848"/>
+
+              <EditText
+                  android:id="@+id/doctor_speciality_ET"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:hint="Doctor's Speciality (Optional)"
+                  android:textSize="14sp"
+                  android:layout_marginLeft="5dp"/>
+
+          </LinearLayout>
+
+          <LinearLayout
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal"
+              android:padding="5dp"
+              android:layout_margin="5dp">
+
+              <ImageView
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  app:srcCompat="@drawable/ic_location"
+                  android:padding="5dp"
+                  android:layout_gravity="center"
+                  android:tint="#484848"/>
+
+              <EditText
+                  android:id="@+id/doctor_address_ET"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:hint="Doctor's Address (Optional)"
+                  android:textSize="14sp"
+                  android:layout_marginLeft="5dp"/>
+
+          </LinearLayout>
+
+          <LinearLayout
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal"
+              android:padding="5dp"
+              android:layout_margin="5dp">
+
+              <ImageView
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  app:srcCompat="@drawable/ic_hospital"
+                  android:padding="5dp"
+                  android:layout_gravity="center"
+                  android:tint="#484848"/>
+
+              <EditText
+                  android:id="@+id/doctor_chamber_ET"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:hint="Doctor's Chamber (Optional)"
+                  android:textSize="14sp"
+                  android:layout_marginLeft="5dp"/>
+
+          </LinearLayout>
+
+      </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+
+    <Button
+        android:id="@+id/save_BTN"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@color/colorPrimary"
+        android:text="Save"
+        android:textColor="#fff" />
+
+</LinearLayout>

@@ -1,4 +1,4 @@
-package com.juborajsarker.medicinealert.activity;
+package com.juborajsarker.medicinealert.activity.medicines;
 
 import android.Manifest;
 import android.app.Activity;
@@ -33,6 +33,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.juborajsarker.medicinealert.R;
+import com.juborajsarker.medicinealert.activity.MainActivity;
 import com.juborajsarker.medicinealert.broadcastReceiver.AlarmReceiver;
 import com.juborajsarker.medicinealert.database.AlarmDatabase;
 import com.juborajsarker.medicinealert.database.MedicineDatabase;
@@ -50,7 +51,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EditActivity extends AppCompatActivity {
+public class EditMedicineActivity extends AppCompatActivity {
 
     public SharedPreferences sharedPreferences;
 
@@ -84,7 +85,7 @@ public class EditActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit);
+        setContentView(R.layout.activity_medicine_edit);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -436,7 +437,7 @@ public class EditActivity extends AppCompatActivity {
             updateAlarm(medicineModel.getDate(), aFirstSlotTime, aSecondSlotTime, aThirdSlotTime);
 
 
-            startActivity(new Intent(EditActivity.this, MainActivity.class));
+            startActivity(new Intent(EditMedicineActivity.this, MainActivity.class));
             finish();
 
 

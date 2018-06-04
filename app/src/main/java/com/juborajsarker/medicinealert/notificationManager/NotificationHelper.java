@@ -12,7 +12,7 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
 import com.juborajsarker.medicinealert.R;
-import com.juborajsarker.medicinealert.activity.DetailsActivity;
+import com.juborajsarker.medicinealert.activity.medicines.DetailsMedicineActivity;
 import com.juborajsarker.medicinealert.activity.MainActivity;
 import com.juborajsarker.medicinealert.broadcastReceiver.AlarmReceiver;
 
@@ -81,7 +81,7 @@ public class NotificationHelper extends ContextWrapper {
         cancelIntent.putExtra("cancel", 22);
 
 
-        Intent detailsIntent = new Intent(this, DetailsActivity.class);
+        Intent detailsIntent = new Intent(this, DetailsMedicineActivity.class);
         detailsIntent.setAction("details");
         detailsIntent.putExtra("details", 33);
 

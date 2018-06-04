@@ -1,4 +1,4 @@
-package com.juborajsarker.medicinealert.activity;
+package com.juborajsarker.medicinealert.activity.appointments;
 
 import android.app.AlarmManager;
 import android.app.AlertDialog;
@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.juborajsarker.medicinealert.R;
+import com.juborajsarker.medicinealert.activity.MainActivity;
 import com.juborajsarker.medicinealert.broadcastReceiver.AlarmReceiver;
 import com.juborajsarker.medicinealert.database.AppointmentDatabase;
 import com.juborajsarker.medicinealert.model.AppointmentModel;

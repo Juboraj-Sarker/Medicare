@@ -1,22 +1,18 @@
-package com.juborajsarker.medicinealert.activity;
+package com.juborajsarker.medicinealert.activity.more;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.juborajsarker.medicinealert.R;
-import com.juborajsarker.medicinealert.fragment.AddMedicineFragment;
 
-public class AddMedicineActivity extends AppCompatActivity {
-
-    FragmentManager fragmentManager;
+public class NearestHospitalActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_medicine);
+        setContentView(R.layout.activity_nearest_hospital);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -25,13 +21,7 @@ public class AddMedicineActivity extends AppCompatActivity {
         }
 
 
-        fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.container, new AddMedicineFragment()).commit();
-        setTitle("Add New Medicine");
-
-
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

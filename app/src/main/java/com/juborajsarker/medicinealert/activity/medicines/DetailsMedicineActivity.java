@@ -1,4 +1,4 @@
-package com.juborajsarker.medicinealert.activity;
+package com.juborajsarker.medicinealert.activity.medicines;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.juborajsarker.medicinealert.R;
 import com.juborajsarker.medicinealert.dataparser.ImageSaver;
 
-public class DetailsActivity extends AppCompatActivity {
+public class DetailsMedicineActivity extends AppCompatActivity {
 
     TextView medNameTV, dateTimeTV, numberOfSlotTV,  firstSlotTV, secondSlotTV,
             thirdSlotTV, numberOfDaysTV,  startDateTV, daysIntervalTV, statusTV;
@@ -25,7 +25,7 @@ public class DetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_details);
+        setContentView(R.layout.activity_medicine_details);
 
 
         ActionBar actionBar = getSupportActionBar();
@@ -113,7 +113,7 @@ public class DetailsActivity extends AppCompatActivity {
         daysIntervalTV.setText(daysInterval);
         statusTV.setText(status);
 
-        ImageSaver imageSaver = new ImageSaver(DetailsActivity.this, this);
+        ImageSaver imageSaver = new ImageSaver(DetailsMedicineActivity.this, this);
         imageSaver.loadImage(imagePath, medicineIV, type);
 
     }

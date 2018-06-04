@@ -21,8 +21,8 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.juborajsarker.medicinealert.R;
-import com.juborajsarker.medicinealert.activity.DetailsActivity;
-import com.juborajsarker.medicinealert.activity.EditActivity;
+import com.juborajsarker.medicinealert.activity.medicines.DetailsMedicineActivity;
+import com.juborajsarker.medicinealert.activity.medicines.EditMedicineActivity;
 import com.juborajsarker.medicinealert.broadcastReceiver.AlarmReceiver;
 import com.juborajsarker.medicinealert.database.AlarmDatabase;
 import com.juborajsarker.medicinealert.database.MedicineDatabase;
@@ -167,7 +167,7 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.MyView
                 }
                 case R.id.action_edit:{
 
-                    Intent intent = new Intent(context, EditActivity.class);
+                    Intent intent = new Intent(context, EditMedicineActivity.class);
                     intent.putExtra("tableName", tableName);
                     intent.putExtra("id", medicineModel.getId());
                     context.startActivity(intent);
@@ -336,7 +336,7 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.MyView
         String imagePath = medicineModel.getImagePath();
         String type = medicineModel.getMedicineType();
 
-        Intent intent = new Intent(context, DetailsActivity.class);
+        Intent intent = new Intent(context, DetailsMedicineActivity.class);
         intent.putExtra("medName", medName);
         intent.putExtra("dateTime", dateTime);
         intent.putExtra("numberOfSlot",numberOfSlot );

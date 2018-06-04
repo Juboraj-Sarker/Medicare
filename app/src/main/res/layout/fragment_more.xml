@@ -15,6 +15,7 @@
         android:padding="8dp">
 
         <LinearLayout
+            android:id="@+id/doctor_LAYOUT"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -45,6 +46,7 @@
 
 
         <LinearLayout
+            android:id="@+id/search_blood_LAYOUT"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -74,6 +76,7 @@
 
 
         <LinearLayout
+            android:id="@+id/diary_LAYOUT"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -102,6 +105,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/nearest_hospital_LAYOUT"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -132,6 +136,7 @@
 
 
         <LinearLayout
+            android:id="@+id/nearest_pharmacy_LAYOUT"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -172,6 +177,7 @@
 
 
     <LinearLayout
+        android:id="@+id/settings_LAYOUT"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -202,6 +208,7 @@
 
 
     <LinearLayout
+        android:id="@+id/help_and_support_LAYOUT"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -231,6 +238,7 @@
 
 
     <LinearLayout
+        android:id="@+id/terms_LAYOUT"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"

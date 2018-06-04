@@ -20,8 +20,8 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.juborajsarker.medicinealert.R;
-import com.juborajsarker.medicinealert.activity.DetailsAppointmentActivity;
-import com.juborajsarker.medicinealert.activity.EditAppointmentActivity;
+import com.juborajsarker.medicinealert.activity.appointments.DetailsAppointmentActivity;
+import com.juborajsarker.medicinealert.activity.appointments.EditAppointmentActivity;
 import com.juborajsarker.medicinealert.broadcastReceiver.AlarmReceiver;
 import com.juborajsarker.medicinealert.database.AppointmentDatabase;
 import com.juborajsarker.medicinealert.model.AppointmentModel;

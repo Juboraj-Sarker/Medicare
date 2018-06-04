@@ -21,7 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.juborajsarker.medicinealert.R;
-import com.juborajsarker.medicinealert.activity.AddMedicineActivity;
+import com.juborajsarker.medicinealert.activity.medicines.AddMedicineActivity;
 import com.juborajsarker.medicinealert.adapter.MedicineAdapter;
 import com.juborajsarker.medicinealert.database.MedicineDatabase;
 import com.juborajsarker.medicinealert.dataparser.DateCalculations;

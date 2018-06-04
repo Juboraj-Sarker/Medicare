@@ -17,7 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.juborajsarker.medicinealert.R;
-import com.juborajsarker.medicinealert.activity.AddAppointmentActivity;
+import com.juborajsarker.medicinealert.activity.appointments.AddAppointmentActivity;
 import com.juborajsarker.medicinealert.adapter.AppointmentAdapter;
 import com.juborajsarker.medicinealert.database.AppointmentDatabase;
 import com.juborajsarker.medicinealert.dataparser.DateCalculations;
