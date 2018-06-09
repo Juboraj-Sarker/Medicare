@@ -1,4 +1,4 @@
-package com.juborajsarker.medicinealert.activity.blood;
+package com.juborajsarker.medicinealert.activity.more;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -7,24 +7,18 @@ import android.view.MenuItem;
 
 import com.juborajsarker.medicinealert.R;
 
-public class BloodActivity extends AppCompatActivity {
+public class AmbulanceActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_blood);
+        setContentView(R.layout.activity_ambulance);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
 
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-
-
-
-
-
-
     }
 
 

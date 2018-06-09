@@ -7,7 +7,13 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    <uses-feature android:name="android.hardware.location.gps" />
 
     <application
         android:allowBackup="true"
@@ -25,6 +31,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
         <activity
             android:name=".activity.AboutActivity"
             android:label="About" />
@@ -58,51 +69,73 @@
             android:label="Edit Appointment" />
         <activity android:name=".activity.medicines.AddMedicineActivity" />
         <activity android:name=".activity.NotificationActivity" />
-        <activity android:name=".activity.doctors.DoctorsActivity"
-            android:label="Doctors"/>
-
-        <activity android:name=".activity.blood.BloodActivity"
-            android:label="Search Blood"/>
-
-        <activity android:name=".activity.diary.DiaryActivity"
-            android:label="Diaries"/>
-
-        <activity android:name=".activity.more.NearestHospitalActivity"
-            android:label="Nearest Hospital"/>
-
-        <activity android:name=".activity.more.NearestPharmacyActivity"
-            android:label="Nearest Pharmacy"/>
-
-        <activity android:name=".activity.more.SettingsActivity"
-            android:label="Settings"/>
-
-        <activity android:name=".activity.more.HelpActivity"
-            android:label="Help And Support"/>
-
-        <activity android:name=".activity.more.TermsActivity"
-            android:label="Terms And Condition"/>
-
-        <activity android:name=".activity.doctors.AddDoctorActivity"
-            android:label="Add New Doctor"/>
-
-        <activity android:name=".activity.doctors.DetailsDoctorActivity"
-            android:label="Doctor Details"/>
-
-        <activity android:name=".activity.doctors.EditDoctorActivity"
+        <activity
+            android:name=".activity.doctors.DoctorsActivity"
+            android:label="Doctors" />
+        <activity
+            android:name=".activity.blood.BloodActivity"
+            android:label="Search Blood" />
+        <activity
+            android:name=".activity.diary.DiaryActivity"
+            android:label="Diaries" />
+        <activity
+            android:name=".activity.more.NearestHospitalActivity"
+            android:label="Nearest Hospital" />
+        <activity
+            android:name=".activity.more.NearestPharmacyActivity"
+            android:label="Nearest Pharmacy" />
+        <activity
+            android:name=".activity.more.SettingsActivity"
+            android:label="Settings" />
+        <activity
+            android:name=".activity.more.HelpActivity"
+            android:label="Help And Support" />
+        <activity
+            android:name=".activity.more.TermsActivity"
+            android:label="Terms And Condition" />
+        <activity
+            android:name=".activity.doctors.AddDoctorActivity"
+            android:label="Add New Doctor" />
+        <activity
+            android:name=".activity.doctors.DetailsDoctorActivity"
+            android:label="Doctor Details" />
+        <activity
+            android:name=".activity.doctors.EditDoctorActivity"
             android:label="Edit Doctor Info"
-            android:parentActivityName=".activity.doctors.DoctorsActivity"/>
-
-        <activity android:name=".activity.diary.AddDiaryActivity"
-            android:label="Add New Diary"/>
-
-        <activity android:name=".activity.diary.EditDiaryActivity"
+            android:parentActivityName=".activity.doctors.DoctorsActivity" />
+        <activity
+            android:name=".activity.diary.AddDiaryActivity"
+            android:label="Add New Diary" />
+        <activity
+            android:name=".activity.diary.EditDiaryActivity"
             android:label="Edit Diary"
-            android:parentActivityName=".activity.diary.DiaryActivity"/>
+            android:parentActivityName=".activity.diary.DiaryActivity" />
+        <activity
+            android:name=".activity.diary.DetailsDiaryActivity"
+            android:label="Details Diary" />
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
 
-        <activity android:name=".activity.diary.DetailsDiaryActivity"
-            android:label="Details Diary">
+        <activity
+            android:name=".activity.maps.NearbyMapActivity"
+            android:label="@string/title_activity_pharmacy_map" />
+        <activity android:name=".activity.DetailsPlaceActivity" />
+        <activity
+            android:name=".activity.maps.SingleMapActivity"
+            android:label="@string/title_activity_single_map" />
+        <activity android:name=".activity.WebviewActivity" />
 
-        </activity>
+        <activity android:name=".activity.more.AmbulanceActivity"
+            android:label="Ambulance Service"></activity>
     </application>
 
 </manifest>

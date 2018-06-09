@@ -98,7 +98,7 @@ public class DoctorAdapter extends RecyclerView.Adapter<DoctorAdapter.MyViewHold
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.doctor_view, parent, false);
+                .inflate(R.layout.view_doctor, parent, false);
 
         return new MyViewHolder(itemView);
     }

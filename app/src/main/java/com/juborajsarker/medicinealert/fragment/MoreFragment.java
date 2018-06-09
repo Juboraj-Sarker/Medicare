@@ -13,6 +13,7 @@ import com.juborajsarker.medicinealert.R;
 import com.juborajsarker.medicinealert.activity.blood.BloodActivity;
 import com.juborajsarker.medicinealert.activity.diary.DiaryActivity;
 import com.juborajsarker.medicinealert.activity.doctors.DoctorsActivity;
+import com.juborajsarker.medicinealert.activity.more.AmbulanceActivity;
 import com.juborajsarker.medicinealert.activity.more.HelpActivity;
 import com.juborajsarker.medicinealert.activity.more.NearestHospitalActivity;
 import com.juborajsarker.medicinealert.activity.more.NearestPharmacyActivity;
@@ -25,7 +26,7 @@ public class MoreFragment extends Fragment {
     View view;
 
     LinearLayout doctorLAYOUT, searchBloodLAYOUT, diaryLAYOUT, nearestHospitalLAYOUT,
-            nearestPharmacyLAYOUT, settingsLAYOUT, helpLAYOUT, termsLAYOUT;
+            nearestPharmacyLAYOUT, ambulanceLAYOUT, settingsLAYOUT, helpLAYOUT, termsLAYOUT;
 
 
     public MoreFragment() {
@@ -55,6 +56,7 @@ public class MoreFragment extends Fragment {
         diaryLAYOUT = (LinearLayout) view.findViewById(R.id.diary_LAYOUT);
         nearestHospitalLAYOUT = (LinearLayout) view.findViewById(R.id.nearest_hospital_LAYOUT);
         nearestPharmacyLAYOUT = (LinearLayout) view.findViewById(R.id.nearest_pharmacy_LAYOUT);
+        ambulanceLAYOUT = (LinearLayout) view.findViewById(R.id.ambulance_LAYOUT);
         settingsLAYOUT = (LinearLayout) view.findViewById(R.id.settings_LAYOUT);
         helpLAYOUT = (LinearLayout) view.findViewById(R.id.help_and_support_LAYOUT);
         termsLAYOUT = (LinearLayout) view.findViewById(R.id.terms_LAYOUT);
@@ -110,6 +112,14 @@ public class MoreFragment extends Fragment {
 
 
                 startActivity(new Intent(getContext(), NearestPharmacyActivity.class));
+            }
+        });
+
+        ambulanceLAYOUT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                startActivity(new Intent(getContext(), AmbulanceActivity.class));
             }
         });
 
