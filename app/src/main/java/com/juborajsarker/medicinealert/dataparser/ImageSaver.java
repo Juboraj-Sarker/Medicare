@@ -148,7 +148,7 @@ public class ImageSaver {
 
             }else if (type.equals("Capsule")){
 
-                bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.calsule);
+                bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.capsule);
 
             }else if (type.equals("syrup")){
 

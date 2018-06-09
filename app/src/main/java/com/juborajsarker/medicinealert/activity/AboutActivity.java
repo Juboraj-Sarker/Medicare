@@ -1,9 +1,11 @@
 package com.juborajsarker.medicinealert.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.juborajsarker.medicinealert.R;
 
@@ -35,5 +37,12 @@ public class AboutActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    public void click(View view) {
+
+        Intent intent = new Intent(AboutActivity.this, WebviewActivity.class);
+        intent.putExtra("url", "https://www.juborajsarker.com");
+        startActivity(intent);
     }
 }

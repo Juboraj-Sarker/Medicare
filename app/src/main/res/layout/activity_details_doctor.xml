@@ -77,7 +77,10 @@
                     app:srcCompat="@drawable/ic_copy"
                     android:tint="#484848"
                     android:padding="5dp"
-                    android:layout_gravity="center"/>
+                    android:layout_gravity="center"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?android:attr/selectableItemBackground"/>
 
             </LinearLayout>
 
@@ -111,7 +114,10 @@
                     app:srcCompat="@drawable/ic_copy"
                     android:tint="#484848"
                     android:padding="5dp"
-                    android:layout_gravity="center"/>
+                    android:layout_gravity="center"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?android:attr/selectableItemBackground"/>
 
             </LinearLayout>
 
