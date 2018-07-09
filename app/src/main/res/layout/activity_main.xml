@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:layout_weight="1"
-    tools:context="com.juborajsarker.medicinealert.activity.MainActivity">
+    tools:context="com.juborajsarker.medicare.activity.MainActivity">
 
 
 
