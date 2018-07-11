@@ -148,6 +148,8 @@
             android:label="Ambulance Service" />
         <activity android:name=".activity.user.UserActivity" />
         <activity android:name=".activity.user.ForgetPasswordActivity" />
+        <activity android:name=".activity.blood.BloodDonorActivity" />
+        <activity android:name=".activity.blood.DonorDetailsActivity"></activity>
     </application>
 
 </manifest>

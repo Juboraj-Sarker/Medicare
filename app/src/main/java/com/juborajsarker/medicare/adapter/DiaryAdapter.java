@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,7 +39,7 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.MyViewHolder
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
         public TextView titleTV, descriptionTV, dateTV, timeTV;
-        public CardView fullChildCV;
+        public LinearLayout fullChildCV;
         public LinearLayout additionalLAYOUT, viewDetailsLAYOUT, editLAYOUT, deleteLAYOUT;
 
 
@@ -56,7 +55,7 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.MyViewHolder
             dateTV = (TextView) view.findViewById(R.id.date_TV);
             timeTV = (TextView) view.findViewById(R.id.time_TV);
 
-            fullChildCV = (CardView) view.findViewById(R.id.fullChildCV);
+            fullChildCV = (LinearLayout) view.findViewById(R.id.fullChildCV);
 
             additionalLAYOUT = (LinearLayout) view.findViewById(R.id.additional_LAYOUT);
             viewDetailsLAYOUT = (LinearLayout) view.findViewById(R.id.view_details_LAYOUT);

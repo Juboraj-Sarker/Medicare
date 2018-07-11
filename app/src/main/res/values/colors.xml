@@ -4,6 +4,10 @@
     <color name="colorPrimary">#00A4C2</color>
     <color name="colorAccent">#0f5b68</color>
 
+    <color name="colorRed">#e80202</color>
+    <color name="colorGreen">#0e6215</color>
+    <color name="colorYellow">#d69d0b</color>
+
 
     <color name="viewBg">#f1f5f8</color>
     <color name="album_title">#4c4c4c</color>
