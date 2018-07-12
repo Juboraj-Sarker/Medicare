@@ -83,7 +83,7 @@
             android:name=".activity.doctors.DoctorsActivity"
             android:label="Doctors" />
         <activity
-            android:name=".activity.blood.BloodActivity"
+            android:name=".activity.blood.BloodSearchActivity"
             android:label="Search Blood" />
         <activity
             android:name=".activity.diary.DiaryActivity"
@@ -147,9 +147,19 @@
             android:name=".activity.more.AmbulanceActivity"
             android:label="Ambulance Service" />
         <activity android:name=".activity.user.UserActivity" />
-        <activity android:name=".activity.user.ForgetPasswordActivity" />
-        <activity android:name=".activity.blood.BloodDonorActivity" />
-        <activity android:name=".activity.blood.DonorDetailsActivity"></activity>
+        <activity android:name=".activity.user.ForgetPasswordActivity"
+            android:label="Recover password"/>
+
+        <activity android:name=".activity.blood.BloodDonorListActivity"
+            android:label="Donor List"/>
+
+        <activity android:name=".activity.blood.DonorDetailsActivity"
+            android:label="Donor Details"/>
+
+        <activity android:name=".activity.blood.DonorInputActivity"
+            android:label="Donor Input">
+
+        </activity>
     </application>
 
 </manifest>

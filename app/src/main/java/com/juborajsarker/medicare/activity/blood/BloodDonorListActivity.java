@@ -27,9 +27,9 @@ import com.juborajsarker.medicare.model.DonorModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BloodDonorActivity extends AppCompatActivity {
+public class BloodDonorListActivity extends AppCompatActivity {
 
-    TextView messageTV;
+    TextView messageTV, helpTV;
     RecyclerView recyclerView;
 
     String city, country, bloodGroup;
@@ -43,7 +43,7 @@ public class BloodDonorActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_blood_donor);
+        setContentView(R.layout.activity_blood_donor_list);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -68,7 +68,18 @@ public class BloodDonorActivity extends AppCompatActivity {
         progressDialog.show();
 
         messageTV = (TextView) findViewById(R.id.messageTV);
+        helpTV = (TextView) findViewById(R.id.helpTV);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+
+
+        helpTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                startActivity(new Intent(BloodDonorListActivity.this, DonorInputActivity.class));
+
+            }
+        });
 
         donorModelList = new ArrayList<>();
 
@@ -99,8 +110,8 @@ public class BloodDonorActivity extends AppCompatActivity {
                     messageTV.setVisibility(View.VISIBLE);
                     messageTV.setText("Congrats !!! " + donorModelList.size() + " (" + bloodGroup + ") donor found in " + city) ;
                     messageTV.setBackgroundColor(getResources().getColor(R.color.colorGreen));
-                    adapter = new DonorAdapter(BloodDonorActivity.this, donorModelList, recyclerView, adapter);
-                    RecyclerView.LayoutManager layoutManagerBeforeMeal = new GridLayoutManager(BloodDonorActivity.this, 1);
+                    adapter = new DonorAdapter(BloodDonorListActivity.this, donorModelList, recyclerView, adapter, BloodDonorListActivity.this);
+                    RecyclerView.LayoutManager layoutManagerBeforeMeal = new GridLayoutManager(BloodDonorListActivity.this, 1);
                     recyclerView.setLayoutManager(layoutManagerBeforeMeal);
                     recyclerView.addItemDecoration(new GridSpacingItemDecoration(1, dpToPx(2), true));
                     recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -157,8 +168,8 @@ public class BloodDonorActivity extends AppCompatActivity {
 
                     messageTV.setVisibility(View.VISIBLE);
                     messageTV.setBackgroundColor(getResources().getColor(R.color.colorYellow));
-                    adapter = new DonorAdapter(BloodDonorActivity.this, donorModelList, recyclerView, adapter);
-                    RecyclerView.LayoutManager layoutManagerBeforeMeal = new GridLayoutManager(BloodDonorActivity.this, 1);
+                    adapter = new DonorAdapter(BloodDonorListActivity.this, donorModelList, recyclerView, adapter, BloodDonorListActivity.this);
+                    RecyclerView.LayoutManager layoutManagerBeforeMeal = new GridLayoutManager(BloodDonorListActivity.this, 1);
                     recyclerView.setLayoutManager(layoutManagerBeforeMeal);
                     recyclerView.addItemDecoration(new GridSpacingItemDecoration(1, dpToPx(2), true));
                     recyclerView.setItemAnimator(new DefaultItemAnimator());

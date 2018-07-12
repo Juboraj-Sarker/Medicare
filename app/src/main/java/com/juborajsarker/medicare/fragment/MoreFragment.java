@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.juborajsarker.medicare.R;
-import com.juborajsarker.medicare.activity.blood.BloodActivity;
+import com.juborajsarker.medicare.activity.blood.BloodSearchActivity;
 import com.juborajsarker.medicare.activity.diary.DiaryActivity;
 import com.juborajsarker.medicare.activity.doctors.DoctorsActivity;
 import com.juborajsarker.medicare.activity.more.AmbulanceActivity;
@@ -81,7 +81,7 @@ public class MoreFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                startActivity(new Intent(getContext(), BloodActivity.class));
+                startActivity(new Intent(getContext(), BloodSearchActivity.class));
 
             }
         });

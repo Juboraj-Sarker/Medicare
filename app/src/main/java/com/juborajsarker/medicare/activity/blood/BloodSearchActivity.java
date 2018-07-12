@@ -11,6 +11,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -18,17 +19,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.database.DatabaseReference;
 import com.juborajsarker.medicare.R;
 import com.juborajsarker.medicare.activity.user.UserActivity;
-import com.juborajsarker.medicare.adapter.DonorAdapter;
-import com.juborajsarker.medicare.model.DonorModel;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
-public class BloodActivity extends AppCompatActivity {
+public class BloodSearchActivity extends AppCompatActivity {
 
     boolean isLoggedIn;
     SharedPreferences sharedPreferences;
@@ -43,14 +39,10 @@ public class BloodActivity extends AppCompatActivity {
 
     String city, country, bloodGroup;
 
-    DatabaseReference databaseReference;
-    List<DonorModel> donorModelList;
-    DonorAdapter adapter;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_blood);
+        setContentView(R.layout.activity_blood_search);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -79,7 +71,6 @@ public class BloodActivity extends AppCompatActivity {
         searchBTN = (Button) findViewById(R.id.search_BTN);
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        donorModelList = new ArrayList<>();
 
 
 
@@ -102,7 +93,7 @@ public class BloodActivity extends AppCompatActivity {
             public void onClick(View v) {
 
 
-                startActivity(new Intent(BloodActivity.this, UserActivity.class));
+                startActivity(new Intent(BloodSearchActivity.this, UserActivity.class));
 
             }
         });
@@ -125,16 +116,20 @@ public class BloodActivity extends AppCompatActivity {
 
                 }else if ( bgSP.getSelectedItemPosition() == 0){
 
-                    Toast.makeText(BloodActivity.this, "Please select a valid blood group", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(BloodSearchActivity.this, "Please select a valid blood group", Toast.LENGTH_SHORT).show();
 
                 }else {
 
 
+                    InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
+
                     city = cityET.getText().toString();
-                    country = getUserCountry(BloodActivity.this);
+                    country = getUserCountry(BloodSearchActivity.this);
                     bloodGroup = getBloodGroup();
 
-                    Intent intent = new Intent(BloodActivity.this, BloodDonorActivity.class);
+                    Intent intent = new Intent(BloodSearchActivity.this, BloodDonorListActivity.class);
                     intent.putExtra("city", city);
                     intent.putExtra("bloodGroup", bloodGroup);
                     intent.putExtra("country", country);

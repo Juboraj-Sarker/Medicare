@@ -1,6 +1,15 @@
 package com.juborajsarker.medicare.adapter;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,9 +20,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.juborajsarker.medicare.R;
+import com.juborajsarker.medicare.activity.blood.DonorDetailsActivity;
 import com.juborajsarker.medicare.model.DonorModel;
 
 import java.util.List;
+
+import static android.content.Context.CLIPBOARD_SERVICE;
 
 public class DonorAdapter extends RecyclerView.Adapter<DonorAdapter.MyViewHolder> {
 
@@ -21,6 +33,9 @@ public class DonorAdapter extends RecyclerView.Adapter<DonorAdapter.MyViewHolder
     private List<DonorModel> donorModelList;
     private RecyclerView recyclerView;
     private DonorAdapter adapter;
+    private Activity activity;
+
+    public static final int MY_PERMISSIONS_REQUEST_CALL = 55;
 
     int counter = 0;
 
@@ -51,12 +66,13 @@ public class DonorAdapter extends RecyclerView.Adapter<DonorAdapter.MyViewHolder
     }
 
 
-    public DonorAdapter (Context context, List<DonorModel> donorModelList, RecyclerView recyclerView, DonorAdapter adapter){
+    public DonorAdapter (Context context, List<DonorModel> donorModelList, RecyclerView recyclerView, DonorAdapter adapter, Activity activity){
 
         this.context = context;
         this.donorModelList = donorModelList;
         this.recyclerView = recyclerView;
         this.adapter = adapter;
+        this.activity = activity;
 
     }
 
@@ -125,7 +141,8 @@ public class DonorAdapter extends RecyclerView.Adapter<DonorAdapter.MyViewHolder
             @Override
             public void onClick(View v) {
 
-                Toast.makeText(context, "Call", Toast.LENGTH_SHORT).show();
+                DonorModel donorModel = donorModelList.get(position);
+                makeCall(donorModel.getPhoneNumber());
             }
         });
 
@@ -134,7 +151,15 @@ public class DonorAdapter extends RecyclerView.Adapter<DonorAdapter.MyViewHolder
             @Override
             public void onClick(View v) {
 
-                Toast.makeText(context, "Details", Toast.LENGTH_SHORT).show();
+                DonorModel donorModel = donorModelList.get(position);
+                Intent intent = new Intent(context, DonorDetailsActivity.class);
+                intent.putExtra("name", donorModel.getName());
+                intent.putExtra("phone", donorModel.getPhoneNumber());
+                intent.putExtra("email", donorModel.getEmail());
+                intent.putExtra("bloodGroup", donorModel.getBloodGroup());
+                intent.putExtra("city", donorModel.getCity());
+                context.startActivity(intent);
+
 
             }
         });
@@ -144,7 +169,8 @@ public class DonorAdapter extends RecyclerView.Adapter<DonorAdapter.MyViewHolder
             @Override
             public void onClick(View v) {
 
-                Toast.makeText(context, "Copy Phone", Toast.LENGTH_SHORT).show();
+                DonorModel donorModel = donorModelList.get(position);
+                copyPhone(donorModel.getPhoneNumber());
 
             }
         });
@@ -155,7 +181,8 @@ public class DonorAdapter extends RecyclerView.Adapter<DonorAdapter.MyViewHolder
             @Override
             public void onClick(View v) {
 
-                Toast.makeText(context, "Send SMS", Toast.LENGTH_SHORT).show();
+                DonorModel donorModel = donorModelList.get(position);
+                sendSms(donorModel.getPhoneNumber());
 
             }
         });
@@ -165,8 +192,16 @@ public class DonorAdapter extends RecyclerView.Adapter<DonorAdapter.MyViewHolder
             @Override
             public void onClick(View v) {
 
-                Toast.makeText(context, "Send Email", Toast.LENGTH_SHORT).show();
+                DonorModel donorModel = donorModelList.get(position);
 
+                if (!donorModel.getEmail().equals("Not Found")){
+
+                    sendEmail(donorModel.getEmail());
+
+                }else {
+
+                    Toast.makeText(context, "No Email Found", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -177,5 +212,81 @@ public class DonorAdapter extends RecyclerView.Adapter<DonorAdapter.MyViewHolder
     public int getItemCount() {
 
         return donorModelList.size();
+    }
+
+
+    private void makeCall(String phoneNumber) {
+
+        Intent callIntent = new Intent(Intent.ACTION_CALL);
+        callIntent.setData(Uri.parse("tel:" + phoneNumber));
+
+        if (!checkCallPermission()) {
+
+            checkCallPermission();
+            Toast.makeText(context, "Please give call permission to make call", Toast.LENGTH_SHORT).show();
+
+        }else {
+
+            context.startActivity(callIntent);
+        }
+
+    }
+
+
+    private void copyPhone(String phone) {
+
+
+        ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(CLIPBOARD_SERVICE);
+        ClipData clipe = ClipData.newPlainText("phone", phone);
+
+        if (clipboard != null) {
+            clipboard.setPrimaryClip(clipe);
+            Toast.makeText(context, "Copied to clipboard", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+
+
+    private void sendSms(String phoneNumber) {
+
+        Uri uri = Uri.parse("smsto:"+ phoneNumber);
+        Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
+        intent.putExtra("sms_body", "");
+        context.startActivity(intent);
+
+    }
+
+
+    private void sendEmail(String email) {
+
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                "mailto", email, null));
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject");
+        emailIntent.putExtra(Intent.EXTRA_TEXT, "Type email here");
+        context.startActivity(Intent.createChooser(emailIntent, "Send email..."));
+
+    }
+
+
+
+    private boolean checkCallPermission() {
+
+
+        if (ContextCompat.checkSelfPermission(context,
+                Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+
+
+            ActivityCompat.requestPermissions(activity,
+                    new String[]{Manifest.permission.CALL_PHONE},
+                    MY_PERMISSIONS_REQUEST_CALL);
+
+
+            return false;
+
+        } else {
+
+            return true;
+        }
     }
 }
