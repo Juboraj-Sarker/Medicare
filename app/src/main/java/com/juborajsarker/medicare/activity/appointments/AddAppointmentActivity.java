@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -126,11 +127,9 @@ public class AddAppointmentActivity extends AppCompatActivity {
                     collectData();
                     String combine = date +" " + time;
                     setAlarm(combine);
-                    insertIntoDatabase();
 
-                    Intent intent = new Intent(AddAppointmentActivity.this, MainActivity.class);
-                    intent.putExtra("open", "appointment");
-                    startActivity(intent);
+
+
 
 
                 }
@@ -159,6 +158,11 @@ public class AddAppointmentActivity extends AppCompatActivity {
 
         AppointmentDatabase database = new AppointmentDatabase(AddAppointmentActivity.this);
         database.insertAppointment(appointmentModel);
+
+
+        Intent intent = new Intent(AddAppointmentActivity.this, MainActivity.class);
+        intent.putExtra("open", "appointment");
+        startActivity(intent);
     }
 
 
@@ -237,12 +241,25 @@ public class AddAppointmentActivity extends AppCompatActivity {
 
         lastRequestCode ++;
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, lastRequestCode, intent, 0);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() - rememberBeforeTimeInMills , pendingIntent);
+        if (Calendar.getInstance().getTimeInMillis() >= (cal.getTimeInMillis() - rememberBeforeTimeInMills) ){
 
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("requestCodeValue", lastRequestCode);
-        editor.commit();
+            Log.d("before", "before current time");
+            Toast.makeText(this, "Please select a future date time", Toast.LENGTH_SHORT).show();
+
+        }else {
+
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, lastRequestCode, intent, 0);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() - rememberBeforeTimeInMills , pendingIntent);
+
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putInt("requestCodeValue", lastRequestCode);
+            editor.commit();
+
+            insertIntoDatabase();
+        }
+
+
+
 
 
     }
@@ -267,6 +284,16 @@ public class AddAppointmentActivity extends AppCompatActivity {
         }else if (rememberBeforeET.getText().toString().equals("")){
 
             rememberBeforeET.setError("This field is required !!!");
+            return false;
+
+        }else if (dateTV.getText().toString().equals("Select date")){
+
+            Toast.makeText(this, "Select a valid date", Toast.LENGTH_SHORT).show();
+            return false;
+
+        }else if (timeTV.getText().toString().equals("Select time")){
+
+            Toast.makeText(this, "Select a valid time", Toast.LENGTH_SHORT).show();
             return false;
 
         }else {

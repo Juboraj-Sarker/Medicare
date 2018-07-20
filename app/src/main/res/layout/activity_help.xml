@@ -1,9 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".activity.more.HelpActivity">
 
-</android.support.constraint.ConstraintLayout>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:layout_margin="5dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="We do believe that, there are no bugless system. This project is fully developed by a single developer. So may there have many bug in the system. So I will be very glad if you can fix any bug and inform me. I will try my best to fix that bug."
+                android:textSize="15sp"/>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="On the other hand if you have any feedback or complain or any types of thing please I would like to request you feel free to inform me. The developer of Medicare is always respect your feedback."
+                android:textSize="15sp"/>
+
+        </LinearLayout>
+
+
+    </android.support.v7.widget.CardView>
+
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:layout_margin="5dp"
+        android:text="Send Email to Developer"
+        android:textAllCaps="false"
+        android:textColor="#fff"
+        android:onClick="sendEmail"/>
+
+
+</LinearLayout>

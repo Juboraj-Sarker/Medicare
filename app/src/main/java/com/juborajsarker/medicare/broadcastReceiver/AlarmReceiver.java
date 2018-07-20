@@ -10,6 +10,7 @@ import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
 import com.juborajsarker.medicare.activity.NotificationActivity;
+import com.juborajsarker.medicare.activity.NotificationDetailsActivity;
 import com.juborajsarker.medicare.notificationManager.NotificationHelper;
 import com.juborajsarker.medicare.service.AlarmRing;
 
@@ -67,11 +68,10 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         if (taken == 11){
 
-            Toast.makeText(context, "Taken", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "You taken the medicine", Toast.LENGTH_SHORT).show();
 
             Intent stopIntent = new Intent(context, AlarmRing.class);
             context.stopService(stopIntent);
-
 
             helper.getManager().cancelAll();
 
@@ -83,7 +83,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             Intent stopIntent = new Intent(context, AlarmRing.class);
             context.stopService(stopIntent);
 
-            Toast.makeText(context, "Cancel", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "You cancel the medicine", Toast.LENGTH_SHORT).show();
 
             helper.getManager().cancelAll();
         }
@@ -94,9 +94,11 @@ public class AlarmReceiver extends BroadcastReceiver {
             Intent stopIntent = new Intent(context, AlarmRing.class);
             context.stopService(stopIntent);
 
-            Toast.makeText(context, "Details", Toast.LENGTH_SHORT).show();
-
             helper.getManager().cancelAll();
+
+            Intent activityIntent = new Intent(context, NotificationDetailsActivity.class);
+            intent.putExtra("id", 0);
+            context.startActivity(activityIntent);
 
         }
 
@@ -127,7 +129,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 
 
-        if (  "true".equals(med) ){
+        if ("true".equals(med) ){
 
             Intent stopIntent = new Intent(context, AlarmRing.class);
             context.stopService(stopIntent);
@@ -173,6 +175,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             if (context.stopService(stopIntent)){
 
                 context.stopService(stopIntent);
+
             }
 
 
@@ -187,10 +190,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 showNotificationForAppointment("Appointment today !!! ", "Get ready for appointment to "
                         + doctorName + " at " + appTime + " in" + location);
 
-
-
             }else {
-
 
                 context.startService(startIntent);
 

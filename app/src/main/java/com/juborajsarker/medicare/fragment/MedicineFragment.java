@@ -59,6 +59,8 @@ public class MedicineFragment extends Fragment {
     Calendar startDate;
     Calendar endDate;
 
+    TextView beforeMessageTV, afterMessageTV;
+
 
     HorizontalCalendar horizontalCalendar;
     ImageView leftIV, rightIV;
@@ -97,6 +99,9 @@ public class MedicineFragment extends Fragment {
         return view;
     }
 
+
+
+
     private void init() {
 
         Date currentDate = Calendar.getInstance().getTime();
@@ -110,6 +115,9 @@ public class MedicineFragment extends Fragment {
         dateTV = (TextView) view.findViewById(R.id.dateTV);
         beforeTV = (TextView) view.findViewById(R.id.beforeTV);
         afterTV = (TextView) view.findViewById(R.id.afterTV);
+
+        beforeMessageTV = (TextView) view.findViewById(R.id.before_messageTV);
+        afterMessageTV = (TextView) view.findViewById(R.id.after_messageTV);
 
 
         recyclerViewBeforeMeal = (RecyclerView) view.findViewById(R.id.recyclerView_before_meal);
@@ -192,6 +200,43 @@ public class MedicineFragment extends Fragment {
         });
 
 
+        checkEmptyMedicine();
+
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        checkEmptyMedicine();
+    }
+
+
+
+    private void checkEmptyMedicine(){
+
+        if (medicineModelListBeforeMeal.size() == 0){
+
+            recyclerViewBeforeMeal.setVisibility(View.GONE);
+            beforeMessageTV.setVisibility(View.VISIBLE);
+
+        }else {
+
+            recyclerViewBeforeMeal.setVisibility(View.VISIBLE);
+            beforeMessageTV.setVisibility(View.GONE);
+        }
+
+        if (medicineModelListAfterMeal.size() == 0){
+
+            recyclerViewAfterMeal.setVisibility(View.GONE);
+            afterMessageTV.setVisibility(View.VISIBLE);
+
+        }else {
+
+            recyclerViewAfterMeal.setVisibility(View.VISIBLE);
+            afterMessageTV.setVisibility(View.GONE);
+        }
     }
 
     private void setupCurrentDate() {

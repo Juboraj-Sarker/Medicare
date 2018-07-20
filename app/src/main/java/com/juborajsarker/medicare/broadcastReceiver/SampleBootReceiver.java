@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.juborajsarker.medicare.database.AppointmentDatabase;
 import com.juborajsarker.medicare.database.MedicineDatabase;
+import com.juborajsarker.medicare.model.AppointmentModel;
 import com.juborajsarker.medicare.model.MedicineModel;
 
 import java.text.ParseException;
@@ -34,6 +36,8 @@ public class SampleBootReceiver extends BroadcastReceiver {
             List<MedicineModel> beforeList = new ArrayList<>();
             List<MedicineModel> afterList = new ArrayList<>();
             MedicineDatabase dbHelper = new MedicineDatabase(context);
+
+
 
             beforeList = dbHelper.getAllData("before_table");
             afterList = dbHelper.getAllData("after_table");
@@ -101,7 +105,91 @@ public class SampleBootReceiver extends BroadcastReceiver {
 
 
 
+            List<AppointmentModel> appointmentModelList = new ArrayList<>();
+            AppointmentDatabase appointmentDatabase = new AppointmentDatabase(context);
+            appointmentModelList = appointmentDatabase.getAllAppointment();
+
+            for (int i=0; i<appointmentModelList.size(); i++){
+
+                AppointmentModel appointmentModel = appointmentModelList.get(i);
+
+                String date = appointmentModel.getDate();
+                String time = appointmentModel.getTime();
+                long rememberBeforeTimeInMills = appointmentModel.getRememberBeforeTimeInMills();
+                String combine = date + " " + time;
+                setAlarmForAppointment(combine, context, appointmentModel, rememberBeforeTimeInMills);
+
+
+
+
+            }
+
+
+
         }
+
+    }
+
+
+    private void setAlarmForAppointment(String combine, Context context, AppointmentModel appointmentModel,
+                                        long rememberBeforeTimeInMills){
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy hh:mm aaa");
+
+        Calendar calendar = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance();
+
+        try {
+            calendar.setTime(sdf.parse(combine));
+
+            int dateForAlarm = calendar.get(Calendar.DAY_OF_MONTH);
+            int monthForAlarm = calendar.get(Calendar.MONTH);
+            int yearForAlarm = calendar.get(Calendar.YEAR);
+            int hourForAlarm = calendar.get(Calendar.HOUR_OF_DAY);
+            int minuteForAlarm = calendar.get(Calendar.MINUTE);
+            int secondForAlarm = 0;
+
+            cal.set(yearForAlarm, monthForAlarm, dateForAlarm, hourForAlarm, minuteForAlarm, secondForAlarm);
+
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+        if (Calendar.getInstance().getTimeInMillis() >= (cal.getTimeInMillis() - rememberBeforeTimeInMills)){
+
+            Log.d("before", "before current time");
+
+        }else {
+
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            Intent intent = new Intent(context, AlarmReceiver.class);
+            intent.putExtra("appointment", "true");
+            intent.putExtra("doctorName", appointmentModel.getDoctorName());
+            intent.putExtra("appTime", appointmentModel.getTime());
+            intent.putExtra("location", appointmentModel.getLocation());
+
+
+            requestCode ++;
+
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, 0);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() - rememberBeforeTimeInMills , pendingIntent);
+
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putInt("requestCodeValue", requestCode);
+            editor.commit();
+
+            AppointmentModel a;
+            a = appointmentModel;
+            a.setRequestCode(requestCode);
+
+            AppointmentDatabase database = new AppointmentDatabase(context);
+            database.updateAppointment(a);
+
+        }
+
+
 
     }
 
@@ -157,6 +245,7 @@ public class SampleBootReceiver extends BroadcastReceiver {
             intent.putExtra("time", combine);
             intent.putExtra("medType", medicineModel.getMedicineType());
             intent.putExtra("med", "true");
+            intent.putExtra("medId", medicineModel.getId());
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, 0);
             alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
 
@@ -168,8 +257,37 @@ public class SampleBootReceiver extends BroadcastReceiver {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putInt("requestCodeValue", requestCode);
             editor.commit();
+
+           //  createAlarmModelObject(context, medicineModel, requestCode);
         }
 
 
     }
+
+
+
+//    private void createAlarmModelObject(Context context, MedicineModel medicineModel, int requestCode) {
+//
+//
+//        AlarmModel alarmModel = new AlarmModel();
+//        alarmModel.setId(0);
+//        alarmModel.setNdt(medName + uniqueCode);
+//        alarmModel.setNumberOfSlot(numberOfSlot);
+//        alarmModel.setFirstSlotTime(firstSlotTime);
+//        alarmModel.setSecondSlotTime(secondSlotTime);
+//        alarmModel.setThirdSlotTime(thirdSlotTime);
+//        alarmModel.setFirstSlotRequestCode(firstRequestCode);
+//        alarmModel.setSecondSlotRequestCode(secondRequestCode);
+//        alarmModel.setThirdSlotRequestCode(thirdRequestCode);
+//
+//        AlarmDatabase alarmDatabase = new AlarmDatabase(context);
+//        alarmDatabase.insertAlarm(alarmModel);
+//
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putInt("requestCodeValue", requestCode);
+//        editor.commit();
+//
+//
+//
+//    }
 }

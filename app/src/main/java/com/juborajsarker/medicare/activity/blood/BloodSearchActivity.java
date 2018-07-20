@@ -1,8 +1,13 @@
 package com.juborajsarker.medicare.activity.blood;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -88,12 +93,50 @@ public class BloodSearchActivity extends AppCompatActivity {
         }
 
 
+        try {
+            if (getUserCountry(BloodSearchActivity.this).equals("Bangladesh")){
+
+                if (!isLoggedIn) {
+
+                    messageTV.setVisibility(View.VISIBLE);
+                    bloodLAYOUT.setVisibility(View.GONE);
+
+                } else {
+
+                    messageTV.setVisibility(View.GONE);
+                    bloodLAYOUT.setVisibility(View.VISIBLE);
+
+
+                }
+
+            }else {
+
+
+                messageTV.setVisibility(View.VISIBLE);
+                bloodLAYOUT.setVisibility(View.GONE);
+                messageTV.setText("You have tp buy Medicare Pro for this option !!! Tap here to buy Medicare Pro");
+            }
+
+        }catch (Exception e){
+
+            Toast.makeText(BloodSearchActivity.this, "Error found", Toast.LENGTH_SHORT).show();
+        }
+
+
         messageTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                if (messageTV.getText().toString().equals("You have tp buy Medicare Pro for this option !!! Tap here to buy Medicare Pro")){
 
-                startActivity(new Intent(BloodSearchActivity.this, UserActivity.class));
+                    removeAds();
+
+                }else {
+
+                    startActivity(new Intent(BloodSearchActivity.this, UserActivity.class));
+                }
+
+
 
             }
         });
@@ -121,19 +164,29 @@ public class BloodSearchActivity extends AppCompatActivity {
                 }else {
 
 
-                    InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                    if (checkConnection()){
+
+                        InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
 
-                    city = cityET.getText().toString();
-                    country = getUserCountry(BloodSearchActivity.this);
-                    bloodGroup = getBloodGroup();
+                        city = cityET.getText().toString();
+                        country = getUserCountry(BloodSearchActivity.this);
+                        bloodGroup = getBloodGroup();
 
-                    Intent intent = new Intent(BloodSearchActivity.this, BloodDonorListActivity.class);
-                    intent.putExtra("city", city);
-                    intent.putExtra("bloodGroup", bloodGroup);
-                    intent.putExtra("country", country);
-                    startActivity(intent);
+                        Intent intent = new Intent(BloodSearchActivity.this, BloodDonorListActivity.class);
+                        intent.putExtra("city", city);
+                        intent.putExtra("bloodGroup", bloodGroup);
+                        intent.putExtra("country", country);
+                        startActivity(intent);
+
+                    }else {
+
+                        InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
+                        Toast.makeText(BloodSearchActivity.this, "Please check your internet connection !!!", Toast.LENGTH_SHORT).show();
+                    }
 
 
 
@@ -224,6 +277,56 @@ public class BloodSearchActivity extends AppCompatActivity {
             Log.d("error", e.getMessage());
         }
         return null;
+    }
+
+
+    private Intent removeAdsIntentForUrl(String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(String.format("%s?id=%s", url, "com.juborajsarker.medicarepro" )));
+        int flags = Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_MULTIPLE_TASK;
+        if (Build.VERSION.SDK_INT >= 21)
+        {
+            flags |= Intent.FLAG_ACTIVITY_NEW_DOCUMENT;
+        }
+        else
+        {
+            //noinspection deprecation
+            flags |= Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET;
+        }
+        intent.addFlags(flags);
+        return intent;
+    }
+
+
+    public void removeAds() {
+        try {
+            Intent rateIntent = removeAdsIntentForUrl("market://details");
+            startActivity(rateIntent);
+        }
+        catch (ActivityNotFoundException e)
+        {
+            Intent rateIntent = removeAdsIntentForUrl("https://play.google.com/store/apps/details");
+            startActivity(rateIntent);
+        }
+    }
+
+
+    public boolean checkConnection(){
+
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfoWifi = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        boolean isWifiConn = networkInfoWifi.isConnected();
+        NetworkInfo networkInfoMobile = connMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        boolean isMobileConn = networkInfoMobile.isConnected();
+
+        if (isWifiConn || isMobileConn){
+
+            return true;
+
+        }else {
+
+
+            return false;
+        }
     }
 
     @Override

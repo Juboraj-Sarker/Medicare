@@ -43,7 +43,7 @@ public class HomeFragment extends Fragment {
     HorizontalCalendar horizontalCalendar;
     ImageView leftIV, rightIV;
     TextView dateTV, totalMedicineTV, beforeMealTV, afterMealTV, totalAppointmentTV;
-    CardView medicineCV, appointmentCV;
+    CardView medicineCV, appointmentCV, moreCV;
 
 
     public HomeFragment() {
@@ -81,6 +81,7 @@ public class HomeFragment extends Fragment {
 
         medicineCV = (CardView) view.findViewById(R.id.medicine_CV);
         appointmentCV = (CardView) view.findViewById(R.id.appointment_CV);
+        moreCV = (CardView) view.findViewById(R.id.more_CV);
 
         medicineCV.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,6 +105,18 @@ public class HomeFragment extends Fragment {
 
                 Intent intent = new Intent(getContext(), MainActivity.class);
                 intent.putExtra("open", "appointment");
+                startActivity(intent);
+                getActivity().finish();
+
+            }
+        });
+
+        moreCV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(getContext(), MainActivity.class);
+                intent.putExtra("open", "more");
                 startActivity(intent);
                 getActivity().finish();
 
@@ -160,8 +173,8 @@ public class HomeFragment extends Fragment {
         beforeMealTV.setText("Before meal " + beforeSize + " medicine");
         afterMealTV.setText("After Meal " + afterSize + " medicine");
 
-        totalAppointmentTV.setText("Total " + appointSize + " Appointment");
-        totalMedicineTV.setText("Total " + totalMedicine + " Medicine");
+        totalAppointmentTV.setText("" + appointSize + " Appointment today");
+        totalMedicineTV.setText("" + totalMedicine + " Medicine today");
     }
 
 

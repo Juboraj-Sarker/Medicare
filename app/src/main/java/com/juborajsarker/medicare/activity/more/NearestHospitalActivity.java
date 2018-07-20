@@ -3,6 +3,7 @@ package com.juborajsarker.medicare.activity.more;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,6 +12,8 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
@@ -20,6 +23,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +31,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -46,6 +51,7 @@ import com.juborajsarker.medicare.model.place.Result;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -59,6 +65,8 @@ public class NearestHospitalActivity extends AppCompatActivity {
     ImageView searchIV;
     RecyclerView recyclerView;
     LinearLayout mapLayout;
+    LinearLayout fullItem;
+    TextView messageTV;
 
 
     PlaceAdapter adapter;
@@ -109,10 +117,42 @@ public class NearestHospitalActivity extends AppCompatActivity {
 
     private void init() {
 
+        messageTV = (TextView) findViewById(R.id.messageTV);
         radiusET = (EditText) findViewById(R.id.radius_ET);
         searchIV = (ImageView) findViewById(R.id.search_IV);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         mapLayout = (LinearLayout) findViewById(R.id.mapLayout);
+        fullItem = (LinearLayout) findViewById(R.id.fullItem);
+
+
+
+
+        try {
+            if (getUserCountry(NearestHospitalActivity.this).equals("Bangladesh")){
+
+                messageTV.setVisibility(View.GONE);
+                fullItem.setVisibility(View.VISIBLE);
+
+            }else {
+
+
+                messageTV.setVisibility(View.VISIBLE);
+                fullItem.setVisibility(View.GONE);
+
+            }
+
+        }catch (Exception e){
+
+            Toast.makeText(NearestHospitalActivity.this, "Error found", Toast.LENGTH_SHORT).show();
+        }
+
+        messageTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                removeAds();
+            }
+        });
 
 
         resultList = new ArrayList<>();
@@ -603,6 +643,62 @@ public class NearestHospitalActivity extends AppCompatActivity {
 
         return urlString.toString();
 
+    }
+
+
+    private Intent removeAdsIntentForUrl(String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(String.format("%s?id=%s", url, "com.juborajsarker.medicarepro" )));
+        int flags = Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_MULTIPLE_TASK;
+        if (Build.VERSION.SDK_INT >= 21)
+        {
+            flags |= Intent.FLAG_ACTIVITY_NEW_DOCUMENT;
+        }
+        else
+        {
+            //noinspection deprecation
+            flags |= Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET;
+        }
+        intent.addFlags(flags);
+        return intent;
+    }
+
+
+    public static String getUserCountry(Context context) {
+        try {
+            final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            final String simCountry = tm.getSimCountryIso();
+            if (simCountry != null && simCountry.length() == 2) { // SIM country code is available
+
+                Locale loc = new Locale("", simCountry);
+                return loc.getDisplayCountry();
+
+            }
+            else if (tm.getPhoneType() != TelephonyManager.PHONE_TYPE_CDMA) { // device is not 3G (would be unreliable)
+                String networkCountry = tm.getNetworkCountryIso();
+                if (networkCountry != null && networkCountry.length() == 2) { // network country code is available
+
+                    Locale loc = new Locale("", networkCountry);
+                    return loc.getDisplayCountry();
+                }
+            }
+        }
+        catch (Exception e) {
+
+            Log.d("error", e.getMessage());
+        }
+        return null;
+    }
+
+    public void removeAds() {
+        try {
+            Intent rateIntent = removeAdsIntentForUrl("market://details");
+            startActivity(rateIntent);
+        }
+        catch (ActivityNotFoundException e)
+        {
+            Intent rateIntent = removeAdsIntentForUrl("https://play.google.com/store/apps/details");
+            startActivity(rateIntent);
+        }
     }
 
 

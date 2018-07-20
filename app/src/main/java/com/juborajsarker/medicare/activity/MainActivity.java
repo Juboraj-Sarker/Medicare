@@ -156,6 +156,19 @@ public class MainActivity extends AppCompatActivity {
             navigation.setSelectedItemId(R.id.navigation_medicine);
 
 
+        }else if ("more".equals(whichOpen)){
+
+
+            fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.container, new MoreFragment()).commit();
+            setTitle("More");
+
+            BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+            BottomNavigationViewHelper.disableShiftMode(navigation);
+            navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+            navigation.setSelectedItemId(R.id.navigation_more);
+
+
         }else {
 
             fragmentManager = getSupportFragmentManager();

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".activity.more.TermsActivity">
+    tools:context=".activity.more.PrivacyActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -17,22 +17,22 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-                <LinearLayout
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="5dp">
+
+
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="5dp">
+                    android:text="Medicare Privacy Policy"
+                    android:padding="5dp"
+                    android:textSize="14sp"
+                    android:gravity="center"/>
 
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Medicare Terms and Condition."
-                        android:padding="5dp"
-                        android:textSize="14sp"
-                        android:gravity="center"/>
-
-                </LinearLayout>
+            </LinearLayout>
 
 
 
@@ -60,16 +60,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="horizontal"
-                        android:background="#00ACCC"
                         android:gravity="center">
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="1. If you register as a donor then your phone number and all contact info will be visible for all public."
+                            android:text="1. Your login details will be stored in our server. And we will never share your data with anyone ."
                             android:padding="5dp"
                             android:textSize="14sp"
-                            android:textColor="#fff"/>
+                            android:textColor="#000000"/>
 
                     </LinearLayout>
 
@@ -99,16 +98,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="horizontal"
-                        android:background="#EC6351"
                         android:gravity="center">
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="2. You can help by inputing some donor info. You may give input unlimited number of donor's information"
+                            android:text="2. For your nearest hospital and ambulance searching you must turn on GPS and give permission to access GPS "
                             android:padding="5dp"
                             android:textSize="14sp"
-                            android:textColor="#fff"/>
+                            android:textColor="#000000"/>
 
                     </LinearLayout>
 
@@ -138,16 +136,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="horizontal"
-                        android:background="#84C168"
                         android:gravity="center">
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="3. To use blood search, nearest pharmacy, hospital and Ambulance service, you must need internet."
+                            android:text="3. You may use Medicare as a phonebook also. So you must give calling permission."
                             android:padding="5dp"
                             android:textSize="14sp"
-                            android:textColor="#fff"/>
+                            android:textColor="#000000"/>
 
                     </LinearLayout>
 
@@ -177,16 +174,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="horizontal"
-                        android:background="#00ACCC"
                         android:gravity="center">
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="4. For remembering your medicine and appointment Medicare will use your default ring tune of device."
+                            android:text="4. Though the medicine image will be stored in your local storage. So you must give storage permission also."
                             android:padding="5dp"
                             android:textSize="14sp"
-                            android:textColor="#fff"/>
+                            android:textColor="#000000"/>
 
                     </LinearLayout>
 
@@ -216,16 +212,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="horizontal"
-                        android:background="#EC6351"
                         android:gravity="center">
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="5. If you delete any data the respective alarm will be delete automatically "
+                            android:text="5. If you clear your app cache, your all data will be removed. Remember, Medicare will never store any extra data into server. "
                             android:padding="5dp"
                             android:textSize="14sp"
-                            android:textColor="#fff"/>
+                            android:textColor="#000000"/>
 
                     </LinearLayout>
 
@@ -255,16 +250,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="horizontal"
-                        android:background="#84C168"
                         android:gravity="center">
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="6. There are no alarm_off system in Medicare. If you set any appointment it must be remember you."
+                            android:text="6. Sometimes it may error in loading nearest pharmacy or hospital list. For better performance you may re start the app."
                             android:padding="5dp"
                             android:textSize="14sp"
-                            android:textColor="#fff"/>
+                            android:textColor="#000000"/>
 
                     </LinearLayout>
 
