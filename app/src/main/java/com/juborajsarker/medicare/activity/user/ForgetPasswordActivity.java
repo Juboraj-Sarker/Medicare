@@ -12,6 +12,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,6 +37,11 @@ public class ForgetPasswordActivity extends AppCompatActivity {
 
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        MobileAds.initialize(getApplicationContext(), getString(R.string.banner_home_footer_1));
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("93448558CC721EBAD8FAAE5DA52596D3").build();
+        mAdView.loadAd(adRequest);
 
 
         init();

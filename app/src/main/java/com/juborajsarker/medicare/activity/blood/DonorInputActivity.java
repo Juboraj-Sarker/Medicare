@@ -16,6 +16,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -50,6 +53,12 @@ public class DonorInputActivity extends AppCompatActivity {
 
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+
+        MobileAds.initialize(getApplicationContext(), getString(R.string.banner_home_footer_1));
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("93448558CC721EBAD8FAAE5DA52596D3").build();
+        mAdView.loadAd(adRequest);
 
         init();
     }

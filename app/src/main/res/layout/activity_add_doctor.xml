@@ -6,7 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     tools:context=".activity.doctors.AddDoctorActivity">
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        ads:adSize="SMART_BANNER"
+        ads:adUnitId="@string/banner_home_footer_1">
+    </com.google.android.gms.ads.AdView>
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"

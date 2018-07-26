@@ -16,6 +16,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.juborajsarker.medicare.R;
 import com.juborajsarker.medicare.activity.appointments.AddAppointmentActivity;
 import com.juborajsarker.medicare.adapter.AppointmentAdapter;
@@ -40,6 +43,7 @@ import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener;
 public class AppointmentFragment extends Fragment {
 
     View view;
+    InterstitialAd mInterstitialAd;
 
     Calendar startDate;
     Calendar endDate;
@@ -67,10 +71,20 @@ public class AppointmentFragment extends Fragment {
 
         view = inflater.inflate(R.layout.fragment_appointment, container, false);
 
+        mInterstitialAd = new InterstitialAd(getContext());
+        mInterstitialAd.setAdUnitId(getString(R.string.interstitial_full_screen1));
+
+
         init();
         setupCalender();
 
         return view;
+    }
+
+    private void showInterstitial() {
+        if (mInterstitialAd.isLoaded()) {
+            mInterstitialAd.show();
+        }
     }
 
     private void init() {
@@ -110,6 +124,15 @@ public class AppointmentFragment extends Fragment {
         fabAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                AdRequest adRequest = new AdRequest.Builder().addTestDevice("93448558CC721EBAD8FAAE5DA52596D3").build();
+                mInterstitialAd.loadAd(adRequest);
+
+                mInterstitialAd.setAdListener(new AdListener() {
+                    public void onAdLoaded() {
+                        showInterstitial();
+                    }
+                });
 
                 startActivity(new Intent(getContext(), AddAppointmentActivity.class));
             }

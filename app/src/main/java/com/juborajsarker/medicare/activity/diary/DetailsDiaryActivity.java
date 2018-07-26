@@ -36,6 +36,8 @@ public class DetailsDiaryActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+
+
         Intent intent = getIntent();
         id = intent.getIntExtra("id", -1);
 
