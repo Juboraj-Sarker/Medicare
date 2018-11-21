@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".fragment.user.SignupFragment">
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        ads:adSize="SMART_BANNER"
+        ads:adUnitId="@string/banner_home_footer_1">
+    </com.google.android.gms.ads.AdView>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="8dp"
+            android:paddingBottom="8dp">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:padding="5dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingBottom="8dp">
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:layout_marginTop="8dp">
+
+                        <ImageView
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            app:srcCompat="@drawable/ic_user"
+                            android:background="@color/colorPrimaryDark"
+                            android:padding="8dp"
+                            android:tint="#fff"/>
+
+                        <EditText
+                            android:id="@+id/nameET"
+                            android:layout_width="0dp"
+                            android:layout_height="50dp"
+                            android:layout_weight="1"
+                            android:background="#ccc"
+                            android:padding="8dp"
+                            android:textSize="14sp"
+                            android:hint="Enter your full name"
+                            android:inputType="textEmailAddress" />
+
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:layout_marginTop="8dp">
+
+                        <ImageView
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            app:srcCompat="@drawable/ic_email"
+                            android:background="@color/colorPrimaryDark"
+                            android:padding="8dp"
+                            android:tint="#fff"/>
+                        <EditText
+                            android:id="@+id/emailET"
+                            android:layout_width="0dp"
+                            android:layout_height="50dp"
+                            android:layout_weight="1"
+                            android:background="#ccc"
+                            android:padding="8dp"
+                            android:textSize="14sp"
+                            android:hint="Enter a valid email"
+                            android:inputType="textEmailAddress" />
+
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:layout_marginTop="8dp">
+
+                        <ImageView
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            app:srcCompat="@drawable/ic_phone"
+                            android:background="@color/colorPrimaryDark"
+                            android:padding="8dp"
+                            android:tint="#fff"/>
+
+                        <EditText
+                            android:id="@+id/phoneET"
+                            android:layout_width="0dp"
+                            android:layout_height="50dp"
+                            android:layout_weight="1"
+                            android:background="#ccc"
+                            android:padding="8dp"
+                            android:textSize="14sp"
+                            android:hint="Enter your contact number"
+                            android:inputType="phone" />
+
+
+                    </LinearLayout>
+
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:layout_marginTop="8dp">
+
+                        <ImageView
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            app:srcCompat="@drawable/ic_city"
+                            android:background="@color/colorPrimaryDark"
+                            android:padding="8dp"
+                            android:tint="#fff"/>
+
+                        <EditText
+                            android:id="@+id/cityET"
+                            android:layout_width="0dp"
+                            android:layout_height="50dp"
+                            android:layout_weight="1"
+                            android:background="#ccc"
+                            android:padding="8dp"
+                            android:textSize="14sp"
+                            android:hint="Enter your city" />
+
+
+                    </LinearLayout>
+
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="8dp">
+
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_weight="1"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp">
+
+                            <ImageView
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                app:srcCompat="@drawable/ic_password"
+                                android:background="@color/colorPrimaryDark"
+                                android:padding="8dp"
+                                android:tint="#fff"/>
+
+                            <EditText
+                                android:id="@+id/passwordET"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:background="#ccc"
+                                android:padding="8dp"
+                                android:inputType="textPassword"
+                                android:hint="Password"
+                                android:textSize="14sp"/>
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="horizontal"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp">
+
+                            <ImageView
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                app:srcCompat="@drawable/ic_password"
+                                android:background="@color/colorPrimaryDark"
+                                android:padding="8dp"
+                                android:tint="#fff"/>
+
+                            <EditText
+                                android:id="@+id/confPassET"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:background="#ccc"
+                                android:padding="8dp"
+                                android:textSize="14sp"
+                                android:inputType="textPassword"
+                                android:hint="Again"
+                                />
+
+
+                        </LinearLayout>
+
+
+
+
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:layout_marginTop="8dp">
+
+                        <ImageView
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            app:srcCompat="@drawable/ic_blood"
+                            android:background="@color/colorPrimaryDark"
+                            android:padding="8dp"
+                            android:tint="#fff"/>
+
+
+                        <Spinner
+                            android:id="@+id/blood_group_SP"
+                            android:layout_width="0dp"
+                            android:layout_height="50dp"
+                            android:layout_weight="1"
+                            android:entries="@array/blood_group"
+                            android:padding="5dp"
+                            android:background="#ccc">
+
+                        </Spinner>
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:text="Do you wanna be a blood donor?"
+                        android:textSize="18sp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:layout_marginTop="8dp">
+
+                        <RadioGroup
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+
+                            <RadioButton
+                                android:id="@+id/yesRB"
+                                android:layout_width="0dp"
+                                android:layout_height="50dp"
+                                android:layout_weight="1"
+                                android:textSize="20sp"
+                                android:text="YES"
+                                android:textColor="#fff"
+                                android:background="@color/colorPrimaryDark"/>
+
+                            <RadioButton
+                                android:id="@+id/noRB"
+                                android:layout_width="0dp"
+                                android:layout_height="50dp"
+                                android:layout_weight="1"
+                                android:textSize="20sp"
+                                android:text="NO"
+                                android:textColor="#fff"
+                                android:background="@color/colorPrimary"/>
+
+                        </RadioGroup>
+
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+            </android.support.v7.widget.CardView>
+
+
+            <Button
+                android:id="@+id/signUpBTN"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimaryDark"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="8dp"
+                android:text="Sign Up"
+                android:textColor="#fff"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+
+</LinearLayout>
